@@ -22,7 +22,7 @@ import {
 import { TbTruckDelivery, TbShieldCheck } from "react-icons/tb";
 import { useAuth } from "../context/AuthContext";
 
-const API_BASE = import.meta.env.VITE_API_URL || "http://https://nutriexa-backend.onrender.com";
+const API_BASE = import.meta.env.VITE_API_URL || "   https://nutriexa-backend.onrender.com";
 
 const STATUS_BADGES = {
   Delivered: "bg-emerald-50 text-emerald-700 border-emerald-200",

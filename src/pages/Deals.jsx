@@ -6,7 +6,7 @@ import ProductCard from "../components/productspage-comp/ProductCard";
 import DealsBanner from "../components/dealspage-components/DealsBanner";
 import CountdownTimer from "../components/dealspage-components/CountdownTimer";
 
-const API_BASE = import.meta.env.VITE_API_URL || "http://https://nutriexa-backend.onrender.com";
+const API_BASE = import.meta.env.VITE_API_URL || "   https://nutriexa-backend.onrender.com";
 
 export default function Deals() {
   const [sortBy, setSortBy] = useState("discount");

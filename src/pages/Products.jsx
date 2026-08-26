@@ -7,7 +7,7 @@ import PromoBanner from "../components/productspage-comp/PromoBanner";
 import RecommendedProducts from "../components/productspage-comp/RecommendedProducts";
 import ProductCard from "../components/productspage-comp/ProductCard";
 
-const API_URL = "http://https://nutriexa-backend.onrender.com/api/products";
+const API_URL = "   https://nutriexa-backend.onrender.com/api/products";
 
 const CATEGORIES = [
   { slug: "whey-proteins", label: "Whey Proteins" },
@@ -60,7 +60,7 @@ export default function Products() {
                 : null,
             rating: 4.5,
             reviews: 0,
-            image: p.image ? `http://https://nutriexa-backend.onrender.com${p.image}` : "/images/placeholder.png",
+            image: p.image ? `   https://nutriexa-backend.onrender.com${p.image}` : "/images/placeholder.png",
           }));
 
         setAllProducts(transformed);

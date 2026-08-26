@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { FiArrowRight } from "react-icons/fi";
 
-const API_URL = "http://https://nutriexa-backend.onrender.com/api/products";
+const API_URL = "   https://nutriexa-backend.onrender.com/api/products";
 
 const CATEGORY_LABELS = {
   "whey-proteins": "Whey Proteins",
@@ -31,7 +31,7 @@ export default function ShopByCategory() {
             slug,
             label,
             image: productInCategory?.image
-              ? `http://https://nutriexa-backend.onrender.com${productInCategory.image}`
+              ? `   https://nutriexa-backend.onrender.com${productInCategory.image}`
               : `https://placehold.co/300x300/f0f4ee/4CAF37?text=${encodeURIComponent(
                   label
                 )}`,

@@ -7,7 +7,7 @@ const STATUS_STYLES = {
   Scheduled: "bg-blue-100 text-blue-700",
 };
 
-const API_BASE = import.meta.env.VITE_API_URL || "http://https://nutriexa-backend.onrender.com";
+const API_BASE = import.meta.env.VITE_API_URL || "   https://nutriexa-backend.onrender.com";
 
 const emptyForm = {
   code: "",

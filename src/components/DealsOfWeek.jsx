@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { FiChevronLeft, FiChevronRight, FiArrowRight, FiCheck, FiShoppingCart } from "react-icons/fi";
 import { useCart } from "../context/CartContext";
 
-const API_URL = "http://https://nutriexa-backend.onrender.com/api/products";
+const API_URL = "   https://nutriexa-backend.onrender.com/api/products";
 
 function DealCard({ deal }) {
   const { addToCart } = useCart();
@@ -108,7 +108,7 @@ export default function DealsOfWeek() {
               ((p.mrp - p.price) / p.mrp) * 100
             )}% OFF`,
             image: p.image
-              ? `http://https://nutriexa-backend.onrender.com${p.image}`
+              ? `   https://nutriexa-backend.onrender.com${p.image}`
               : "https://placehold.co/300x300/f0f4ee/4CAF37?text=No+Image",
           }))
           .sort(

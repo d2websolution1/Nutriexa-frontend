@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { FiUploadCloud, FiChevronLeft } from "react-icons/fi";
 
-const API_URL = "http://https://nutriexa-backend.onrender.com/api/products";
+const API_URL = "   https://nutriexa-backend.onrender.com/api/products";
 
 export default function AddEditProduct() {
   const { id } = useParams();
@@ -46,7 +46,7 @@ export default function AddEditProduct() {
         });
 
         if (data.image) {
-          setImagePreview(`http://https://nutriexa-backend.onrender.com${data.image}`);
+          setImagePreview(`   https://nutriexa-backend.onrender.com${data.image}`);
         }
       } catch (err) {
         setError("Failed to load product details.");

@@ -8,7 +8,7 @@ const STATUS_STYLES = {
   Draft: "bg-gray-100 text-gray-600",
 };
 
-const API_URL = "http://https://nutriexa-backend.onrender.com/api/products";
+const API_URL = "   https://nutriexa-backend.onrender.com/api/products";
 
 export default function Products() {
   const [search, setSearch] = useState("");
@@ -131,7 +131,7 @@ export default function Products() {
                         <div className="w-10 h-10 rounded-md bg-[#f3f6f2] overflow-hidden shrink-0">
                           {product.image ? (
                             <img
-                              src={`http://https://nutriexa-backend.onrender.com${product.image}`}
+                              src={`   https://nutriexa-backend.onrender.com${product.image}`}
                               alt={product.name}
                               className="w-full h-full object-contain"
                             />

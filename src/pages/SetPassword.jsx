@@ -3,7 +3,7 @@ import { useLocation, useNavigate, Link } from "react-router-dom";
 import { FiLock, FiEye, FiEyeOff, FiCheck, FiShield } from "react-icons/fi";
 import { useAuth } from "../context/AuthContext";
 
-const API_BASE = import.meta.env.VITE_API_URL || "http://https://nutriexa-backend.onrender.com";
+const API_BASE = import.meta.env.VITE_API_URL || "   https://nutriexa-backend.onrender.com";
 
 export default function SetPassword() {
   const location = useLocation();
