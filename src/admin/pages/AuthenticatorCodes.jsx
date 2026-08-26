@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { FiCopy, FiRefreshCw, FiPlus, FiDownload, FiPrinter } from "react-icons/fi";
 
-const API_URL = "http://localhost:5000/api/authenticator";
-const PRODUCTS_API = "http://localhost:5000/api/products";
+const API_URL = "http://https://nutriexa-backend.onrender.com/api/authenticator";
+const PRODUCTS_API = "http://https://nutriexa-backend.onrender.com/api/products";
 
 export default function AuthenticatorCodes() {
   const [products, setProducts] = useState([]);

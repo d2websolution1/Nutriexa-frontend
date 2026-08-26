@@ -10,7 +10,7 @@
 
   const TABS = ["All", "Pending", "Shipped", "Delivered", "Cancelled"];
   const STATUS_OPTIONS = ["Pending", "Shipped", "Delivered", "Cancelled"];
-  const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
+  const API_BASE = import.meta.env.VITE_API_URL || "http://https://nutriexa-backend.onrender.com";
 
   function formatDate(isoString) {
     return new Date(isoString).toLocaleDateString("en-GB", {

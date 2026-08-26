@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { FiSearch, FiMail, FiMoreVertical } from "react-icons/fi";
 
-const API_URL = "http://localhost:5000/api/admin/customers";
+const API_URL = "http://https://nutriexa-backend.onrender.com/api/admin/customers";
 
 export default function Customers() {
   const [search, setSearch] = useState("");

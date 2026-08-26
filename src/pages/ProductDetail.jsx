@@ -3,7 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { FiCheckCircle, FiChevronRight, FiShoppingCart, FiCheck, FiStar } from "react-icons/fi";
 import { useCart } from "../context/CartContext";
 
-const API_URL = "http://localhost:5000/api/products";
+const API_URL = "http://https://nutriexa-backend.onrender.com/api/products";
 
 export default function ProductDetail() {
   const { slug } = useParams();
@@ -40,7 +40,7 @@ export default function ProductDetail() {
         price: Number(product.price),
         mrp: product.mrp ? Number(product.mrp) : null,
         image: product.image
-          ? `http://localhost:5000${product.image}`
+          ? `http://https://nutriexa-backend.onrender.com${product.image}`
           : "/images/placeholder.png",
       },
       qty
@@ -73,7 +73,7 @@ export default function ProductDetail() {
   const mrp = product.mrp ? Number(product.mrp) : null;
   const discountPercent = mrp && mrp > price ? Math.round(((mrp - price) / mrp) * 100) : null;
   const image = product.image
-    ? `http://localhost:5000${product.image}`
+    ? `http://https://nutriexa-backend.onrender.com${product.image}`
     : "/images/placeholder.png";
   const inStock = product.stock > 0 && product.status === "Active";
 

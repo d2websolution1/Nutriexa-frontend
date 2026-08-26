@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useLocation, useNavigate, Link } from "react-router-dom";
 import { FiShield, FiRefreshCw, FiArrowLeft, FiCheck, FiMail } from "react-icons/fi";
 
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
+const API_BASE = import.meta.env.VITE_API_URL || "http://https://nutriexa-backend.onrender.com";
 
 export default function VerifyOtp() {
   const location = useLocation();

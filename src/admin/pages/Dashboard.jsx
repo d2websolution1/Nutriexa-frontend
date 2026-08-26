@@ -15,7 +15,7 @@ const STATUS_STYLES = {
   Cancelled: "bg-red-100 text-red-700",
 };
 
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
+const API_BASE = import.meta.env.VITE_API_URL || "http://https://nutriexa-backend.onrender.com";
 
 export default function Dashboard() {
   const [data, setData] = useState(null);

@@ -10,7 +10,7 @@ import {
   FiHelpCircle,
 } from "react-icons/fi";
 
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
+const API_BASE = import.meta.env.VITE_API_URL || "http://https://nutriexa-backend.onrender.com";
 const API_URL = `${API_BASE}/api/authenticator`;
 const PRODUCTS_API = `${API_BASE}/api/products`;
 
