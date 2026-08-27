@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import {
   FiCheckCircle,
   FiChevronRight,
@@ -7,11 +7,12 @@ import {
   FiCheck,
   FiStar,
   FiChevronLeft,
+  FiZap,
 } from "react-icons/fi";
 import { useCart } from "../context/CartContext";
 
-const API_URL = "   https://nutriexa-backend.onrender.com/api/products";
-const BASE_URL = "   https://nutriexa-backend.onrender.com";
+const API_URL = "https://nutriexa-backend.onrender.com/api/products";
+const BASE_URL = "https://nutriexa-backend.onrender.com";
 
 function buildUrl(path) {
   if (!path) return "/images/placeholder.png";
@@ -22,6 +23,7 @@ function buildUrl(path) {
 export default function ProductDetail() {
   const { slug } = useParams();
   const { addToCart } = useCart();
+  const navigate = useNavigate();
 
   const [product, setProduct] = useState(null);
   const [images, setImages] = useState([]);
@@ -71,6 +73,22 @@ export default function ProductDetail() {
     );
     setAdded(true);
     setTimeout(() => setAdded(false), 1500);
+  };
+
+  const handleBuyNow = () => {
+    if (!product) return;
+    addToCart(
+      {
+        id: product.id,
+        name: product.name,
+        variant: product.variant,
+        price: Number(product.price),
+        mrp: product.mrp ? Number(product.mrp) : null,
+        image: images[0] || "/images/placeholder.png",
+      },
+      qty
+    );
+    navigate("/checkout");
   };
 
   const prev = () => setActiveIdx((i) => (i === 0 ? images.length - 1 : i - 1));
@@ -124,11 +142,10 @@ export default function ProductDetail() {
                   key={idx}
                   type="button"
                   onClick={() => setActiveIdx(idx)}
-                  className={`w-16 h-16 flex-shrink-0 rounded-lg overflow-hidden border-2 transition-all ${
-                    idx === activeIdx
-                      ? "border-[#4CAF37] shadow-md"
-                      : "border-gray-200 hover:border-gray-300"
-                  }`}
+                  className={`w-16 h-16 flex-shrink-0 rounded-lg overflow-hidden border-2 transition-all ${idx === activeIdx
+                    ? "border-[#4CAF37] shadow-md"
+                    : "border-gray-200 hover:border-gray-300"
+                    }`}
                 >
                   <img
                     src={src}
@@ -183,9 +200,8 @@ export default function ProductDetail() {
                     key={idx}
                     type="button"
                     onClick={() => setActiveIdx(idx)}
-                    className={`w-2 h-2 rounded-full transition-all ${
-                      idx === activeIdx ? "bg-[#4CAF37] w-4" : "bg-gray-300"
-                    }`}
+                    className={`w-2 h-2 rounded-full transition-all ${idx === activeIdx ? "bg-[#4CAF37] w-4" : "bg-gray-300"
+                      }`}
                   />
                 ))}
               </div>
@@ -233,7 +249,7 @@ export default function ProductDetail() {
               "Premium quality, lab-tested formula built for real results."}
           </p>
 
-          <div className="flex items-center gap-4 mb-6">
+          <div className="flex items-center gap-3 mb-4">
             <div className="flex items-center border border-gray-200 rounded-md">
               <button
                 onClick={() => setQty((q) => Math.max(1, q - 1))}
@@ -249,17 +265,18 @@ export default function ProductDetail() {
                 +
               </button>
             </div>
+          </div>
 
+          <div className="flex items-center gap-3 mb-6">
             <button
               onClick={handleAddToCart}
               disabled={!inStock || added}
-              className={`flex-1 flex items-center justify-center gap-2 font-semibold py-3 rounded-md transition-colors ${
-                !inStock
-                  ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                  : added
+              className={`flex-1 flex items-center justify-center gap-2 font-semibold py-3 rounded-md transition-colors ${!inStock
+                ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                : added
                   ? "bg-green-600 text-white"
                   : "bg-[#4CAF37] text-white hover:opacity-90"
-              }`}
+                }`}
             >
               {added ? (
                 <>
@@ -271,6 +288,18 @@ export default function ProductDetail() {
                   {inStock ? "Add to Cart" : "Out of Stock"}
                 </>
               )}
+            </button>
+
+            <button
+              onClick={handleBuyNow}
+              disabled={!inStock}
+              className={`flex-1 flex items-center justify-center gap-2 font-semibold py-3 rounded-md transition-colors ${!inStock
+                ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                : "bg-[#1a1a1a] text-white hover:opacity-90"
+                }`}
+            >
+              <FiZap size={16} />
+              Buy Now
             </button>
           </div>
 
