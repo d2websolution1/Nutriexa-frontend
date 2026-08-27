@@ -1,15 +1,31 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { FiCheckCircle, FiChevronRight, FiShoppingCart, FiCheck, FiStar } from "react-icons/fi";
+import {
+  FiCheckCircle,
+  FiChevronRight,
+  FiShoppingCart,
+  FiCheck,
+  FiStar,
+  FiChevronLeft,
+} from "react-icons/fi";
 import { useCart } from "../context/CartContext";
 
 const API_URL = "   https://nutriexa-backend.onrender.com/api/products";
+const BASE_URL = "   https://nutriexa-backend.onrender.com";
+
+function buildUrl(path) {
+  if (!path) return "/images/placeholder.png";
+  if (path.startsWith("http")) return path;
+  return `${BASE_URL}${path}`;
+}
 
 export default function ProductDetail() {
   const { slug } = useParams();
   const { addToCart } = useCart();
 
   const [product, setProduct] = useState(null);
+  const [images, setImages] = useState([]);
+  const [activeIdx, setActiveIdx] = useState(0);
   const [qty, setQty] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -18,20 +34,30 @@ export default function ProductDetail() {
   useEffect(() => {
     setLoading(true);
     setError("");
+    setActiveIdx(0);
 
     fetch(`${API_URL}/${slug}`)
       .then((res) => {
         if (!res.ok) throw new Error("Product not found");
         return res.json();
       })
-      .then((data) => setProduct(data))
+      .then((data) => {
+        setProduct(data);
+
+        // Parse images array; fall back to single image field
+        let imgs = [];
+        if (data.images) {
+          try { imgs = JSON.parse(data.images); } catch (_) { imgs = []; }
+        }
+        if (imgs.length === 0 && data.image) imgs = [data.image];
+        setImages(imgs.map(buildUrl));
+      })
       .catch(() => setError("Product not found."))
       .finally(() => setLoading(false));
   }, [slug]);
 
   const handleAddToCart = () => {
     if (!product) return;
-
     addToCart(
       {
         id: product.id,
@@ -39,16 +65,16 @@ export default function ProductDetail() {
         variant: product.variant,
         price: Number(product.price),
         mrp: product.mrp ? Number(product.mrp) : null,
-        image: product.image
-          ? `   https://nutriexa-backend.onrender.com${product.image}`
-          : "/images/placeholder.png",
+        image: images[0] || "/images/placeholder.png",
       },
       qty
     );
-
     setAdded(true);
     setTimeout(() => setAdded(false), 1500);
   };
+
+  const prev = () => setActiveIdx((i) => (i === 0 ? images.length - 1 : i - 1));
+  const next = () => setActiveIdx((i) => (i === images.length - 1 ? 0 : i + 1));
 
   if (loading) {
     return (
@@ -71,11 +97,10 @@ export default function ProductDetail() {
 
   const price = Number(product.price);
   const mrp = product.mrp ? Number(product.mrp) : null;
-  const discountPercent = mrp && mrp > price ? Math.round(((mrp - price) / mrp) * 100) : null;
-  const image = product.image
-    ? `   https://nutriexa-backend.onrender.com${product.image}`
-    : "/images/placeholder.png";
+  const discountPercent =
+    mrp && mrp > price ? Math.round(((mrp - price) / mrp) * 100) : null;
   const inStock = product.stock > 0 && product.status === "Active";
+  const mainImage = images[activeIdx] || "/images/placeholder.png";
 
   return (
     <main className="max-w-7xl mx-auto px-4 md:px-10 py-8">
@@ -89,21 +114,86 @@ export default function ProductDetail() {
       </div>
 
       <div className="grid md:grid-cols-2 gap-10">
-        {/* Image */}
-        <div className="w-full aspect-square bg-[#f3f6f2] rounded-xl flex items-center justify-center overflow-hidden relative">
-          {discountPercent && (
-            <span className="absolute top-4 left-4 bg-[#4CAF37] text-white text-xs font-bold px-2.5 py-1 rounded">
-              {discountPercent}% OFF
-            </span>
+        {/* ── Image Gallery ── */}
+        <div className="flex gap-3">
+          {/* Thumbnail strip (shown only when >1 image) */}
+          {images.length > 1 && (
+            <div className="flex flex-col gap-2 max-h-[480px] overflow-y-auto pr-0.5 scrollbar-thin">
+              {images.map((src, idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={() => setActiveIdx(idx)}
+                  className={`w-16 h-16 flex-shrink-0 rounded-lg overflow-hidden border-2 transition-all ${
+                    idx === activeIdx
+                      ? "border-[#4CAF37] shadow-md"
+                      : "border-gray-200 hover:border-gray-300"
+                  }`}
+                >
+                  <img
+                    src={src}
+                    alt={`Thumbnail ${idx + 1}`}
+                    className="w-full h-full object-contain bg-[#f3f6f2]"
+                  />
+                </button>
+              ))}
+            </div>
           )}
-          <img
-            src={image}
-            alt={product.name}
-            className="w-4/5 h-4/5 object-contain"
-          />
+
+          {/* Main image */}
+          <div className="relative flex-1 aspect-square bg-[#f3f6f2] rounded-xl flex items-center justify-center overflow-hidden">
+            {discountPercent && (
+              <span className="absolute top-4 left-4 z-10 bg-[#4CAF37] text-white text-xs font-bold px-2.5 py-1 rounded">
+                {discountPercent}% OFF
+              </span>
+            )}
+
+            {/* Prev / Next arrows (only when >1 image) */}
+            {images.length > 1 && (
+              <>
+                <button
+                  type="button"
+                  onClick={prev}
+                  className="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white shadow rounded-full p-1.5 text-gray-600 hover:text-[#4CAF37] transition"
+                >
+                  <FiChevronLeft size={18} />
+                </button>
+                <button
+                  type="button"
+                  onClick={next}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white shadow rounded-full p-1.5 text-gray-600 hover:text-[#4CAF37] transition"
+                >
+                  <FiChevronRight size={18} />
+                </button>
+              </>
+            )}
+
+            <img
+              src={mainImage}
+              alt={product.name}
+              key={mainImage}
+              className="w-4/5 h-4/5 object-contain transition-opacity duration-200"
+            />
+
+            {/* Dot indicators */}
+            {images.length > 1 && (
+              <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-1.5">
+                {images.map((_, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => setActiveIdx(idx)}
+                    className={`w-2 h-2 rounded-full transition-all ${
+                      idx === activeIdx ? "bg-[#4CAF37] w-4" : "bg-gray-300"
+                    }`}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
         </div>
 
-        {/* Details */}
+        {/* ── Product Details ── */}
         <div>
           <h1 className="text-2xl md:text-3xl font-extrabold text-[#1a1a1a] mb-2">
             {product.name}
