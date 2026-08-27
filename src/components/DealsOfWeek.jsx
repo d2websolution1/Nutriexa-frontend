@@ -3,7 +3,14 @@ import { Link } from "react-router-dom";
 import { FiChevronLeft, FiChevronRight, FiArrowRight, FiCheck, FiShoppingCart } from "react-icons/fi";
 import { useCart } from "../context/CartContext";
 
-const API_URL = "   https://nutriexa-backend.onrender.com/api/products";
+const API_URL = "https://nutriexa-backend.onrender.com/api/products";
+const BASE_URL = "https://nutriexa-backend.onrender.com";
+
+function buildImageUrl(path) {
+  if (!path) return "https://placehold.co/300x300/f0f4ee/4CAF37?text=No+Image";
+  if (path.startsWith("http")) return path;
+  return `${BASE_URL}${path}`;
+}
 
 function DealCard({ deal }) {
   const { addToCart } = useCart();
@@ -60,11 +67,10 @@ function DealCard({ deal }) {
       <button
         onClick={handleAddToCart}
         disabled={added}
-        className={`mt-3 w-full flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-wide py-2.5 rounded-md transition-all duration-200 ${
-          added
+        className={`mt-3 w-full flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-wide py-2.5 rounded-md transition-all duration-200 ${added
             ? "bg-green-600 text-white scale-[0.98]"
             : "bg-[#4CAF37] text-white hover:opacity-90"
-        }`}
+          }`}
       >
         {added ? (
           <>
@@ -107,9 +113,7 @@ export default function DealsOfWeek() {
             discount: `${Math.round(
               ((p.mrp - p.price) / p.mrp) * 100
             )}% OFF`,
-            image: p.image
-              ? `   https://nutriexa-backend.onrender.com${p.image}`
-              : "https://placehold.co/300x300/f0f4ee/4CAF37?text=No+Image",
+            image: buildImageUrl(p.image),
           }))
           .sort(
             (a, b) =>
