@@ -8,7 +8,14 @@ const STATUS_STYLES = {
   Draft: "bg-gray-100 text-gray-600",
 };
 
-const API_URL = "   https://nutriexa-backend.onrender.com/api/products";
+const API_URL = "https://nutriexa-backend.onrender.com/api/products";
+const BASE_URL = "https://nutriexa-backend.onrender.com";
+
+function buildImageUrl(path) {
+  if (!path) return null;
+  if (path.startsWith("http")) return path;
+  return `${BASE_URL}${path}`;
+}
 
 export default function Products() {
   const [search, setSearch] = useState("");
@@ -129,9 +136,9 @@ export default function Products() {
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-md bg-[#f3f6f2] overflow-hidden shrink-0">
-                          {product.image ? (
+                          {buildImageUrl(product.image) ? (
                             <img
-                              src={`   https://nutriexa-backend.onrender.com${product.image}`}
+                              src={buildImageUrl(product.image)}
                               alt={product.name}
                               className="w-full h-full object-contain"
                             />
