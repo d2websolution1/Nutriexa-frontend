@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { FiArrowRight } from "react-icons/fi";
 
-const API_URL = "   https://nutriexa-backend.onrender.com/api/products";
+const API_URL = "https://nutriexa-backend.onrender.com/api/products";
+const BASE_URL = "https://nutriexa-backend.onrender.com";
 
 const CATEGORY_LABELS = {
   "whey-proteins": "Whey Proteins",
@@ -12,6 +13,14 @@ const CATEGORY_LABELS = {
   "health-wellness": "Health & Wellness",
   accessories: "Accessories",
 };
+
+function buildImageUrl(path, label) {
+  if (!path) {
+    return `https://placehold.co/300x300/f0f4ee/4CAF37?text=${encodeURIComponent(label)}`;
+  }
+  if (path.startsWith("http")) return path;
+  return `${BASE_URL}${path}`;
+}
 
 export default function ShopByCategory() {
   const [categories, setCategories] = useState([]);
@@ -30,11 +39,7 @@ export default function ShopByCategory() {
           return {
             slug,
             label,
-            image: productInCategory?.image
-              ? `   https://nutriexa-backend.onrender.com${productInCategory.image}`
-              : `https://placehold.co/300x300/f0f4ee/4CAF37?text=${encodeURIComponent(
-                  label
-                )}`,
+            image: buildImageUrl(productInCategory?.image, label),
           };
         });
 
