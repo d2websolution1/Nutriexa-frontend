@@ -1,13 +1,13 @@
 import { useEffect, useState, useCallback } from "react";
 import { FiPlus, FiEdit2, FiTrash2, FiCopy, FiSearch, FiX } from "react-icons/fi";
+import { API_URL as API_BASE } from "../../config";
+import { useAuth } from "../../context/AuthContext";
 
 const STATUS_STYLES = {
   Active: "bg-green-100 text-green-700",
   Expired: "bg-red-100 text-red-700",
   Scheduled: "bg-blue-100 text-blue-700",
 };
-
-const API_BASE = import.meta.env.VITE_API_URL || "   https://nutriexa-backend.onrender.com";
 
 const emptyForm = {
   code: "",
@@ -19,10 +19,14 @@ const emptyForm = {
 };
 
 export default function Deals() {
+  const { hasPermission } = useAuth();
+  const canManage = hasPermission("deals.manage");
+
   const [search, setSearch] = useState("");
   const [coupons, setCoupons] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
 
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
@@ -219,16 +223,18 @@ export default function Deals() {
             Manage discount coupons and weekly deals.
           </p>
         </div>
-        <button
-          onClick={openCreate}
-          className="flex items-center gap-2 bg-[#4CAF37] text-white text-sm font-semibold px-5 py-2.5 rounded-md hover:opacity-90"
-        >
-          <FiPlus size={18} /> Create Coupon
-        </button>
+        {canManage && (
+          <button
+            onClick={openCreate}
+            className="flex items-center gap-2 bg-[#4CAF37] text-white text-sm font-semibold px-5 py-2.5 rounded-md hover:opacity-90 cursor-pointer"
+          >
+            <FiPlus size={18} /> Create Coupon
+          </button>
+        )}
       </div>
 
       {/* Create/Edit coupon form (inline card) */}
-      {showForm && (
+      {showForm && canManage && (
         <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-bold text-[#1a1a1a] text-sm">
@@ -236,7 +242,7 @@ export default function Deals() {
             </h2>
             <button
               onClick={() => { setShowForm(false); setEditingId(null); }}
-              className="text-xs text-gray-500 hover:text-red-500"
+              className="text-xs text-gray-500 hover:text-red-500 cursor-pointer"
             >
               Cancel
             </button>
@@ -250,10 +256,9 @@ export default function Deals() {
                 name="code"
                 value={form.code}
                 onChange={handleChange}
-                type="text"
-                placeholder="e.g. SAVE15"
-                className="w-full border border-gray-200 rounded-md px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37] uppercase"
+                placeholder="e.g. SUMMER20"
                 required
+                className="w-full border border-gray-200 rounded-md px-3.5 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37] uppercase"
               />
             </div>
             <div>
@@ -264,50 +269,51 @@ export default function Deals() {
                 name="type"
                 value={form.type}
                 onChange={handleChange}
-                className="w-full border border-gray-200 rounded-md px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
+                className="w-full border border-gray-200 rounded-md px-3.5 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
               >
-                <option>Percentage</option>
-                <option>Flat</option>
+                <option value="Percentage">Percentage (%)</option>
+                <option value="Fixed">Flat Amount (₹)</option>
               </select>
             </div>
             <div>
               <label className="text-xs font-medium text-gray-600 mb-1.5 block">
-                Value
+                Discount Value
               </label>
               <input
+                type="number"
                 name="value"
                 value={form.value}
                 onChange={handleChange}
-                type="number"
-                placeholder={form.type === "Percentage" ? "e.g. 15" : "e.g. 150"}
-                className="w-full border border-gray-200 rounded-md px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
+                placeholder={form.type === "Percentage" ? "e.g. 20" : "e.g. 200"}
                 required
+                min="1"
+                className="w-full border border-gray-200 rounded-md px-3.5 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
               />
             </div>
             <div>
               <label className="text-xs font-medium text-gray-600 mb-1.5 block">
-                Min Order (₹)
+                Min. Order Amount (₹)
               </label>
               <input
+                type="number"
                 name="minOrder"
                 value={form.minOrder}
                 onChange={handleChange}
-                type="number"
                 placeholder="e.g. 999"
-                className="w-full border border-gray-200 rounded-md px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
+                className="w-full border border-gray-200 rounded-md px-3.5 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
               />
             </div>
             <div>
               <label className="text-xs font-medium text-gray-600 mb-1.5 block">
-                Usage Limit
+                Usage Limit (Optional)
               </label>
               <input
+                type="number"
                 name="usageLimit"
                 value={form.usageLimit}
                 onChange={handleChange}
-                type="number"
-                placeholder="e.g. 500"
-                className="w-full border border-gray-200 rounded-md px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
+                placeholder="e.g. 100"
+                className="w-full border border-gray-200 rounded-md px-3.5 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
               />
             </div>
             <div>
@@ -315,38 +321,38 @@ export default function Deals() {
                 Expiry Date
               </label>
               <input
+                type="date"
                 name="expiryDate"
                 value={form.expiryDate}
                 onChange={handleChange}
-                type="date"
-                className="w-full border border-gray-200 rounded-md px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
                 required
+                className="w-full border border-gray-200 rounded-md px-3.5 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
               />
             </div>
-
-            <div className="sm:col-span-2 lg:col-span-4 flex justify-end gap-2.5 mt-1">
+            <div className="sm:col-span-2 lg:col-span-4 flex justify-end gap-3 pt-2">
               <button
                 type="button"
                 onClick={() => { setShowForm(false); setEditingId(null); }}
-                className="border border-gray-200 text-[#1a1a1a] font-semibold text-sm px-5 py-2.5 rounded-md hover:bg-gray-50"
+                className="px-4 py-2 border border-gray-200 rounded-md text-sm text-gray-600 hover:bg-gray-50 cursor-pointer"
               >
-                Discard
+                Cancel
               </button>
               <button
                 type="submit"
                 disabled={saving}
-                className="bg-[#4CAF37] text-white font-semibold text-sm px-5 py-2.5 rounded-md hover:opacity-90 disabled:opacity-60"
+                className="px-5 py-2 bg-[#4CAF37] text-white rounded-md text-sm font-semibold hover:opacity-90 disabled:opacity-60 cursor-pointer"
               >
-                {saving ? "Saving..." : "Save Coupon"}
+                {saving ? "Saving..." : editingId ? "Update Coupon" : "Save Coupon"}
               </button>
             </div>
           </form>
         </div>
       )}
 
-      <div className="grid lg:grid-cols-3 gap-5">
+      {/* Grid: coupons on left, weekly deals on right */}
+      <div className="grid lg:grid-cols-[1fr_360px] gap-6">
         {/* Coupons table */}
-        <div className="lg:col-span-2 bg-white rounded-xl border border-gray-100 shadow-sm">
+        <div className="bg-white rounded-xl border border-gray-100 shadow-sm">
           <div className="p-4 border-b border-gray-100">
             <div className="flex items-center gap-2 bg-[#f5f6f4] rounded-md px-3 py-2 max-w-sm">
               <FiSearch className="text-gray-400" size={16} />
@@ -354,7 +360,7 @@ export default function Deals() {
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search coupon code..."
+                placeholder="Search coupons..."
                 className="bg-transparent text-sm outline-none w-full placeholder:text-gray-400"
               />
             </div>
@@ -401,7 +407,7 @@ export default function Deals() {
                           </span>
                           <button
                             onClick={() => copyCode(c.code)}
-                            className="text-gray-400 hover:text-[#4CAF37]"
+                            className="text-gray-400 hover:text-[#4CAF37] cursor-pointer"
                           >
                             <FiCopy size={13} />
                           </button>
@@ -421,18 +427,24 @@ export default function Deals() {
                       </td>
                       <td className="px-4 py-3">
                         <div className="flex items-center justify-end gap-2">
-                          <button
-                            onClick={() => openEdit(c)}
-                            className="p-2 rounded-md text-gray-500 hover:text-[#4CAF37] hover:bg-[#4CAF37]/10"
-                          >
-                            <FiEdit2 size={15} />
-                          </button>
-                          <button
-                            onClick={() => deleteCoupon(c.id)}
-                            className="p-2 rounded-md text-gray-500 hover:text-red-500 hover:bg-red-50"
-                          >
-                            <FiTrash2 size={15} />
-                          </button>
+                          {canManage ? (
+                            <>
+                              <button
+                                onClick={() => openEdit(c)}
+                                className="p-2 rounded-md text-gray-500 hover:text-[#4CAF37] hover:bg-[#4CAF37]/10 cursor-pointer"
+                              >
+                                <FiEdit2 size={15} />
+                              </button>
+                              <button
+                                onClick={() => deleteCoupon(c.id)}
+                                className="p-2 rounded-md text-gray-500 hover:text-red-500 hover:bg-red-50 cursor-pointer"
+                              >
+                                <FiTrash2 size={15} />
+                              </button>
+                            </>
+                          ) : (
+                            <span className="text-xs text-gray-400 italic">View only</span>
+                          )}
                         </div>
                       </td>
                     </tr>
@@ -463,24 +475,28 @@ export default function Deals() {
                     <span className="text-xs font-semibold text-[#4CAF37] bg-[#4CAF37]/10 px-2.5 py-1 rounded-full">
                       {d.discount_percent}% OFF
                     </span>
-                    <button
-                      onClick={() => removeDeal(d.id)}
-                      className="text-gray-400 hover:text-red-500"
-                    >
-                      <FiTrash2 size={13} />
-                    </button>
+                    {canManage && (
+                      <button
+                        onClick={() => removeDeal(d.id)}
+                        className="text-gray-400 hover:text-red-500 cursor-pointer"
+                      >
+                        <FiTrash2 size={13} />
+                      </button>
+                    )}
                   </div>
                 </div>
               ))}
             </div>
           )}
 
-          <button
-            onClick={openDealPicker}
-            className="mt-4 w-full text-center text-xs font-semibold text-[#4CAF37] hover:underline"
-          >
-            + Add Product to Deals
-          </button>
+          {canManage && (
+            <button
+              onClick={openDealPicker}
+              className="mt-4 w-full text-center text-xs font-semibold text-[#4CAF37] hover:underline cursor-pointer"
+            >
+              + Add Product to Deals
+            </button>
+          )}
         </div>
       </div>
 

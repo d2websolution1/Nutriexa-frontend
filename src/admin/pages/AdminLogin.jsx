@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FiMail, FiLock, FiEye, FiEyeOff, FiShield } from "react-icons/fi";
+import { API_URL } from "../../config";
 import { useAuth } from "../../context/AuthContext";
 
 export default function AdminLogin() {
@@ -28,11 +29,12 @@ export default function AdminLogin() {
     setLoading(true);
 
     try {
-      const res = await fetch("https://nutriexa-backend.onrender.com/api/admin/login", {
+      const res = await fetch(`${API_URL}/api/admin/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
       });
+
 
       const data = await res.json();
 

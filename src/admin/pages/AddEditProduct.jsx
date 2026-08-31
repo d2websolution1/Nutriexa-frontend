@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { FiUploadCloud, FiChevronLeft, FiX, FiImage } from "react-icons/fi";
+import { API_URL as BASE_URL } from "../../config";
 
-const API_URL = "   https://nutriexa-backend.onrender.com/api/products";
-const BASE_URL = "   https://nutriexa-backend.onrender.com";
+const API_URL = `${BASE_URL}/api/products`;
 const MAX_IMAGES = 5;
 
 export default function AddEditProduct() {
+
   const { id } = useParams();
   const navigate = useNavigate();
   const isEdit = Boolean(id);

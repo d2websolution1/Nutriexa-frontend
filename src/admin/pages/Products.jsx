@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { FiPlus, FiEdit2, FiTrash2, FiSearch } from "react-icons/fi";
+import { API_URL as BASE_URL } from "../../config";
+import { useAuth } from "../../context/AuthContext";
 
 const STATUS_STYLES = {
   Active: "bg-green-100 text-green-700",
@@ -8,8 +10,7 @@ const STATUS_STYLES = {
   Draft: "bg-gray-100 text-gray-600",
 };
 
-const API_URL = "https://nutriexa-backend.onrender.com/api/products";
-const BASE_URL = "https://nutriexa-backend.onrender.com";
+const PRODUCTS_API = `${BASE_URL}/api/products`;
 
 function buildImageUrl(path) {
   if (!path) return null;
@@ -18,17 +19,22 @@ function buildImageUrl(path) {
 }
 
 export default function Products() {
+  const { hasPermission } = useAuth();
   const [search, setSearch] = useState("");
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [deletingId, setDeletingId] = useState(null);
 
+  const canCreate = hasPermission("products.create");
+  const canEdit = hasPermission("products.edit");
+  const canDelete = hasPermission("products.delete");
+
   const fetchProducts = async () => {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch(API_URL);
+      const res = await fetch(PRODUCTS_API);
       if (!res.ok) throw new Error("Request failed");
       const data = await res.json();
       setProducts(data);
@@ -50,16 +56,19 @@ export default function Products() {
     setDeletingId(id);
     try {
       const token = localStorage.getItem("adminToken");
-      const res = await fetch(`${API_URL}/${id}`, {
+      const res = await fetch(`${PRODUCTS_API}/${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      if (!res.ok) throw new Error("Delete failed");
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.message || "Delete failed");
+      }
 
       setProducts((prev) => prev.filter((p) => p.id !== id));
     } catch (err) {
-      alert("Failed to delete product. Please try again.");
+      alert(err.message || "Failed to delete product. Please try again.");
     } finally {
       setDeletingId(null);
     }
@@ -78,12 +87,14 @@ export default function Products() {
             Manage your store's product catalog.
           </p>
         </div>
-        <Link
-          to="/admin/products/new"
-          className="flex items-center gap-2 bg-[#4CAF37] text-white text-sm font-semibold px-5 py-2.5 rounded-md hover:opacity-90"
-        >
-          <FiPlus size={18} /> Add Product
-        </Link>
+        {canCreate && (
+          <Link
+            to="/admin/products/new"
+            className="flex items-center gap-2 bg-[#4CAF37] text-white text-sm font-semibold px-5 py-2.5 rounded-md hover:opacity-90"
+          >
+            <FiPlus size={18} /> Add Product
+          </Link>
+        )}
       </div>
 
       <div className="bg-white rounded-xl border border-gray-100 shadow-sm">
@@ -166,19 +177,26 @@ export default function Products() {
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex items-center justify-end gap-2">
-                        <Link
-                          to={`/admin/products/edit/${product.id}`}
-                          className="p-2 rounded-md text-gray-500 hover:text-[#4CAF37] hover:bg-[#4CAF37]/10"
-                        >
-                          <FiEdit2 size={16} />
-                        </Link>
-                        <button
-                          onClick={() => handleDelete(product.id)}
-                          disabled={deletingId === product.id}
-                          className="p-2 rounded-md text-gray-500 hover:text-red-500 hover:bg-red-50 disabled:opacity-50"
-                        >
-                          <FiTrash2 size={16} />
-                        </button>
+                        {canEdit && (
+                          <Link
+                            to={`/admin/products/edit/${product.id}`}
+                            className="p-2 rounded-md text-gray-500 hover:text-[#4CAF37] hover:bg-[#4CAF37]/10"
+                          >
+                            <FiEdit2 size={16} />
+                          </Link>
+                        )}
+                        {canDelete && (
+                          <button
+                            onClick={() => handleDelete(product.id)}
+                            disabled={deletingId === product.id}
+                            className="p-2 rounded-md text-gray-500 hover:text-red-500 hover:bg-red-50 disabled:opacity-50"
+                          >
+                            <FiTrash2 size={16} />
+                          </button>
+                        )}
+                        {!canEdit && !canDelete && (
+                          <span className="text-xs text-gray-400 italic">Read-only</span>
+                        )}
                       </div>
                     </td>
                   </tr>
@@ -197,4 +215,4 @@ export default function Products() {
       </div>
     </div>
   );
-}
+}

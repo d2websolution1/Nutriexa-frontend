@@ -34,7 +34,8 @@ import AdminDeals from "./admin/pages/Deals";
 import Settings from "./admin/pages/Settings";
 import AdminLogin from "./admin/pages/AdminLogin";
 import AuthenticatorCodes from "./admin/pages/AuthenticatorCodes";
-import AdminProtectedRoute from "./components/AdminProtectedRoute";
+import StaffManagement from "./admin/pages/StaffManagement";
+import AdminProtectedRoute, { PermissionRoute } from "./components/AdminProtectedRoute";
 
 function SiteLayout({ children }) {
   const location = useLocation();
@@ -81,18 +82,89 @@ export default function App() {
               {/* Admin Auth Route */}
               <Route path="/admin/login" element={<AdminLogin />} />
 
-              {/* Protected Admin Panel Routes */}
+              {/* Protected Admin Panel Routes with RBAC Permission Guards */}
               <Route path="/admin" element={<AdminProtectedRoute />}>
                 <Route element={<AdminLayout />}>
-                  <Route index element={<Dashboard />} />
-                  <Route path="products" element={<AdminProducts />} />
-                  <Route path="products/new" element={<AddEditProduct />} />
-                  <Route path="products/edit/:id" element={<AddEditProduct />} />
-                  <Route path="orders" element={<Orders />} />
-                  <Route path="customers" element={<Customers />} />
-                  <Route path="deals" element={<AdminDeals />} />
-                  <Route path="settings" element={<Settings />} />
-                  <Route path="authenticator" element={<AuthenticatorCodes />} />
+                  <Route
+                    index
+                    element={
+                      <PermissionRoute permission="dashboard.view">
+                        <Dashboard />
+                      </PermissionRoute>
+                    }
+                  />
+                  <Route
+                    path="products"
+                    element={
+                      <PermissionRoute permission="products.view">
+                        <AdminProducts />
+                      </PermissionRoute>
+                    }
+                  />
+                  <Route
+                    path="products/new"
+                    element={
+                      <PermissionRoute permission="products.create">
+                        <AddEditProduct />
+                      </PermissionRoute>
+                    }
+                  />
+                  <Route
+                    path="products/edit/:id"
+                    element={
+                      <PermissionRoute permission="products.edit">
+                        <AddEditProduct />
+                      </PermissionRoute>
+                    }
+                  />
+                  <Route
+                    path="orders"
+                    element={
+                      <PermissionRoute permission="orders.view">
+                        <Orders />
+                      </PermissionRoute>
+                    }
+                  />
+                  <Route
+                    path="customers"
+                    element={
+                      <PermissionRoute permission="customers.view">
+                        <Customers />
+                      </PermissionRoute>
+                    }
+                  />
+                  <Route
+                    path="deals"
+                    element={
+                      <PermissionRoute permission="deals.view">
+                        <AdminDeals />
+                      </PermissionRoute>
+                    }
+                  />
+                  <Route
+                    path="staff"
+                    element={
+                      <PermissionRoute permission="staff.view">
+                        <StaffManagement />
+                      </PermissionRoute>
+                    }
+                  />
+                  <Route
+                    path="authenticator"
+                    element={
+                      <PermissionRoute permission="authenticator.view">
+                        <AuthenticatorCodes />
+                      </PermissionRoute>
+                    }
+                  />
+                  <Route
+                    path="settings"
+                    element={
+                      <PermissionRoute permission="settings.view">
+                        <Settings />
+                      </PermissionRoute>
+                    }
+                  />
                 </Route>
               </Route>
             </Routes>

@@ -7,6 +7,7 @@ import {
   FiArrowUp,
   FiArrowDown,
 } from "react-icons/fi";
+import { API_URL as API_BASE } from "../../config";
 
 const STATUS_STYLES = {
   Delivered: "bg-green-100 text-green-700",
@@ -15,9 +16,8 @@ const STATUS_STYLES = {
   Cancelled: "bg-red-100 text-red-700",
 };
 
-const API_BASE = import.meta.env.VITE_API_URL || "   https://nutriexa-backend.onrender.com";
-
 export default function Dashboard() {
+
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);

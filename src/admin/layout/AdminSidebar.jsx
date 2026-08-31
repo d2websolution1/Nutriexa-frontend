@@ -7,23 +7,28 @@ import {
   FiTag,
   FiSettings,
   FiLogOut,
+  FiShield,
+  FiUserCheck,
 } from "react-icons/fi";
-import { FiShield } from "react-icons/fi";
 import { useAuth } from "../../context/AuthContext";
 
 export default function AdminSidebar({ open, onClose }) {
   const navigate = useNavigate();
-  const { logoutAdmin } = useAuth();
+  const { logoutAdmin, hasPermission, admin } = useAuth();
 
-  const links = [
-    { label: "Dashboard", path: "/admin", icon: <FiGrid size={18} />, end: true },
-    { label: "Products", path: "/admin/products", icon: <FiBox size={18} /> },
-    { label: "Orders", path: "/admin/orders", icon: <FiShoppingBag size={18} /> },
-    { label: "Customers", path: "/admin/customers", icon: <FiUsers size={18} /> },
-    { label: "Deals & Coupons", path: "/admin/deals", icon: <FiTag size={18} /> },
-    { label: "Settings", path: "/admin/settings", icon: <FiSettings size={18} /> },
-    { label: "Authenticator", path: "/admin/authenticator", icon: <FiShield size={18} /> }
+  const allLinks = [
+    { label: "Dashboard", path: "/admin", icon: <FiGrid size={18} />, permission: "dashboard.view", end: true },
+    { label: "Products", path: "/admin/products", icon: <FiBox size={18} />, permission: "products.view" },
+    { label: "Orders", path: "/admin/orders", icon: <FiShoppingBag size={18} />, permission: "orders.view" },
+    { label: "Customers", path: "/admin/customers", icon: <FiUsers size={18} />, permission: "customers.view" },
+    { label: "Deals & Coupons", path: "/admin/deals", icon: <FiTag size={18} />, permission: "deals.view" },
+    { label: "Staff & Roles", path: "/admin/staff", icon: <FiUserCheck size={18} />, permission: "staff.view" },
+    { label: "Authenticator", path: "/admin/authenticator", icon: <FiShield size={18} />, permission: "authenticator.view" },
+    { label: "Settings", path: "/admin/settings", icon: <FiSettings size={18} />, permission: "settings.view" },
   ];
+
+  // Filter links based on logged in user's permissions
+  const links = allLinks.filter((link) => !link.permission || hasPermission(link.permission));
 
   const handleLogout = () => {
     logoutAdmin();
@@ -64,8 +69,21 @@ export default function AdminSidebar({ open, onClose }) {
           </div>
         </div>
 
+        {/* User Role Card */}
+        <div className="px-4 py-3 mx-3 mt-3 bg-white/5 border border-white/10 rounded-lg flex items-center gap-3">
+          <div className="w-8 h-8 rounded-full bg-[#4CAF37]/20 text-[#4CAF37] font-bold flex items-center justify-center text-xs shrink-0">
+            {admin?.name?.charAt(0)?.toUpperCase() || "A"}
+          </div>
+          <div className="overflow-hidden leading-tight flex-1">
+            <p className="text-xs font-semibold text-white truncate">{admin?.name || "Admin"}</p>
+            <span className="inline-block mt-0.5 text-[10px] px-1.5 py-0.2 rounded bg-[#4CAF37]/20 text-[#4CAF37] font-medium truncate max-w-full">
+              {admin?.role || "Staff"}
+            </span>
+          </div>
+        </div>
+
         {/* Nav links */}
-        <nav className="flex-1 px-3 py-5 space-y-1 overflow-y-auto">
+        <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
           {links.map((link) => (
             <NavLink
               key={link.label}
@@ -75,7 +93,7 @@ export default function AdminSidebar({ open, onClose }) {
               className={({ isActive }) =>
                 `flex items-center gap-3 px-4 py-2.5 rounded-md text-sm font-medium transition-colors ${
                   isActive
-                    ? "bg-[#4CAF37] text-white"
+                    ? "bg-[#4CAF37] text-white shadow-sm"
                     : "text-gray-300 hover:bg-white/5 hover:text-white"
                 }`
               }
@@ -90,7 +108,7 @@ export default function AdminSidebar({ open, onClose }) {
         <div className="px-3 py-4 border-t border-white/10">
           <button
             onClick={handleLogout}
-            className="flex items-center gap-3 px-4 py-2.5 rounded-md text-sm font-medium text-gray-300 hover:bg-white/5 hover:text-white w-full"
+            className="flex items-center gap-3 px-4 py-2.5 rounded-md text-sm font-medium text-gray-300 hover:bg-white/5 hover:text-white w-full transition-colors cursor-pointer"
           >
             <FiLogOut size={18} />
             Logout
@@ -99,4 +117,4 @@ export default function AdminSidebar({ open, onClose }) {
       </aside>
     </>
   );
-}
+}

@@ -1,5 +1,7 @@
   import { useEffect, useState, useCallback } from "react";
   import { FiEye, FiSearch, FiX } from "react-icons/fi";
+  import { API_URL as API_BASE } from "../../config";
+  import { useAuth } from "../../context/AuthContext";
 
   const STATUS_STYLES = {
     Delivered: "bg-green-100 text-green-700",
@@ -10,7 +12,6 @@
 
   const TABS = ["All", "Pending", "Shipped", "Delivered", "Cancelled"];
   const STATUS_OPTIONS = ["Pending", "Shipped", "Delivered", "Cancelled"];
-  const API_BASE = import.meta.env.VITE_API_URL || "   https://nutriexa-backend.onrender.com";
 
   function formatDate(isoString) {
     return new Date(isoString).toLocaleDateString("en-GB", {
@@ -21,6 +22,9 @@
   }
 
   export default function Orders() {
+    const { hasPermission } = useAuth();
+    const canEditOrders = hasPermission("orders.edit");
+
     const [activeTab, setActiveTab] = useState("All");
     const [search, setSearch] = useState("");
     const [orders, setOrders] = useState([]);
@@ -79,17 +83,24 @@
     };
 
    const updateStatus = async (id, newStatus) => {
+    if (!canEditOrders) {
+      alert("You do not have permission to update order status.");
+      return;
+    }
     setUpdatingId(id);
     try {
       const res = await fetch(`${API_BASE}/api/orders/${id}/status`, {
-        method: "PUT",   // <-- PATCH se PUT kiya
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${getToken()}`,
         },
         body: JSON.stringify({ status: newStatus }),
       });
-        if (!res.ok) throw new Error("Failed to update status.");
+        if (!res.ok) {
+          const data = await res.json();
+          throw new Error(data.message || "Failed to update status.");
+        }
 
         setOrders((prev) =>
           prev.map((o) => (o.id === id ? { ...o, status: newStatus } : o))
@@ -195,9 +206,10 @@
                       <td className="px-4 py-3">
                         <select
                           value={order.status}
-                          disabled={updatingId === order.id}
+                          disabled={!canEditOrders || updatingId === order.id}
                           onChange={(e) => updateStatus(order.id, e.target.value)}
-                          className={`px-2 py-1 rounded-full text-xs font-semibold border-0 outline-none cursor-pointer disabled:opacity-50 ${STATUS_STYLES[order.status]}`}
+                          className={`px-2 py-1 rounded-full text-xs font-semibold border-0 outline-none cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed ${STATUS_STYLES[order.status]}`}
+                          title={!canEditOrders ? "You don't have permission to edit order status" : ""}
                         >
                           {STATUS_OPTIONS.map((s) => (
                             <option key={s} value={s} className="bg-white text-gray-700">
@@ -209,7 +221,7 @@
                       <td className="px-4 py-3 text-right">
                         <button
                           onClick={() => viewOrder(order.id)}
-                          className="p-2 rounded-md text-gray-500 hover:text-[#4CAF37] hover:bg-[#4CAF37]/10"
+                          className="p-2 rounded-md text-gray-500 hover:text-[#4CAF37] hover:bg-[#4CAF37]/10 cursor-pointer"
                         >
                           <FiEye size={16} />
                         </button>
@@ -254,9 +266,9 @@
                   <div className="flex items-center gap-2 mt-3">
                     <select
                       value={selectedOrder.status}
-                      disabled={updatingId === selectedOrder.id}
+                      disabled={!canEditOrders || updatingId === selectedOrder.id}
                       onChange={(e) => updateStatus(selectedOrder.id, e.target.value)}
-                      className={`px-2.5 py-1 rounded-full text-xs font-semibold border-0 outline-none cursor-pointer disabled:opacity-50 ${STATUS_STYLES[selectedOrder.status]}`}
+                      className={`px-2.5 py-1 rounded-full text-xs font-semibold border-0 outline-none cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed ${STATUS_STYLES[selectedOrder.status]}`}
                     >
                       {STATUS_OPTIONS.map((s) => (
                         <option key={s} value={s} className="bg-white text-gray-700">
@@ -271,6 +283,7 @@
                       {formatDate(selectedOrder.created_at)}
                     </span>
                   </div>
+
 
                   <div className="mt-5 border-t border-gray-100 pt-4 space-y-3">
                     {selectedOrder.items?.map((item) => (
