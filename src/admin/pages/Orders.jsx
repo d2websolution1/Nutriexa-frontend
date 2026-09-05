@@ -46,7 +46,6 @@ export default function Orders() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Date Filtering State
   const [datePreset, setDatePreset] = useState("all");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -57,7 +56,6 @@ export default function Orders() {
 
   const getToken = () => localStorage.getItem("adminToken");
 
-  // Handle Preset Changes
   const applyPreset = (preset) => {
     setDatePreset(preset);
     const today = new Date();
@@ -121,7 +119,7 @@ export default function Orders() {
   }, [activeTab, search, startDate, endDate]);
 
   useEffect(() => {
-    const timeout = setTimeout(fetchOrders, 300); // debounce
+    const timeout = setTimeout(fetchOrders, 300);
     return () => clearTimeout(timeout);
   }, [fetchOrders]);
 
@@ -183,30 +181,53 @@ export default function Orders() {
       return;
     }
 
-    const headers = ["Order ID", "Customer Name", "Customer Email", "Date", "Status", "Payment Method", "Amount"];
+    // Escapes a single CSV field: wraps in quotes and doubles any
+    // internal quotes, per the CSV spec — prevents corruption when a
+    // customer name/email contains a comma, quote, or newline.
+    const escapeCSV = (value) => {
+      const str = String(value ?? "");
+      return `"${str.replace(/"/g, '""')}"`;
+    };
+
+    const headers = [
+      "Order ID",
+      "Customer Name",
+      "Customer Email",
+      "Date",
+      "Status",
+      "Payment Method",
+      "Amount",
+    ];
+
     const rows = orders.map((o) => [
-      `"${o.order_number || ""}"`,
-      `"${o.customer_name || ""}"`,
-      `"${o.customer_email || ""}"`,
-      `"${formatDateTime(o.created_at)}"`,
-      `"${o.status || ""}"`,
-      `"${o.payment_method || ""}"`,
+      escapeCSV(o.order_number),
+      escapeCSV(o.customer_name),
+      escapeCSV(o.customer_email),
+      escapeCSV(formatDateTime(o.created_at)),
+      escapeCSV(o.status),
+      escapeCSV(o.payment_method),
       o.total_amount || 0,
     ]);
 
-    const csvContent = "data:text/csv;charset=utf-8," + [headers.join(","), ...rows.map((e) => e.join(","))].join("\n");
-    const encodedUri = encodeURI(csvContent);
+    const csvString = [headers.join(","), ...rows.map((r) => r.join(","))].join("\r\n");
+
+    // Prefix with a UTF-8 BOM so Excel renders ₹ and other special
+    // characters correctly instead of showing garbled text.
+    const blob = new Blob(["\uFEFF" + csvString], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+
     const link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
+    link.setAttribute("href", url);
     link.setAttribute("download", `Nutriexa_Orders_${new Date().toISOString().split("T")[0]}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
   };
 
   return (
     <div className="space-y-5">
-      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
           <h1 className="text-2xl font-extrabold text-[#1a1a1a]">Orders</h1>
@@ -225,9 +246,7 @@ export default function Orders() {
         </div>
       </div>
 
-      {/* Date Filter & Status Tabs Box */}
       <div className="bg-white rounded-xl border border-gray-100 shadow-xs p-4 space-y-4">
-        {/* Date Presets & Custom Pickers */}
         <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-gray-100">
           <div className="flex items-center gap-1.5 flex-wrap">
             <span className="text-xs font-bold text-gray-500 flex items-center gap-1 mr-1">
@@ -256,7 +275,6 @@ export default function Orders() {
             ))}
           </div>
 
-          {/* Custom Date Range Picker */}
           <div className="flex items-center gap-2 flex-wrap text-xs">
             <div className="flex items-center gap-1.5 bg-gray-50 border border-gray-200 rounded-lg px-2.5 py-1">
               <span className="text-gray-400 font-medium">From:</span>
@@ -294,7 +312,6 @@ export default function Orders() {
           </div>
         </div>
 
-        {/* Status Tabs and Search */}
         <div className="flex items-center justify-between flex-wrap gap-3">
           <div className="flex gap-1.5 flex-wrap">
             {TABS.map((tab) => (
@@ -325,7 +342,6 @@ export default function Orders() {
         </div>
       </div>
 
-      {/* Orders Table */}
       <div className="bg-white rounded-xl border border-gray-100 shadow-xs overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
@@ -422,7 +438,6 @@ export default function Orders() {
         </div>
       </div>
 
-      {/* Order Detail Modal */}
       {selectedOrder && (
         <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
           <div
