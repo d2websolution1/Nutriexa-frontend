@@ -13,8 +13,10 @@ export default function AddEditProduct() {
   const isEdit = Boolean(id);
   const fileInputRef = useRef(null);
 
+  const [categories, setCategories] = useState([]);
   const [form, setForm] = useState({
     name: "",
+    sku: "",
     category: "whey-proteins",
     variant: "",
     price: "",
@@ -35,6 +37,24 @@ export default function AddEditProduct() {
   const [fetching, setFetching] = useState(isEdit);
   const [error, setError] = useState("");
 
+  // Load dynamic categories from backend
+  useEffect(() => {
+    const loadCategories = async () => {
+      try {
+        const res = await fetch(`${BASE_URL}/api/categories`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.length > 0) {
+            setCategories(data);
+          }
+        }
+      } catch (err) {
+        console.warn("Failed to load categories:", err);
+      }
+    };
+    loadCategories();
+  }, []);
+
   /* fetch product on edit */
   useEffect(() => {
     if (!isEdit) return;
@@ -46,6 +66,7 @@ export default function AddEditProduct() {
 
         setForm({
           name: data.name || "",
+          sku: data.sku || "",
           category: data.category || "whey-proteins",
           variant: data.variant || "",
           price: data.price || "",
@@ -170,6 +191,23 @@ export default function AddEditProduct() {
     );
   }
 
+  const generateSku = () => {
+    const catCode = (form.category || "PRD").substring(0, 3).toUpperCase();
+    const rand = Math.floor(1000 + Math.random() * 9000);
+    setForm((prev) => ({ ...prev, sku: `NX-${catCode}-${rand}` }));
+  };
+
+  const defaultCategories = [
+    { slug: "whey-proteins", name: "Whey Proteins" },
+    { slug: "mass-gainers", name: "Mass Gainers" },
+    { slug: "pre-workouts", name: "Pre-Workouts" },
+    { slug: "amino-acids", name: "Amino Acids & BCAA" },
+    { slug: "health-wellness", name: "Health & Wellness" },
+    { slug: "accessories", name: "Accessories" },
+  ];
+
+  const categoryOptions = categories.length > 0 ? categories : defaultCategories;
+
   return (
     <div className="space-y-5 max-w-4xl">
       <button
@@ -200,19 +238,43 @@ export default function AddEditProduct() {
         {/* Left: main fields */}
         <div className="md:col-span-2 space-y-5">
           <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5 space-y-4">
-            <div>
-              <label className="text-sm font-medium text-[#1a1a1a] mb-1.5 block">
-                Product Name
-              </label>
-              <input
-                type="text"
-                name="name"
-                value={form.name}
-                onChange={handleChange}
-                placeholder="e.g. Nutriexa Whey Protein"
-                className="w-full border border-gray-200 rounded-md px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
-                required
-              />
+            <div className="grid sm:grid-cols-3 gap-4">
+              <div className="sm:col-span-2">
+                <label className="text-sm font-medium text-[#1a1a1a] mb-1.5 block">
+                  Product Name <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  name="name"
+                  value={form.name}
+                  onChange={handleChange}
+                  placeholder="e.g. Nutriexa Whey Protein"
+                  className="w-full border border-gray-200 rounded-md px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
+                  required
+                />
+              </div>
+              <div>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="text-sm font-medium text-[#1a1a1a] block">
+                    Product SKU
+                  </label>
+                  <button
+                    type="button"
+                    onClick={generateSku}
+                    className="text-[11px] font-semibold text-[#22c55e] hover:underline cursor-pointer"
+                  >
+                    Auto Generate
+                  </button>
+                </div>
+                <input
+                  type="text"
+                  name="sku"
+                  value={form.sku}
+                  onChange={handleChange}
+                  placeholder="e.g. NX-WHE-101"
+                  className="w-full font-mono border border-gray-200 rounded-md px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
+                />
+              </div>
             </div>
 
             <div className="grid sm:grid-cols-2 gap-4">
@@ -231,20 +293,19 @@ export default function AddEditProduct() {
               </div>
               <div>
                 <label className="text-sm font-medium text-[#1a1a1a] mb-1.5 block">
-                  Category
+                  Category <span className="text-red-500">*</span>
                 </label>
                 <select
                   name="category"
                   value={form.category}
                   onChange={handleChange}
-                  className="w-full border border-gray-200 rounded-md px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
+                  className="w-full border border-gray-200 rounded-md px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37] capitalize"
                 >
-                  <option value="whey-proteins">Whey Proteins</option>
-                  <option value="mass-gainers">Mass Gainers</option>
-                  <option value="pre-workouts">Pre-Workouts</option>
-                  <option value="amino-acids">Amino Acids</option>
-                  <option value="health-wellness">Health &amp; Wellness</option>
-                  <option value="accessories">Accessories</option>
+                  {categoryOptions.map((c) => (
+                    <option key={c.slug} value={c.slug}>
+                      {c.name}
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>

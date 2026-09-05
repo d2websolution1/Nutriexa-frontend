@@ -35,6 +35,16 @@ import Settings from "./admin/pages/Settings";
 import AdminLogin from "./admin/pages/AdminLogin";
 import AuthenticatorCodes from "./admin/pages/AuthenticatorCodes";
 import StaffManagement from "./admin/pages/StaffManagement";
+import Categories from "./admin/pages/Categories";
+import Inventory from "./admin/pages/Inventory";
+import Reviews from "./admin/pages/Reviews";
+import HomepageCMS from "./admin/pages/HomepageCMS";
+import ContentPages from "./admin/pages/ContentPages";
+import Shipping from "./admin/pages/Shipping";
+import Payments from "./admin/pages/Payments";
+import Notifications from "./admin/pages/Notifications";
+import Analytics from "./admin/pages/Analytics";
+import AuditLogs from "./admin/pages/AuditLogs";
 import AdminProtectedRoute, { PermissionRoute } from "./components/AdminProtectedRoute";
 
 function SiteLayout({ children }) {
@@ -165,6 +175,16 @@ export default function App() {
                       </PermissionRoute>
                     }
                   />
+                  <Route path="categories" element={<Categories />} />
+                  <Route path="inventory" element={<Inventory />} />
+                  <Route path="reviews" element={<Reviews />} />
+                  <Route path="cms" element={<HomepageCMS />} />
+                  <Route path="content-pages" element={<ContentPages />} />
+                  <Route path="shipping" element={<Shipping />} />
+                  <Route path="payments" element={<Payments />} />
+                  <Route path="notifications" element={<Notifications />} />
+                  <Route path="analytics" element={<Analytics />} />
+                  <Route path="audit-logs" element={<AuditLogs />} />
                 </Route>
               </Route>
             </Routes>

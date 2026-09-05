@@ -25,10 +25,9 @@ import { useAuth } from "../../context/AuthContext";
 
 const ROLE_BADGE_STYLES = {
   "Super Admin": "bg-purple-100 text-purple-700 border-purple-200",
+  Manager: "bg-blue-100 text-blue-700 border-blue-200",
   "Store Manager": "bg-blue-100 text-blue-700 border-blue-200",
-  "Inventory Manager": "bg-amber-100 text-amber-800 border-amber-200",
-  "Order Processor": "bg-teal-100 text-teal-700 border-teal-200",
-  "Customer Support": "bg-indigo-100 text-indigo-700 border-indigo-200",
+  Sales: "bg-emerald-100 text-emerald-700 border-emerald-200",
   "Custom Staff": "bg-gray-100 text-gray-700 border-gray-200",
   Staff: "bg-gray-100 text-gray-700 border-gray-200",
 };
@@ -66,7 +65,7 @@ export default function StaffManagement() {
     email: "",
     phone: "",
     password: "",
-    role: "Store Manager",
+    role: "Manager",
     permissions: [],
     is_active: true,
   });
@@ -196,7 +195,7 @@ export default function StaffManagement() {
 
   // Open Add Modal
   const openAddModal = () => {
-    const defaultRole = "Store Manager";
+    const defaultRole = "Manager";
     const preset = rolesMeta.roles.find((r) => r.name === defaultRole);
     setFormData({
       name: "",
@@ -204,7 +203,9 @@ export default function StaffManagement() {
       phone: "",
       password: "",
       role: defaultRole,
-      permissions: preset ? [...preset.permissions] : [],
+      permissions: preset ? [...preset.permissions] : [
+        "dashboard.view", "products.view", "products.create", "products.edit", "orders.view", "orders.edit", "customers.view", "deals.view"
+      ],
       is_active: true,
     });
     setFormError("");
@@ -820,13 +821,19 @@ export default function StaffManagement() {
                 </div>
               </div>
 
-              {/* Role Preset Selector */}
+              {/* Role Preset Selector - Only Manager and Sales for Staff creation */}
               <div className="border-t border-gray-100 pt-4">
                 <label className="text-xs font-semibold text-[#1a1a1a] mb-1.5 block">
-                  Assign System Role Preset
+                  Assign Staff Role (Manager or Sales)
                 </label>
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                  {rolesMeta.roles.map((r) => {
+                <div className="grid grid-cols-2 gap-3">
+                  {(rolesMeta.roles.filter((r) => r.name === "Manager" || r.name === "Sales").length > 0
+                    ? rolesMeta.roles.filter((r) => r.name === "Manager" || r.name === "Sales")
+                    : [
+                        { name: "Manager", description: "Full store management: products, inventory, categories, orders, customers, deals." },
+                        { name: "Sales", description: "Sales & customer operations: view and update orders, customer queries, deals." },
+                      ]
+                  ).map((r) => {
                     const isSelected = formData.role === r.name;
                     return (
                       <button
@@ -1082,10 +1089,26 @@ export default function StaffManagement() {
               {/* Role Preset Selector */}
               <div className="border-t border-gray-100 pt-4">
                 <label className="text-xs font-semibold text-[#1a1a1a] mb-1.5 block">
-                  Change Role Preset
+                  Change Role Preset (Manager or Sales)
                 </label>
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                  {rolesMeta.roles.map((r) => {
+                <div className="grid grid-cols-2 gap-3">
+                  {(rolesMeta.roles.filter(
+                    (r) =>
+                      r.name === "Manager" ||
+                      r.name === "Sales" ||
+                      (selectedStaff?.role === "Super Admin" && r.name === "Super Admin")
+                  ).length > 0
+                    ? rolesMeta.roles.filter(
+                        (r) =>
+                          r.name === "Manager" ||
+                          r.name === "Sales" ||
+                          (selectedStaff?.role === "Super Admin" && r.name === "Super Admin")
+                      )
+                    : [
+                        { name: "Manager", description: "Full store management: products, inventory, categories, orders, customers, deals." },
+                        { name: "Sales", description: "Sales & customer operations: view and update orders, customer queries, deals." },
+                      ]
+                  ).map((r) => {
                     const isSelected = formData.role === r.name;
                     return (
                       <button
