@@ -2,7 +2,9 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { FiUploadCloud, FiChevronLeft } from "react-icons/fi";
 
-const API_URL = "   https://nutriexa-backend.onrender.com/api/products";
+import { API_URL as BASE_URL } from "../config";
+const API_URL = `${BASE_URL}/api/products`;
+
 
 export default function AddEditProduct() {
   const { id } = useParams();

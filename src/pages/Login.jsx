@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { FiMail, FiLock, FiEye, FiEyeOff, FiArrowRight, FiShield } from "react-icons/fi";
 import { useAuth } from "../context/AuthContext";
 
-const API_BASE = import.meta.env.VITE_API_URL || "   https://nutriexa-backend.onrender.com";
+import { API_URL as API_BASE } from "../config";
 
 export default function Login() {
   const navigate = useNavigate();

@@ -13,7 +13,8 @@ import { HiMenu } from "react-icons/hi";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 
-const API_BASE = import.meta.env.VITE_API_URL || "   https://nutriexa-backend.onrender.com";
+import { API_URL as API_BASE } from "../config";
+
 
 export default function Header() {
   const [isVisible, setIsVisible] = useState(true);

@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
-const API_BASE = import.meta.env.VITE_API_URL || "   https://nutriexa-backend.onrender.com";
+import { API_URL as API_BASE } from "../config";
+
 const STEPS = ["Order Placed", "Processing", "Shipped", "Delivered"];
 
 // maps order status -> how many steps are completed

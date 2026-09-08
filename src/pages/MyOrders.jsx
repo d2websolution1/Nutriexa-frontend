@@ -13,7 +13,8 @@ import {
 } from "react-icons/fi";
 import { useAuth } from "../context/AuthContext";
 
-const API_BASE = import.meta.env.VITE_API_URL || "   https://nutriexa-backend.onrender.com";
+import { API_URL as API_BASE } from "../config";
+
 
 const STATUS_COLORS = {
   Delivered: "bg-emerald-50 text-emerald-700 border-emerald-200",

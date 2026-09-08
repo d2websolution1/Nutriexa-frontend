@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
+import { useSearchParams, Link } from "react-router-dom";
 import {
   FiShield,
   FiCheckCircle,
@@ -9,10 +10,10 @@ import {
   FiCamera,
   FiHelpCircle,
 } from "react-icons/fi";
+import { API_URL as BASE_URL } from "../config";
 
-const API_BASE = import.meta.env.VITE_API_URL || "   https://nutriexa-backend.onrender.com";
-const API_URL = `${API_BASE}/api/authenticator`;
-const PRODUCTS_API = `${API_BASE}/api/products`;
+const API_URL = `${BASE_URL}/api/authenticator`;
+const PRODUCTS_API = `${BASE_URL}/api/products`;
 
 const BADGES = [
   { badge: "100% Genuine", badgeColor: "bg-[#4CAF37]", desc: "Every batch lab-tested for purity and potency" },
@@ -21,6 +22,7 @@ const BADGES = [
 ];
 
 export default function Authenticator() {
+  const [searchParams] = useSearchParams();
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
@@ -28,6 +30,42 @@ export default function Authenticator() {
 
   const [trustCards, setTrustCards] = useState([]);
   const [cardsLoading, setCardsLoading] = useState(true);
+
+  const verifyCode = useCallback(async (codeToVerify) => {
+    const rawCode = (codeToVerify ?? code).trim().toUpperCase();
+    if (!rawCode) {
+      setError("Please enter your product code.");
+      return;
+    }
+
+    setError("");
+    setResult(null);
+    setLoading(true);
+
+    try {
+      const res = await fetch(`${API_URL}/verify`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code: rawCode }),
+      });
+
+      const data = await res.json();
+      setResult(data);
+    } catch (err) {
+      setError("Unable to connect to server. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  }, [code]);
+
+  useEffect(() => {
+    const codeParam = searchParams.get("code");
+    if (codeParam) {
+      const trimmed = codeParam.trim().toUpperCase();
+      setCode(trimmed);
+      verifyCode(trimmed);
+    }
+  }, [searchParams, verifyCode]);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -43,7 +81,7 @@ export default function Authenticator() {
           id: p.id,
           title: p.name,
           variant: p.variant,
-          image: `${API_BASE}${p.image}`,
+          image: p.image?.startsWith("http") ? p.image : `${BASE_URL}${p.image}`,
           ...BADGES[i % BADGES.length],
         }));
 
@@ -60,30 +98,7 @@ export default function Authenticator() {
 
   const handleVerify = async (e) => {
     e.preventDefault();
-    setError("");
-    setResult(null);
-
-    if (!code.trim()) {
-      setError("Please enter your product code.");
-      return;
-    }
-
-    setLoading(true);
-
-    try {
-      const res = await fetch(`${API_URL}/verify`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ code }),
-      });
-
-      const data = await res.json();
-      setResult(data);
-    } catch (err) {
-      setError("Unable to connect to server. Please try again.");
-    } finally {
-      setLoading(false);
-    }
+    verifyCode();
   };
 
   const steps = [
@@ -214,21 +229,51 @@ export default function Authenticator() {
                 <p className="text-sm text-gray-700 mt-1">{result.message}</p>
 
                 {result.valid && result.product_name && (
-                  <div className="flex items-center gap-3 bg-white rounded-lg p-3 border border-gray-100 mt-4">
-                    {result.image && (
-                      <img
-                        src={`${API_BASE}${result.image}`}
-                        alt={result.product_name}
-                        className="w-14 h-14 object-contain shrink-0"
-                      />
-                    )}
-                    <div>
-                      <p className="text-sm font-bold text-[#1a1a1a]">
-                        {result.product_name}
-                      </p>
-                      {result.variant && (
-                        <p className="text-xs text-gray-500">{result.variant}</p>
+                  <div className="bg-white rounded-xl p-4 sm:p-5 border border-gray-200/80 shadow-xs mt-4">
+                    <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4">
+                      {result.image && (
+                        <div className="w-24 h-28 sm:w-28 sm:h-32 bg-[#fafbf9] rounded-xl p-2 border border-gray-100 flex items-center justify-center shrink-0 shadow-inner">
+                          <img
+                            src={result.image.startsWith("http") ? result.image : `${BASE_URL}${result.image}`}
+                            alt={result.product_name}
+                            className="max-w-full max-h-full object-contain filter drop-shadow-sm transition-transform hover:scale-105"
+                            loading="eager"
+                          />
+                        </div>
                       )}
+                      <div className="flex-1 text-center sm:text-left">
+                        <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-green-100/80 text-green-800 text-[11px] font-bold tracking-wide uppercase mb-1">
+                          <FiCheckCircle size={12} className="text-[#4CAF37]" /> 100% Genuine Formula
+                        </div>
+                        <h4 className="text-base sm:text-lg font-black text-[#1a1a1a] leading-snug">
+                          {result.product_name}
+                        </h4>
+                        {result.variant && (
+                          <p className="text-xs font-semibold text-gray-600 mt-1">
+                            Specification: <span className="text-[#1a1a1a] font-bold">{result.variant}</span>
+                          </p>
+                        )}
+                        {result.batch_number && (
+                          <p className="text-[11px] text-gray-500 mt-0.5">
+                            Batch: <span className="font-mono font-semibold text-gray-700">{result.batch_number}</span>
+                          </p>
+                        )}
+                        {result.code && (
+                          <p className="text-[11px] text-gray-400 mt-0.5 font-mono">
+                            Security Code: {result.code}
+                          </p>
+                        )}
+                        {(result.product_id || result.slug) && (
+                          <div className="mt-3">
+                            <Link
+                              to={`/product/${result.slug || result.product_id}`}
+                              className="inline-flex items-center gap-1 text-xs font-bold text-[#4CAF37] hover:text-[#3e8e2e] hover:underline"
+                            >
+                              View Complete Product Info &rarr;
+                            </Link>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
                 )}

@@ -3,7 +3,8 @@ import { Link } from "react-router-dom";
 import { FiHeart, FiShoppingCart, FiStar, FiCheck } from "react-icons/fi";
 import { useCart } from "../../context/CartContext";
 
-const API_BASE = import.meta.env.VITE_API_URL || "   https://nutriexa-backend.onrender.com";
+import { API_URL as API_BASE } from "../../config";
+
 
 export default function ProductCard({ product }) {
   const { addToCart } = useCart();

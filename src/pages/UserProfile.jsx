@@ -21,8 +21,7 @@ import {
 } from "react-icons/fi";
 import { TbTruckDelivery, TbShieldCheck } from "react-icons/tb";
 import { useAuth } from "../context/AuthContext";
-
-const API_BASE = import.meta.env.VITE_API_URL || "   https://nutriexa-backend.onrender.com";
+import { API_URL as API_BASE } from "../config";
 
 const STATUS_BADGES = {
   Delivered: "bg-emerald-50 text-emerald-700 border-emerald-200",

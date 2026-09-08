@@ -12,8 +12,7 @@ import {
   FiArrowRight,
 } from "react-icons/fi";
 import { useAuth } from "../context/AuthContext";
-
-const API_BASE = import.meta.env.VITE_API_URL || "   https://nutriexa-backend.onrender.com";
+import { API_URL as API_BASE } from "../config";
 
 const STEPS = ["Enter Email", "Verify OTP", "New Password"];
 
