@@ -22,6 +22,7 @@ import {
   FiLogOut,
 } from "react-icons/fi";
 import { useAuth } from "../../context/AuthContext";
+import nutriexaLogo from "../../assets/nutriexa-logo.png";
 
 export default function AdminSidebar({ open, onClose }) {
   const navigate = useNavigate();
@@ -69,10 +70,13 @@ export default function AdminSidebar({ open, onClose }) {
         } lg:translate-x-0`}
       >
         {/* Brand Header */}
+         {/* Brand Header */}
         <div className="px-6 py-5 border-b border-white/5 flex items-center gap-3">
-          <div className="w-9 h-9 rounded-lg bg-gradient-to-tr from-[#15803d] to-[#22c55e] flex items-center justify-center font-black text-white text-base shadow-sm">
-            NX
-          </div>
+          <img
+            src={nutriexaLogo}
+            alt="Nutriexa Logo"
+            className="w-9 h-9 object-contain shrink-0 rounded-lg"
+          />
           <div>
             <h1 className="font-extrabold text-base tracking-wider text-white">NUTRIEXA</h1>
             <p className="text-[9px] tracking-widest text-[#22c55e] font-semibold uppercase">
@@ -80,7 +84,6 @@ export default function AdminSidebar({ open, onClose }) {
             </p>
           </div>
         </div>
-
         {/* Navigation items list */}
         <nav className="flex-1 px-3 py-3 space-y-0.5 overflow-y-auto scrollbar-thin scrollbar-thumb-white/10">
           {menuItems.map((item) => (

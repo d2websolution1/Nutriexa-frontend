@@ -22,6 +22,7 @@ import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 
 import { API_URL as API_BASE } from "../config";
+import nutriexaLogo from "../assets/nutriexa-logo.png";
 
 const CATEGORY_LABELS = {
   "whey-proteins": "Whey Proteins",
@@ -276,35 +277,11 @@ export default function Header() {
           </button>
 
           <Link to="/" className="flex items-center gap-2 md:gap-3 shrink-0">
-            <svg
-              width="44"
-              height="44"
-              viewBox="0 0 56 56"
-              className="shrink-0 md:w-14 md:h-14"
-            >
-              <circle
-                cx="28"
-                cy="28"
-                r="25.5"
-                fill="none"
-                stroke="#1a1a1a"
-                strokeWidth="1.4"
-                strokeDasharray="130 30"
-                strokeLinecap="round"
-                transform="rotate(-20 28 28)"
-              />
-              <text
-                x="28"
-                y="37"
-                textAnchor="middle"
-                fontFamily="Arial, sans-serif"
-                fontWeight="800"
-                fontSize="24"
-              >
-                <tspan fill="#8a8a8a">N</tspan>
-                <tspan fill="#4CAF37">X</tspan>
-              </text>
-            </svg>
+            <img
+              src={nutriexaLogo}
+              alt="Nutriexa Logo"
+              className="w-10 h-10 md:w-14 md:h-14 object-contain shrink-0"
+            />
             <div>
               <h1 className="text-base sm:text-lg md:text-2xl font-extrabold tracking-tight text-[#1a1a1a] leading-none">
                 NUTRI<span className="text-[#4CAF37]">EXA</span>
@@ -573,19 +550,11 @@ export default function Header() {
             onClick={() => setDrawerOpen(false)}
             className="flex items-center gap-2"
           >
-            <svg width="36" height="36" viewBox="0 0 56 56">
-              <circle
-                cx="28" cy="28" r="25.5"
-                fill="none" stroke="white" strokeWidth="1.4"
-                strokeDasharray="130 30" strokeLinecap="round"
-                transform="rotate(-20 28 28)"
-              />
-              <text x="28" y="37" textAnchor="middle"
-                fontFamily="Arial, sans-serif" fontWeight="800" fontSize="24">
-                <tspan fill="#aaa">N</tspan>
-                <tspan fill="#4CAF37">X</tspan>
-              </text>
-            </svg>
+            <img
+              src={nutriexaLogo}
+              alt="Nutriexa Logo"
+              className="w-9 h-9 object-contain shrink-0"
+            />
             <div>
               <p className="text-sm font-extrabold tracking-tight text-white leading-none">
                 NUTRI<span className="text-[#4CAF37]">EXA</span>
