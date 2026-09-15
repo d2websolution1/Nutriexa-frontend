@@ -666,40 +666,6 @@ export default function Header() {
           {/* Divider */}
           <div className="mx-5 my-1 border-t border-gray-100" />
 
-          {/* Shop by Category */}
-          <div className="px-3 pt-3 pb-2">
-            <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest px-2 mb-2">
-              Shop by Category
-            </p>
-            <div className="flex flex-col gap-1">
-              {categories.map((cat) => (
-                <Link
-                  key={cat.slug}
-                  to={`/products?category=${cat.slug}`}
-                  onClick={() => setDrawerOpen(false)}
-                  className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-50 transition-colors group"
-                >
-                  <div className="w-9 h-9 rounded-lg bg-[#f5f8f4] border border-gray-100 flex items-center justify-center overflow-hidden shrink-0">
-                    {cat.image ? (
-                      <img src={cat.image} alt={cat.label} className="w-7 h-7 object-contain" />
-                    ) : (
-                      <span className="text-[10px] text-[#4CAF37] font-bold">
-                        {cat.label.charAt(0)}
-                      </span>
-                    )}
-                  </div>
-                  <span className="text-sm font-semibold text-[#1a1a1a] group-hover:text-[#4CAF37] transition-colors">
-                    {cat.label}
-                  </span>
-                  <FiChevronRight size={13} className="ml-auto text-gray-300 group-hover:text-[#4CAF37]" />
-                </Link>
-              ))}
-            </div>
-          </div>
-
-          {/* Divider */}
-          <div className="mx-5 my-1 border-t border-gray-100" />
-
           {/* Account section */}
           {user && (
             <div className="px-3 pt-3 pb-2">
