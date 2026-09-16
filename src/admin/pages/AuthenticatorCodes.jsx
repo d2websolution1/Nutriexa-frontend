@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { FiCopy, FiRefreshCw, FiPlus, FiDownload, FiPrinter } from "react-icons/fi";
+import QRCode from "qrcode";
 import { API_URL as BASE_URL } from "../../config";
 import { useAuth } from "../../context/AuthContext";
 
@@ -140,73 +141,169 @@ export default function AuthenticatorCodes() {
     URL.revokeObjectURL(url);
   };
 
-  // ---- Printable Labels ----
-  const printLabels = (codes, productName) => {
+  // ---- Printable Labels with Direct Verification QR Code ----
+  const printLabels = async (codes, productName) => {
     if (!codes.length) return;
 
-    const printWindow = window.open("", "_blank");
+    // Generate QR codes linking directly to website verification URL
+    const labelsData = await Promise.all(
+      codes.map(async (code) => {
+        const verifyUrl = `${window.location.origin}/authenticator?code=${encodeURIComponent(code)}`;
+        let qrDataUrl = "";
+        try {
+          qrDataUrl = await QRCode.toDataURL(verifyUrl, {
+            width: 160,
+            margin: 1,
+            color: {
+              dark: "#000000",
+              light: "#ffffff",
+            },
+          });
+        } catch {
+          qrDataUrl = `https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(verifyUrl)}`;
+        }
+        return { code, verifyUrl, qrDataUrl };
+      })
+    );
 
-    const labelsHTML = codes
+    const printWindow = window.open("", "_blank");
+    if (!printWindow) {
+      alert("Please allow popups to print authenticity labels.");
+      return;
+    }
+
+    const labelsHTML = labelsData
       .map(
-        (code) => `
+        ({ code, qrDataUrl }) => `
         <div class="label">
-          <p class="label-brand">NUTRIEXA</p>
-          <p class="label-product">${productName || ""}</p>
-          <p class="label-code">${code}</p>
-          <p class="label-hint">Scan or enter at nutriexa.com/authenticator</p>
+          <div class="label-header">
+            <span class="label-brand">NUTRIEXA</span>
+            <span class="label-badge">GENUINE SEAL</span>
+          </div>
+          <p class="label-product">${productName || "Nutriexa Supplement"}</p>
+          <div class="label-content">
+            <div class="qr-col">
+              <img src="${qrDataUrl}" alt="QR Code" class="label-qr" />
+            </div>
+            <div class="details-col">
+              <span class="code-title">VERIFY AUTHENTICITY</span>
+              <p class="label-code">${code}</p>
+              <p class="label-hint">Scan QR code to verify instantly on Nutriexa</p>
+            </div>
+          </div>
         </div>
       `
       )
       .join("");
 
     printWindow.document.write(`
+      <!DOCTYPE html>
       <html>
         <head>
-          <title>Authenticity Labels — ${productName || ""}</title>
+          <meta charset="utf-8">
+          <title>Authenticity QR Labels — ${productName || "Nutriexa"}</title>
           <style>
             @page { size: A4; margin: 10mm; }
             * { box-sizing: border-box; margin: 0; padding: 0; }
             body {
-              font-family: Arial, sans-serif;
+              font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
               display: flex;
               flex-wrap: wrap;
-              gap: 8mm;
+              gap: 6mm;
+              background: #ffffff;
             }
             .label {
-              width: 55mm;
-              height: 30mm;
-              border: 1px dashed #999;
-              border-radius: 4mm;
-              padding: 3mm;
+              width: 62mm;
+              height: 38mm;
+              border: 1px dashed #777;
+              border-radius: 3mm;
+              padding: 2.5mm 3mm;
               display: flex;
               flex-direction: column;
-              justify-content: center;
-              align-items: center;
-              text-align: center;
+              justify-content: space-between;
               page-break-inside: avoid;
+              background: #fff;
+            }
+            .label-header {
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+              border-bottom: 0.5px solid #eaeaea;
+              padding-bottom: 1mm;
             }
             .label-brand {
               font-size: 9px;
-              font-weight: 800;
-              color: #4CAF37;
-              letter-spacing: 1px;
+              font-weight: 900;
+              color: #22c55e;
+              letter-spacing: 0.8px;
+            }
+            .label-badge {
+              font-size: 6px;
+              font-weight: 700;
+              color: #fff;
+              background: #111;
+              padding: 0.5mm 1.5mm;
+              border-radius: 1mm;
+              letter-spacing: 0.5px;
             }
             .label-product {
-              font-size: 8px;
-              color: #555;
-              margin-top: 1mm;
+              font-size: 7.5px;
+              font-weight: 600;
+              color: #333;
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              margin: 1mm 0 0.5mm 0;
+            }
+            .label-content {
+              display: flex;
+              align-items: center;
+              gap: 2.5mm;
+              margin-top: 0.5mm;
+            }
+            .qr-col {
+              flex-shrink: 0;
+              width: 22mm;
+              height: 22mm;
+              border: 0.5px solid #e0e0e0;
+              border-radius: 1.5mm;
+              padding: 0.5mm;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            }
+            .label-qr {
+              width: 100%;
+              height: 100%;
+              object-fit: contain;
+              display: block;
+            }
+            .details-col {
+              flex: 1;
+              min-width: 0;
+              display: flex;
+              flex-direction: column;
+              justify-content: center;
+            }
+            .code-title {
+              font-size: 5.5px;
+              font-weight: 800;
+              color: #666;
+              letter-spacing: 0.4px;
             }
             .label-code {
-              font-size: 12px;
-              font-weight: 700;
-              letter-spacing: 1px;
-              margin-top: 1.5mm;
-              font-family: monospace;
+              font-size: 10px;
+              font-weight: 800;
+              letter-spacing: 0.8px;
+              font-family: "Courier New", Courier, monospace;
+              color: #111;
+              margin: 1mm 0 0.5mm 0;
+              word-break: break-all;
             }
             .label-hint {
               font-size: 6px;
-              color: #888;
-              margin-top: 1.5mm;
+              color: #555;
+              line-height: 1.2;
             }
           </style>
         </head>
@@ -218,7 +315,7 @@ export default function AuthenticatorCodes() {
 
     printWindow.document.close();
     printWindow.focus();
-    setTimeout(() => printWindow.print(), 300);
+    setTimeout(() => printWindow.print(), 500);
   };
 
   return (
