@@ -2,6 +2,7 @@ const categories = [
   "Whey Proteins",
   "Mass Gainers",
   "Pre-Workouts",
+  "Creatine",
   "Amino Acids",
   "Health & Wellness",
   "Accessories",

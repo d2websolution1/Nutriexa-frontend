@@ -9,6 +9,7 @@ const CATEGORY_LABELS = {
   "whey-proteins": "Whey Proteins",
   "mass-gainers": "Mass Gainers",
   "pre-workouts": "Pre-Workouts",
+  "creatine": "Creatine",
   "amino-acids": "Amino Acids",
   "health-wellness": "Health & Wellness",
   accessories: "Accessories",

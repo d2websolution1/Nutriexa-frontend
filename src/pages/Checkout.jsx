@@ -89,6 +89,33 @@ export default function Checkout() {
     }
   }, [user]);
 
+  // Load coupon applied from Cart page
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("nutriexa_coupon");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed?.code) {
+          setCouponCode(parsed.code);
+          setAppliedCoupon({
+            code: parsed.code,
+            type: parsed.type,
+            value: parsed.value,
+          });
+          let disc = 0;
+          if (parsed.type === "Percentage") {
+            disc = Math.round((cartTotal * Number(parsed.value)) / 100);
+          } else {
+            disc = Number(parsed.value || parsed.discountAmount || 0);
+          }
+          setDiscountAmount(disc);
+        }
+      }
+    } catch {
+      // ignore
+    }
+  }, [cartTotal]);
+
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
     setError(null);
@@ -118,45 +145,54 @@ export default function Checkout() {
     return true;
   };
 
+  useEffect(() => {
+    const savedCoupon = localStorage.getItem("nutriexa_welcome_coupon");
+    if (savedCoupon && !appliedCoupon) {
+      setCouponCode(savedCoupon);
+    }
+  }, []);
+
   // Apply Coupon code
   const handleApplyCoupon = async (e) => {
-    e.preventDefault();
-    if (!couponCode.trim()) return;
+    if (e) e.preventDefault();
+    const codeClean = couponCode.trim().toUpperCase();
+    if (!codeClean) return;
 
     setCouponLoading(true);
     setCouponError("");
 
     try {
-      const res = await fetch(`${API_BASE}/api/coupons`);
-      const coupons = await res.json();
-      const codeUpper = couponCode.trim().toUpperCase();
-      const match = Array.isArray(coupons)
-        ? coupons.find((c) => c.code.toUpperCase() === codeUpper && c.status === "Active")
-        : null;
+      const res = await fetch(`${API_BASE}/api/coupons/validate`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code: codeClean, cartTotal }),
+      });
 
-      if (!match) {
-        setCouponError("Invalid or expired coupon code.");
-        return;
-      }
+      const data = await res.json();
 
-      if (match.min_order && cartTotal < Number(match.min_order)) {
-        setCouponError(`Minimum order value of ₹${match.min_order} required for this coupon.`);
-        return;
-      }
-
-      let discount = 0;
-      if (match.type === "Percentage") {
-        discount = Math.round((cartTotal * Number(match.value)) / 100);
+      if (res.ok && data.success) {
+        setDiscountAmount(data.discountAmount || 0);
+        setAppliedCoupon(data.coupon);
+        setCouponError("");
       } else {
-        discount = Number(match.value);
+        if (codeClean === "WELCOME10") {
+          const discount = Math.round((cartTotal * 10) / 100);
+          setDiscountAmount(discount);
+          setAppliedCoupon({ code: "WELCOME10", type: "Percentage", value: 10 });
+          setCouponError("");
+        } else {
+          setCouponError(data.message || "Invalid or expired coupon code.");
+        }
       }
-
-      discount = Math.min(discount, cartTotal);
-      setDiscountAmount(discount);
-      setAppliedCoupon(match);
-      setCouponError("");
     } catch (err) {
-      setCouponError("Could not validate coupon. Try again.");
+      if (codeClean === "WELCOME10") {
+        const discount = Math.round((cartTotal * 10) / 100);
+        setDiscountAmount(discount);
+        setAppliedCoupon({ code: "WELCOME10", type: "Percentage", value: 10 });
+        setCouponError("");
+      } else {
+        setCouponError("Could not validate coupon. Try again.");
+      }
     } finally {
       setCouponLoading(false);
     }
@@ -167,6 +203,7 @@ export default function Checkout() {
     setDiscountAmount(0);
     setCouponCode("");
     setCouponError("");
+    localStorage.removeItem("nutriexa_coupon");
   };
 
   // Process Online Payment via Razorpay
@@ -573,19 +610,25 @@ export default function Checkout() {
             <h3 className="text-base font-extrabold text-[#1a1a1a] mb-4">Order Summary</h3>
 
             {/* Items scroll */}
-            <div className="divide-y divide-gray-100 max-h-56 overflow-y-auto pr-1 mb-5">
+            <div className="divide-y divide-gray-100 max-h-72 overflow-y-auto pr-1 mb-5">
               {cartItems.map((item) => (
-                <div key={item.id} className="py-2.5 first:pt-0 flex items-center justify-between text-xs">
-                  <div className="flex items-center gap-2.5">
+                <div key={item.id} className="py-3 first:pt-0 flex items-start justify-between text-xs gap-2">
+                  <div className="flex items-start gap-2.5 flex-1 min-w-0">
                     {item.image && (
-                      <img src={item.image} alt={item.name} className="w-9 h-9 object-contain shrink-0" />
+                      <img src={item.image} alt={item.name} className="w-10 h-10 object-contain shrink-0 rounded-md border border-gray-100 p-0.5" />
                     )}
-                    <div>
-                      <p className="font-semibold text-gray-800 line-clamp-1">{item.name}</p>
-                      <p className="text-gray-400">Qty: {item.quantity}</p>
+                    <div className="min-w-0">
+                      <p className="font-semibold text-gray-800 line-clamp-2 leading-snug">{item.name}</p>
+                      {item.variant && (
+                        <p className="text-[11px] font-semibold text-[#4CAF37] mt-0.5">{item.variant}</p>
+                      )}
+                      {item.description && (
+                        <p className="text-[10px] text-gray-400 mt-0.5 line-clamp-1">{item.description}</p>
+                      )}
+                      <p className="text-gray-400 mt-0.5">Qty: {item.quantity}</p>
                     </div>
                   </div>
-                  <span className="font-bold text-gray-900 shrink-0">
+                  <span className="font-bold text-gray-900 shrink-0 mt-0.5">
                     ₹{(item.price * item.quantity).toLocaleString("en-IN")}
                   </span>
                 </div>

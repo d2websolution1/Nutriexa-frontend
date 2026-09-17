@@ -154,7 +154,8 @@ export default function AboutUsPage() {
           </p>
           <Link
             to="/products"
-            className="mt-6 inline-flex items-center gap-2 bg-white text-[#1a1a1a] font-semibold px-7 py-3 rounded-md hover:opacity-90"
+            onClick={() => window.scrollTo({ top: 0, left: 0, behavior: "instant" })}
+            className="mt-6 inline-flex items-center gap-2 bg-white text-[#1a1a1a] font-semibold px-7 py-3 rounded-md hover:opacity-90 cursor-pointer shadow-lg hover:shadow-xl transition-all"
           >
             Shop All Products <FiArrowRight />
           </Link>

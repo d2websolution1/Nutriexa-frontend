@@ -1,6 +1,8 @@
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { useEffect } from "react";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import FloatingActionDock from "./components/FloatingActionDock";
 import { CartProvider } from "./context/CartContext";
 import { AuthProvider } from "./context/AuthContext";
 
@@ -47,15 +49,27 @@ import Analytics from "./admin/pages/Analytics";
 import AuditLogs from "./admin/pages/AuditLogs";
 import AdminProtectedRoute, { PermissionRoute } from "./components/AdminProtectedRoute";
 
+function ScrollToTop() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+  }, [pathname]);
+
+  return null;
+}
+
 function SiteLayout({ children }) {
   const location = useLocation();
   const isAdmin = location.pathname.startsWith("/admin");
 
   return (
     <>
+      <ScrollToTop />
       {!isAdmin && <Header />}
       {children}
       {!isAdmin && <Footer />}
+      {!isAdmin && <FloatingActionDock />}
     </>
   );
 }

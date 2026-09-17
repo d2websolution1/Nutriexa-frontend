@@ -19,11 +19,14 @@ import {
   FiArrowLeft,
   FiHeart,
   FiSettings,
+  FiSun,
+  FiMoon,
 } from "react-icons/fi";
 import { TbTruckDelivery, TbShieldCheck, TbPackage, TbTicket } from "react-icons/tb";
 import { HiMenu } from "react-icons/hi";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
+import { useTheme } from "../context/ThemeContext";
 import { API_URL as API_BASE } from "../config";
 import nutriexaLogo from "../assets/nutriexa-logo.png";
 
@@ -31,6 +34,7 @@ const CATEGORY_ITEMS = [
   { slug: "whey-proteins", label: "Whey Proteins" },
   { slug: "mass-gainers", label: "Mass Gainers" },
   { slug: "pre-workouts", label: "Pre-Workouts" },
+  { slug: "creatine", label: "Creatine" },
   { slug: "amino-acids", label: "Amino Acids" },
   { slug: "health-wellness", label: "Health & Wellness" },
   { slug: "accessories", label: "Accessories" },
@@ -41,6 +45,7 @@ export default function Header() {
   const lastScrollY = useRef(0);
   const { cartCount, cartTotal } = useCart();
   const { user, admin, logout, logoutAdmin } = useAuth();
+  const { isDark, toggleTheme } = useTheme();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -71,6 +76,40 @@ export default function Header() {
   const mobileAccountMenuRef = useRef(null);
   const desktopAccountMenuRef = useRef(null);
   const categoryMenuRef = useRef(null);
+
+  const categoryTimeoutRef = useRef(null);
+  const accountTimeoutRef = useRef(null);
+
+  const handleCategoryMouseEnter = () => {
+    if (categoryTimeoutRef.current) clearTimeout(categoryTimeoutRef.current);
+    setCategoryDropdownOpen(true);
+  };
+
+  const handleCategoryMouseLeave = () => {
+    if (categoryTimeoutRef.current) clearTimeout(categoryTimeoutRef.current);
+    categoryTimeoutRef.current = setTimeout(() => {
+      setCategoryDropdownOpen(false);
+    }, 160);
+  };
+
+  const handleAccountMouseEnter = () => {
+    if (accountTimeoutRef.current) clearTimeout(accountTimeoutRef.current);
+    setDesktopAccountOpen(true);
+  };
+
+  const handleAccountMouseLeave = () => {
+    if (accountTimeoutRef.current) clearTimeout(accountTimeoutRef.current);
+    accountTimeoutRef.current = setTimeout(() => {
+      setDesktopAccountOpen(false);
+    }, 160);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (categoryTimeoutRef.current) clearTimeout(categoryTimeoutRef.current);
+      if (accountTimeoutRef.current) clearTimeout(accountTimeoutRef.current);
+    };
+  }, []);
 
   // Sticky header scroll behavior
   useEffect(() => {
@@ -276,27 +315,19 @@ export default function Header() {
         <div className="hidden md:block">
           {/* Top Dark Bar (80px height) */}
           <div className="bg-[#0b0e14] text-white h-[80px] px-6 lg:px-12 flex items-center justify-between gap-6 border-b border-[#1b2230]">
-            {/* Nutriexa Brand Logo */}
-            <Link to="/" className="flex items-center gap-3 shrink-0 group">
-              <img
-                src={nutriexaLogo}
-                alt="Nutriexa"
-                className="w-11 h-11 object-contain shrink-0"
-              />
-              <div className="flex flex-col">
-                <div className="flex items-baseline gap-0.5">
-                  <span className="text-2xl font-black tracking-tight text-white leading-none">
-                    NUTRI<span className="text-[#22c55e]">EXA</span>
-                  </span>
-                  <span className="text-[10px] text-gray-400 font-normal ml-0.5">®</span>
-                </div>
-                <div className="flex items-center gap-1 mt-1">
-                  <span className="h-[1px] w-2.5 bg-[#22c55e]" />
-                  <span className="text-[8px] tracking-[0.22em] text-[#22c55e] font-semibold uppercase">
-                    Nutrition For Excellence
-                  </span>
-                  <span className="h-[1px] w-2.5 bg-[#22c55e]" />
-                </div>
+            {/* Nutriexa Brand Logo (Clean text-only with side lines matching reference) */}
+            <Link to="/" className="flex flex-col items-center justify-center shrink-0 group select-none py-1">
+              <div className="flex items-baseline">
+                <span className="text-2xl lg:text-[28px] font-black italic tracking-wider text-white leading-none group-hover:opacity-90 transition-opacity">
+                  NUTRI<span className="text-[#22c55e]">EXA</span>
+                </span>
+              </div>
+              <div className="flex items-center gap-2 mt-1.5 w-full justify-center">
+                <span className="h-[1.5px] w-3.5 lg:w-4 bg-[#22c55e] rounded-full" />
+                <span className="text-[7.5px] lg:text-[8px] tracking-[0.22em] text-[#22c55e] font-bold uppercase whitespace-nowrap leading-none">
+                  Nutrition For Excellence
+                </span>
+                <span className="h-[1.5px] w-3.5 lg:w-4 bg-[#22c55e] rounded-full" />
               </div>
             </Link>
 
@@ -364,15 +395,25 @@ export default function Header() {
                 <span className="font-medium whitespace-nowrap">Support</span>
               </Link>
 
-              {/* Account Dropdown */}
-              <div className="relative" ref={desktopAccountMenuRef}>
+              {/* Account Dropdown with Hover & Click */}
+              <div
+                className="relative"
+                ref={desktopAccountMenuRef}
+                onMouseEnter={handleAccountMouseEnter}
+                onMouseLeave={handleAccountMouseLeave}
+              >
                 <button
                   onClick={() => setDesktopAccountOpen((prev) => !prev)}
-                  className="flex items-center gap-1.5 hover:text-[#22c55e] transition-colors cursor-pointer focus:outline-none"
+                  className="flex items-center gap-1.5 hover:text-[#22c55e] transition-colors cursor-pointer focus:outline-none py-2"
                 >
                   <FiUser size={19} className="text-gray-300" />
                   <span className="font-medium whitespace-nowrap">Account</span>
-                  <FiChevronDown size={14} className="text-gray-400" />
+                  <FiChevronDown
+                    size={14}
+                    className={`text-gray-400 transition-transform ${
+                      desktopAccountOpen ? "rotate-180 text-[#22c55e]" : ""
+                    }`}
+                  />
                 </button>
 
                 {desktopAccountOpen && (
@@ -482,6 +523,27 @@ export default function Header() {
                 )}
               </div>
 
+              {/* Theme Toggle (Dark / Light) */}
+              <button
+                type="button"
+                onClick={toggleTheme}
+                aria-label="Toggle dark/light mode"
+                title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
+                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-white/10 hover:bg-white/20 transition-all cursor-pointer text-xs font-semibold focus:outline-none select-none"
+              >
+                {isDark ? (
+                  <>
+                    <FiSun size={15} className="text-amber-400" />
+                    <span className="text-amber-400 text-[11px]">Light</span>
+                  </>
+                ) : (
+                  <>
+                    <FiMoon size={15} className="text-blue-300" />
+                    <span className="text-gray-200 text-[11px]">Dark</span>
+                  </>
+                )}
+              </button>
+
               {/* Vertical Separator */}
               <div className="h-6 w-[1px] bg-gray-700" />
 
@@ -508,15 +570,25 @@ export default function Header() {
 
           {/* Bottom Navigation Bar (White row directly underneath dark bar) */}
           <div className="bg-white border-b border-gray-200 px-6 lg:px-12 flex items-center h-12">
-            {/* Shop by Category with Dropdown */}
-            <div className="relative" ref={categoryMenuRef}>
+            {/* Shop by Category with Dropdown (Hover & Click) */}
+            <div
+              className="relative"
+              ref={categoryMenuRef}
+              onMouseEnter={handleCategoryMouseEnter}
+              onMouseLeave={handleCategoryMouseLeave}
+            >
               <button
                 onClick={() => setCategoryDropdownOpen((prev) => !prev)}
                 className="flex items-center gap-2.5 text-xs font-bold text-[#1a1a1a] hover:text-[#22c55e] transition-colors py-3 pr-6 cursor-pointer focus:outline-none"
               >
                 <HiMenu size={20} className="text-[#1a1a1a]" />
                 <span className="uppercase tracking-wide font-extrabold text-sm">Shop by Category</span>
-                <FiChevronDown size={14} className="text-gray-500 ml-1" />
+                <FiChevronDown
+                  size={14}
+                  className={`text-gray-500 ml-1 transition-transform ${
+                    categoryDropdownOpen ? "rotate-180 text-[#22c55e]" : ""
+                  }`}
+                />
               </button>
 
               {/* Categories Dropdown Popover */}
@@ -657,28 +729,34 @@ export default function Header() {
                 <HiMenu size={26} />
               </button>
 
-              {/* Center: Nutriexa Logo */}
-              <Link to="/" className="flex items-center gap-2">
-                <img
-                  src={nutriexaLogo}
-                  alt="Nutriexa"
-                  className="w-8 h-8 object-contain shrink-0"
-                />
-                <div className="flex flex-col">
-                  <div className="flex items-baseline leading-none">
-                    <span className="text-lg font-black tracking-tight text-white leading-none">
-                      NUTRI<span className="text-[#22c55e]">EXA</span>
-                    </span>
-                    <span className="text-[9px] text-gray-400 ml-0.5">®</span>
-                  </div>
-                  <span className="text-[7px] tracking-[0.2em] text-[#22c55e] font-semibold uppercase mt-0.5">
+              {/* Center: Nutriexa Logo (Text only with side lines) */}
+              <Link to="/" className="flex flex-col items-center justify-center shrink-0 select-none py-0.5">
+                <div className="flex items-baseline">
+                  <span className="text-xl font-black italic tracking-wider text-white leading-none">
+                    NUTRI<span className="text-[#22c55e]">EXA</span>
+                  </span>
+                </div>
+                <div className="flex items-center gap-1.5 mt-1 justify-center">
+                  <span className="h-[1px] w-2.5 bg-[#22c55e] rounded-full" />
+                  <span className="text-[7px] tracking-[0.18em] text-[#22c55e] font-bold uppercase whitespace-nowrap leading-none">
                     Nutrition For Excellence
                   </span>
+                  <span className="h-[1px] w-2.5 bg-[#22c55e] rounded-full" />
                 </div>
               </Link>
 
-              {/* Right: Search, Account & Cart */}
-              <div className="flex items-center gap-3">
+              {/* Right: Search, Theme Toggle, Account & Cart */}
+              <div className="flex items-center gap-2.5">
+                {/* Theme Toggle Button */}
+                <button
+                  type="button"
+                  onClick={toggleTheme}
+                  aria-label="Toggle theme"
+                  className="text-white hover:text-amber-400 p-1 cursor-pointer focus:outline-none"
+                >
+                  {isDark ? <FiSun size={19} className="text-amber-400" /> : <FiMoon size={19} className="text-gray-300" />}
+                </button>
+
                 {/* Search Icon (Click to activate Search Active View) */}
                 <button
                   onClick={() => {
@@ -824,23 +902,23 @@ export default function Header() {
       >
         {/* Drawer Header: Logo on left, Close icon on right */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-gray-800/80">
+          {/* Logo inside drawer */}
           <Link
             to="/"
             onClick={() => setDrawerOpen(false)}
-            className="flex items-center gap-2"
+            className="flex flex-col items-start justify-center select-none"
           >
-            <img
-              src={nutriexaLogo}
-              alt="Nutriexa Logo"
-              className="w-8 h-8 object-contain shrink-0"
-            />
-            <div className="flex flex-col">
-              <span className="text-base font-black tracking-tight text-white leading-none">
+            <div className="flex items-baseline">
+              <span className="text-xl font-black italic tracking-wider text-white leading-none">
                 NUTRI<span className="text-[#22c55e]">EXA</span>
               </span>
-              <span className="text-[7px] tracking-[0.2em] text-[#22c55e] font-semibold uppercase mt-0.5">
+            </div>
+            <div className="flex items-center gap-1.5 mt-1">
+              <span className="h-[1px] w-2.5 bg-[#22c55e] rounded-full" />
+              <span className="text-[7px] tracking-[0.18em] text-[#22c55e] font-bold uppercase whitespace-nowrap">
                 Nutrition For Excellence
               </span>
+              <span className="h-[1px] w-2.5 bg-[#22c55e] rounded-full" />
             </div>
           </Link>
 
@@ -893,6 +971,28 @@ export default function Header() {
 
         {/* Scrollable Navigation List (Exact Sequence from Image 1) */}
         <div className="flex-1 overflow-y-auto px-4 py-3 space-y-1">
+          {/* Theme Toggle in Drawer */}
+          <div className="flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-white/5 text-gray-200 mb-2">
+            <span className="text-xs font-semibold">Appearance</span>
+            <button
+              type="button"
+              onClick={toggleTheme}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/10 text-xs font-medium cursor-pointer"
+            >
+              {isDark ? (
+                <>
+                  <FiSun size={14} className="text-amber-400" />
+                  <span className="text-amber-400 text-[11px]">Light Mode</span>
+                </>
+              ) : (
+                <>
+                  <FiMoon size={14} className="text-blue-300" />
+                  <span className="text-gray-300 text-[11px]">Dark Mode</span>
+                </>
+              )}
+            </button>
+          </div>
+
           {/* 1. Home */}
           <Link
             to="/"

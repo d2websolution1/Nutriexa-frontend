@@ -20,27 +20,104 @@ export default function Deals() {
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch(`${API_BASE}/api/coupons/weekly-deals/public`);
-        if (!res.ok) throw new Error("Failed to fetch deals.");
-        const data = await res.json();
+        const endpoints = [
+          API_BASE,
+          "https://nutriexa-backend.onrender.com",
+        ];
 
-        const mapped = data.map((d) => ({
-          id: d.id,
-          slug: d.id,
-          name: d.name,
-          variant: d.variant,
-          price: Number(d.price),
-          mrp: Number(d.mrp) || Number(d.price),
-          discountPercent: Number(d.discount_percent),
-          discount: `${d.discount_percent}% OFF`,
-          rating: 4.5,
-          reviews: 0,
-          image: d.image,
-        }));
+        let weeklyDealsData = [];
+        let allProductsData = [];
 
-        setDeals(mapped);
+        // Try primary API_BASE first, then fallback to live Render backend
+        for (const base of endpoints) {
+          try {
+            if (weeklyDealsData.length === 0) {
+              const res = await fetch(`${base}/api/coupons/weekly-deals/public`);
+              if (res.ok) {
+                weeklyDealsData = await res.json();
+              }
+            }
+          } catch (e) {
+            // silent retry on next endpoint
+          }
+
+          try {
+            if (allProductsData.length === 0) {
+              const resProd = await fetch(`${base}/api/products`);
+              if (resProd.ok) {
+                allProductsData = await resProd.json();
+              }
+            }
+          } catch (e) {
+            // silent retry
+          }
+
+          if (weeklyDealsData.length > 0 && allProductsData.length > 0) break;
+        }
+
+        // Map weekly deals
+        const dealsMap = new Map();
+
+        if (Array.isArray(weeklyDealsData)) {
+          weeklyDealsData.forEach((d) => {
+            const discPercent = Number(d.discount_percent) || 0;
+            dealsMap.set(d.id, {
+              id: d.id,
+              slug: d.id,
+              name: d.name,
+              variant: d.variant,
+              price: Number(d.price),
+              mrp: Number(d.mrp) || Number(d.price),
+              discountPercent: discPercent,
+              discount: `${Math.round(discPercent)}% OFF`,
+              rating: 4.8,
+              reviews: 24,
+              image: d.image,
+            });
+          });
+        }
+
+        // Also add any active products that have a discount (mrp > price)
+        if (Array.isArray(allProductsData)) {
+          allProductsData
+            .filter(
+              (p) =>
+                p.status === "Active" &&
+                p.mrp &&
+                Number(p.mrp) > Number(p.price)
+            )
+            .forEach((p) => {
+              if (!dealsMap.has(p.id)) {
+                const discPercent = Math.round(
+                  ((Number(p.mrp) - Number(p.price)) / Number(p.mrp)) * 100
+                );
+                dealsMap.set(p.id, {
+                  id: p.id,
+                  slug: p.id,
+                  name: p.name,
+                  variant: p.variant,
+                  price: Number(p.price),
+                  mrp: Number(p.mrp),
+                  discountPercent: discPercent,
+                  discount: `${discPercent}% OFF`,
+                  rating: 4.7,
+                  reviews: 18,
+                  image: p.image,
+                });
+              }
+            });
+        }
+
+        const combined = Array.from(dealsMap.values());
+        if (combined.length > 0) {
+          setDeals(combined);
+        } else {
+          setError(null);
+          setDeals([]);
+        }
       } catch (err) {
-        setError(err.message);
+        console.error("Error loading deals:", err);
+        setError("Unable to load deals right now. Please check back shortly.");
       } finally {
         setLoading(false);
       }

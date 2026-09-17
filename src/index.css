@@ -1,1 +1,206 @@
 @import "tailwindcss";
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Dual Range Slider Thumbs Styling */
+.dual-range-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  pointer-events: none;
+}
+
+.dual-range-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  pointer-events: auto;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #4CAF37;
+  border: 2.5px solid #ffffff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+  transition: transform 0.15s ease, background-color 0.15s ease;
+}
+
+.dual-range-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+  background: #3e8e2e;
+}
+
+.dual-range-slider::-webkit-slider-thumb:active {
+  transform: scale(1.2);
+}
+
+.dual-range-slider::-moz-range-thumb {
+  pointer-events: auto;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #4CAF37;
+  border: 2.5px solid #ffffff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+  transition: transform 0.15s ease, background-color 0.15s ease;
+}
+
+.dual-range-slider::-moz-range-thumb:hover {
+  transform: scale(1.15);
+  background: #3e8e2e;
+}
+
+.dual-range-slider::-moz-range-thumb:active {
+  transform: scale(1.2);
+}
+
+/* Global Typography */
+body {
+  font-family: "Plus Jakarta Sans", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* ==========================================================================
+   Dark Mode Base & Utility Styles — High Contrast & Pure Text Visibility
+   ========================================================================== */
+html.dark {
+  color-scheme: dark;
+  background-color: #0b0e14;
+  color: #ffffff;
+}
+
+html.dark body {
+  background-color: #0b0e14;
+  color: #ffffff;
+}
+
+/* Headings in Dark Mode — Crisp White */
+html.dark h1,
+html.dark h2,
+html.dark h3,
+html.dark h4,
+html.dark h5,
+html.dark h6 {
+  color: #ffffff !important;
+}
+
+/* Primary Dark Text Overrides in Dark Mode */
+html.dark .text-\[\#1a1a1a\],
+html.dark .text-black,
+html.dark .text-ink,
+html.dark .text-gray-900,
+html.dark .text-gray-800 {
+  color: #ffffff !important;
+}
+
+/* Secondary & Body Text in Dark Mode */
+html.dark .text-gray-700,
+html.dark .text-gray-600 {
+  color: #f1f5f9 !important;
+}
+
+/* Subtitle & Helper Text in Dark Mode — Visible Light Slate */
+html.dark .text-gray-500 {
+  color: #cbd5e1 !important;
+}
+
+html.dark .text-gray-400 {
+  color: #94a3b8 !important;
+}
+
+/* Labels and Form Text in Dark Mode */
+html.dark label {
+  color: #f8fafc !important;
+}
+
+/* Dark mode background overrides for white/light cards & containers */
+html.dark .bg-white {
+  background-color: #111722 !important;
+  color: #ffffff !important;
+}
+
+html.dark .bg-\[\#f8f9f7\],
+html.dark .bg-\[\#f7f8f6\],
+html.dark .bg-\[\#f9fafb\],
+html.dark .bg-\[\#f3f6f2\],
+html.dark .bg-gray-50 {
+  background-color: #0d121c !important;
+}
+
+html.dark .bg-gray-100 {
+  background-color: #18202d !important;
+}
+
+/* Borders in Dark Mode */
+html.dark .border-gray-50,
+html.dark .border-gray-100,
+html.dark .border-gray-200 {
+  border-color: #1f2a3c !important;
+}
+
+html.dark .border-gray-300 {
+  border-color: #2d3b52 !important;
+}
+
+/* Forms, Inputs & Selects in Dark Mode */
+html.dark input:not([type="range"]):not([type="checkbox"]),
+html.dark select,
+html.dark textarea {
+  background-color: #0d121c !important;
+  color: #ffffff !important;
+  border-color: #263347 !important;
+}
+
+html.dark input::placeholder,
+html.dark textarea::placeholder {
+  color: #64748b !important;
+}
+
+/* Tables in Dark Mode */
+html.dark th {
+  background-color: #182232 !important;
+  color: #ffffff !important;
+}
+
+html.dark td {
+  color: #f1f5f9 !important;
+}
+
+/* Shadows in Dark Mode */
+html.dark .shadow-sm,
+html.dark .shadow-md,
+html.dark .shadow-lg,
+html.dark .shadow-xl,
+html.dark .shadow-2xl {
+  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.7) !important;
+}
+
+/* Cards specific to Nutriexa Deals & Products */
+html.dark [data-deal-card] {
+  background-color: #111722 !important;
+  border-color: #1f2a3c !important;
+}
+
+html.dark button.bg-white {
+  background-color: #18202d !important;
+  color: #e2e8f0 !important;
+  border-color: #2d3b52 !important;
+}
+
+/* Gradients in Dark Mode */
+html.dark [class*="from-[#f3f6f2]"],
+html.dark [class*="from-[#eef4ea]"] {
+  background-image: linear-gradient(to bottom, #111722, #0b0e14) !important;
+}

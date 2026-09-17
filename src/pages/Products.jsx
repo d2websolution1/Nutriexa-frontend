@@ -20,6 +20,7 @@ const CATEGORIES = [
   { slug: "whey-proteins", label: "Whey Proteins" },
   { slug: "mass-gainers", label: "Mass Gainers" },
   { slug: "pre-workouts", label: "Pre-Workouts" },
+  { slug: "creatine", label: "Creatine" },
   { slug: "amino-acids", label: "Amino Acids" },
   { slug: "health-wellness", label: "Health & Wellness" },
   { slug: "accessories", label: "Accessories" },
@@ -27,9 +28,34 @@ const CATEGORIES = [
 
 const GOALS = ["Muscle Gain", "Weight Loss", "Strength", "Endurance", "Wellness"];
 
+const GOAL_MAPPINGS = {
+  "Muscle Gain": {
+    categories: ["whey-proteins", "mass-gainers", "creatine", "amino-acids"],
+    keywords: ["protein", "mass", "gainer", "creatine", "muscle", "bulk", "whey"],
+  },
+  "Weight Loss": {
+    categories: ["health-wellness", "pre-workouts", "amino-acids"],
+    keywords: ["loss", "burn", "shred", "lean", "isolate", "wellness", "cut", "omega"],
+  },
+  "Strength": {
+    categories: ["pre-workouts", "creatine", "whey-proteins"],
+    keywords: ["strength", "power", "creatine", "pre workout", "pump"],
+  },
+  "Endurance": {
+    categories: ["pre-workouts", "amino-acids", "health-wellness"],
+    keywords: ["endurance", "energy", "bcaa", "amino", "recovery", "intra"],
+  },
+  "Wellness": {
+    categories: ["health-wellness", "accessories"],
+    keywords: ["wellness", "health", "vitamin", "omega", "shaker", "fish oil", "daily"],
+  },
+};
+
 export default function Products() {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const initialCategory = searchParams.get("category");
+  const initialGoal = searchParams.get("goal");
+  const searchQuery = searchParams.get("search") || "";
 
   const [allProducts, setAllProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -38,10 +64,24 @@ export default function Products() {
   const [selectedCategories, setSelectedCategories] = useState(
     initialCategory ? [initialCategory] : []
   );
-  const [selectedGoals, setSelectedGoals] = useState([]);
-  const [priceRange, setPriceRange] = useState(10000);
+  const [selectedGoals, setSelectedGoals] = useState(
+    initialGoal ? [initialGoal] : []
+  );
+  const [priceRange, setPriceRange] = useState({ min: 0, max: 10000 });
   const [sortBy, setSortBy] = useState("popular");
+  const [isSorting, setIsSorting] = useState(false);
   const [showMobileFilters, setShowMobileFilters] = useState(false);
+
+  useEffect(() => {
+    const cat = searchParams.get("category");
+    if (cat) {
+      setSelectedCategories([cat]);
+    }
+    const g = searchParams.get("goal");
+    if (g) {
+      setSelectedGoals([g]);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -103,14 +143,52 @@ export default function Products() {
   const clearAll = () => {
     setSelectedCategories([]);
     setSelectedGoals([]);
-    setPriceRange(10000);
+    setPriceRange({ min: 0, max: 10000 });
+  };
+
+  const handleSortChange = (e) => {
+    const nextSort = e.target.value;
+    setIsSorting(true);
+    setSortBy(nextSort);
+    setTimeout(() => {
+      setIsSorting(false);
+    }, 300);
   };
 
   const filteredProducts = useMemo(() => {
-    let list = allProducts.filter((p) => p.price <= priceRange);
+    const minP = typeof priceRange === "object" && priceRange !== null ? priceRange.min : 0;
+    const maxP = typeof priceRange === "object" && priceRange !== null ? priceRange.max : (typeof priceRange === "number" ? priceRange : 10000);
+
+    let list = allProducts.filter((p) => p.price >= minP && p.price <= maxP);
+
+    if (searchQuery.trim()) {
+      const q = searchQuery.trim().toLowerCase();
+      list = list.filter((p) =>
+        p.name?.toLowerCase().includes(q) ||
+        p.category?.toLowerCase().includes(q) ||
+        p.variant?.toLowerCase().includes(q)
+      );
+    }
 
     if (selectedCategories.length > 0) {
       list = list.filter((p) => selectedCategories.includes(p.category));
+    }
+
+    if (selectedGoals.length > 0) {
+      list = list.filter((p) => {
+        const prodName = (p.name || "").toLowerCase();
+        const prodVariant = (p.variant || "").toLowerCase();
+        const prodCat = (p.category || "").toLowerCase();
+
+        return selectedGoals.some((goal) => {
+          const mapping = GOAL_MAPPINGS[goal];
+          if (!mapping) return false;
+          if (mapping.categories.includes(prodCat)) return true;
+          return mapping.keywords.some(
+            (kw) => prodName.includes(kw) || prodVariant.includes(kw) || prodCat.includes(kw)
+          );
+        });
+      });
     }
 
     if (sortBy === "price-low") {
@@ -122,7 +200,7 @@ export default function Products() {
     }
 
     return list;
-  }, [allProducts, selectedCategories, priceRange, sortBy]);
+  }, [allProducts, selectedCategories, selectedGoals, priceRange, sortBy, searchQuery]);
 
   const recommended = useMemo(
     () =>
@@ -204,17 +282,100 @@ export default function Products() {
               <FiSliders size={16} /> Filters
             </button>
 
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              className="ml-auto text-sm border border-gray-200 rounded-md px-3 py-2 text-[#1a1a1a] focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
-            >
-              <option value="popular">Sort: Popularity</option>
-              <option value="price-low">Price: Low to High</option>
-              <option value="price-high">Price: High to Low</option>
-              <option value="rating">Customer Rating</option>
-            </select>
+            <div className="ml-auto flex items-center gap-2">
+              <span className="text-xs text-gray-500 hidden sm:inline font-medium">Sort by:</span>
+              <select
+                value={sortBy}
+                onChange={handleSortChange}
+                className="text-sm font-semibold border border-gray-200 rounded-lg px-3 py-2 text-[#1a1a1a] bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-[#4CAF37]/30 focus:border-[#4CAF37] transition-all cursor-pointer hover:border-gray-300"
+              >
+                <option value="popular">Popularity</option>
+                <option value="price-low">Price: Low to High ↑</option>
+                <option value="price-high">Price: High to Low ↓</option>
+                <option value="rating">Customer Rating ★</option>
+              </select>
+            </div>
           </div>
+
+          {/* Active Search Query Pill */}
+          {searchQuery && (
+            <div className="mb-5 flex flex-col sm:flex-row sm:items-center justify-between gap-2 bg-[#22c55e]/10 border border-[#22c55e]/30 rounded-xl px-4 py-3">
+              <div className="flex items-center gap-2 text-xs text-gray-800 dark:text-gray-200 flex-wrap">
+                <span>Search results for</span>
+                <span className="font-bold text-[#22c55e]">"{searchQuery}"</span>
+                <span className="text-gray-500">
+                  ({filteredProducts.length} {filteredProducts.length === 1 ? "product" : "products"} found)
+                </span>
+              </div>
+              <div className="flex items-center gap-3">
+                <Link
+                  to="/products"
+                  className="text-xs font-semibold text-[#22c55e] hover:text-[#1ea850] flex items-center gap-1 border border-[#22c55e]/40 rounded-lg px-3 py-1.5 transition-colors hover:bg-[#22c55e]/10"
+                >
+                  View All Products →
+                </Link>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const next = new URLSearchParams(searchParams);
+                    next.delete("search");
+                    setSearchParams(next);
+                  }}
+                  className="text-xs font-semibold text-gray-500 hover:text-red-500 flex items-center gap-1 cursor-pointer transition-colors"
+                >
+                  Clear Search ✕
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Active Goal or Category Filters Pills */}
+          {(selectedGoals.length > 0 || selectedCategories.length > 0) && (
+            <div className="mb-4 flex items-center gap-2 flex-wrap">
+              <span className="text-xs text-gray-500 font-semibold">Active:</span>
+              {selectedGoals.map((g) => (
+                <span
+                  key={g}
+                  className="inline-flex items-center gap-1.5 bg-[#4CAF37]/15 text-[#4CAF37] dark:text-[#22c55e] text-xs font-bold px-3 py-1 rounded-full border border-[#4CAF37]/30"
+                >
+                  🎯 {g}
+                  <button
+                    type="button"
+                    onClick={() => toggleGoal(g)}
+                    className="hover:text-red-500 cursor-pointer ml-1 text-sm font-black"
+                  >
+                    ×
+                  </button>
+                </span>
+              ))}
+              {selectedCategories.map((c) => {
+                const catObj = CATEGORIES.find((cat) => cat.slug === c);
+                return (
+                  <span
+                    key={c}
+                    className="inline-flex items-center gap-1.5 bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-200 text-xs font-medium px-3 py-1 rounded-full border border-gray-200 dark:border-gray-700"
+                  >
+                    {catObj?.label || c}
+                    <button
+                      type="button"
+                      onClick={() => toggleCategory(c)}
+                      className="hover:text-red-500 cursor-pointer ml-1 text-sm font-black"
+                    >
+                      ×
+                    </button>
+                  </span>
+                );
+              })}
+              <button
+                type="button"
+                onClick={clearAll}
+                className="text-xs font-semibold text-gray-400 hover:text-red-500 underline ml-1 cursor-pointer"
+              >
+                Clear all
+              </button>
+            </div>
+          )}
+
 
           {loading && (
             <div className="text-center py-20 text-gray-500 text-sm">
@@ -233,9 +394,22 @@ export default function Products() {
           )}
 
           {!loading && !error && filteredProducts.length > 0 && (
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-              {filteredProducts.map((product) => (
-                <ProductCard key={product.slug} product={product} />
+            <div
+              key={sortBy}
+              className={`grid grid-cols-2 sm:grid-cols-3 gap-4 transition-all duration-300 ${
+                isSorting
+                  ? "opacity-30 scale-[0.99] translate-y-1"
+                  : "opacity-100 scale-100 translate-y-0"
+              }`}
+            >
+              {filteredProducts.map((product, idx) => (
+                <div
+                  key={product.slug}
+                  className="animate-fade-in-up"
+                  style={{ animationDelay: `${Math.min(idx * 35, 200)}ms` }}
+                >
+                  <ProductCard product={product} />
+                </div>
               ))}
             </div>
           )}

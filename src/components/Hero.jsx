@@ -11,16 +11,16 @@ export default function Hero() {
   ];
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-[#f3f6f2] via-white to-[#eef4ea]">
+    <section className="relative overflow-hidden bg-gradient-to-br from-[#f3f6f2] via-white to-[#eef4ea] dark:from-[#0b0e14] dark:via-[#111722] dark:to-[#0d131f] transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-10 py-10 sm:py-14 md:py-20 grid md:grid-cols-2 gap-8 md:gap-10 items-center">
         {/* Left copy */}
         <div className="relative z-10 text-center md:text-left">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold leading-[1.1] text-[#1a1a1a]">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold leading-[1.1] text-[#1a1a1a] dark:text-white">
             FUEL YOUR
             <br />
             <span className="text-[#4CAF37]">POTENTIAL</span>
           </h2>
-          <p className="mt-4 sm:mt-5 text-gray-600 text-sm sm:text-base md:text-lg max-w-md mx-auto md:mx-0">
+          <p className="mt-4 sm:mt-5 text-gray-600 dark:text-gray-300 text-sm sm:text-base md:text-lg max-w-md mx-auto md:mx-0">
             Premium Supplements for Peak Performance &amp; Faster Results
           </p>
 
@@ -28,10 +28,10 @@ export default function Hero() {
             {highlights.map((item) => (
               <div
                 key={item.label}
-                className="flex flex-col items-center md:items-start gap-1.5 sm:gap-2 text-center md:text-left"
+                className="flex flex-col items-center md:items-start gap-1.5 sm:gap-2 text-center md:text-left p-2 rounded-lg dark:bg-[#141c2b]/80 border border-transparent dark:border-[#1f2a3c]"
               >
                 <FiCheckCircle className="text-[#4CAF37]" size={20} />
-                <span className="text-[11px] sm:text-xs font-semibold text-[#1a1a1a] leading-tight">
+                <span className="text-[11px] sm:text-xs font-semibold text-[#1a1a1a] dark:text-white leading-tight">
                   {item.label}
                 </span>
               </div>

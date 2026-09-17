@@ -55,12 +55,23 @@ export default function Footer() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-10 py-8 sm:py-10 md:py-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 md:gap-10 text-sm text-center sm:text-left">
         <div className="sm:col-span-2 md:col-span-1">
-          <h4 className="text-white font-extrabold text-lg sm:text-xl mb-1">
-            NUTRI<span className="text-[#4CAF37]">EXA</span>
-          </h4>
-          <p className="text-[9px] sm:text-[10px] tracking-[0.2em] text-gray-500 mb-4">
-            NUTRITION FOR EXCELLENCE
-          </p>
+          <Link
+            to="/"
+            className="inline-flex flex-col items-center sm:items-start justify-center shrink-0 group select-none mb-4"
+          >
+            <div className="flex items-baseline">
+              <span className="text-2xl sm:text-[26px] font-black italic tracking-wider text-white leading-none group-hover:opacity-90 transition-opacity">
+                NUTRI<span className="text-[#22c55e]">EXA</span>
+              </span>
+            </div>
+            <div className="flex items-center gap-2 mt-1.5 w-full justify-center sm:justify-start">
+              <span className="h-[1.5px] w-3 sm:w-3.5 bg-[#22c55e] rounded-full" />
+              <span className="text-[7.5px] sm:text-[8px] tracking-[0.22em] text-[#22c55e] font-bold uppercase whitespace-nowrap leading-none">
+                Nutrition For Excellence
+              </span>
+              <span className="h-[1.5px] w-3 sm:w-3.5 bg-[#22c55e] rounded-full" />
+            </div>
+          </Link>
           <p className="text-gray-400 text-xs leading-relaxed max-w-xs mx-auto sm:mx-0">
             Premium, science-backed supplements crafted to help you fuel your
             potential and hit every fitness goal, faster and safer.
