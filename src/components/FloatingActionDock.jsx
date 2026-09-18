@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   FaWhatsapp,
 } from "react-icons/fa";
@@ -16,8 +16,11 @@ import {
 } from "react-icons/fi";
 import { TbMessageChatbot, TbTruckDelivery, TbTag, TbShieldCheck } from "react-icons/tb";
 import { API_URL as API_BASE } from "../config";
+import { useAuth } from "../context/AuthContext";
 
 export default function FloatingActionDock() {
+  const navigate = useNavigate();
+  const { isUserAuthenticated } = useAuth();
   const [chatOpen, setChatOpen] = useState(false);
   const [distributorOpen, setDistributorOpen] = useState(false);
   const [feedbackOpen, setFeedbackOpen] = useState(false);
@@ -188,8 +191,13 @@ export default function FloatingActionDock() {
             <button
               type="button"
               onClick={() => {
-                setFeedbackOpen(true);
-                setChatOpen(false);
+                if (!isUserAuthenticated) {
+                  alert("Please log in to submit feedback.");
+                  navigate("/login");
+                } else {
+                  setFeedbackOpen(true);
+                  setChatOpen(false);
+                }
               }}
               className="flex items-center gap-2 bg-[#121722] hover:bg-[#1a2232] text-white border border-gray-700 hover:border-amber-400 px-3.5 py-2 rounded-full shadow-xl transition-all cursor-pointer text-xs font-semibold group hover:scale-105"
             >
