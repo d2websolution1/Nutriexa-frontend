@@ -99,7 +99,7 @@ export default function Products() {
   );
   const [selectedDiscount, setSelectedDiscount] = useState(null);
   const [priceRange, setPriceRange] = useState({ min: 0, max: 10000 });
-  const [sortBy, setSortBy] = useState("popular");
+  const [sortBy, setSortBy] = useState("featured");
   const [isSorting, setIsSorting] = useState(false);
   const [showMobileFilters, setShowMobileFilters] = useState(false);
 
@@ -232,6 +232,14 @@ export default function Products() {
       list = [...list].sort((a, b) => b.price - a.price);
     } else if (sortBy === "rating") {
       list = [...list].sort((a, b) => b.rating - a.rating);
+    } else if (sortBy === "alpha-asc") {
+      list = [...list].sort((a, b) => (a.name || "").localeCompare(b.name || ""));
+    } else if (sortBy === "alpha-desc") {
+      list = [...list].sort((a, b) => (b.name || "").localeCompare(a.name || ""));
+    } else if (sortBy === "date-old") {
+      list = [...list].sort((a, b) => Number(a.id) - Number(b.id));
+    } else if (sortBy === "date-new") {
+      list = [...list].sort((a, b) => Number(b.id) - Number(a.id));
     }
 
     return list;
@@ -334,9 +342,15 @@ export default function Products() {
                 onChange={handleSortChange}
                 className="text-sm font-semibold border border-gray-200 rounded-lg px-3 py-2 text-[#1a1a1a] bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-[#4CAF37]/30 focus:border-[#4CAF37] transition-all cursor-pointer hover:border-gray-300"
               >
-                <option value="popular">Popularity</option>
-                <option value="price-low">Price: Low to High ↑</option>
-                <option value="price-high">Price: High to Low ↓</option>
+                <option value="featured">Featured</option>
+                <option value="most-relevant">Most relevant</option>
+                <option value="best-selling">Best selling</option>
+                <option value="alpha-asc">Alphabetically, A-Z</option>
+                <option value="alpha-desc">Alphabetically, Z-A</option>
+                <option value="price-low">Price, low to high</option>
+                <option value="price-high">Price, high to low</option>
+                <option value="date-old">Date, old to new</option>
+                <option value="date-new">Date, new to old</option>
                 <option value="rating">Customer Rating ★</option>
               </select>
             </div>

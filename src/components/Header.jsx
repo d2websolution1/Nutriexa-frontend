@@ -76,9 +76,13 @@ export default function Header() {
   const mobileAccountMenuRef = useRef(null);
   const desktopAccountMenuRef = useRef(null);
   const categoryMenuRef = useRef(null);
+  const authenticatorMenuRef = useRef(null);
 
   const categoryTimeoutRef = useRef(null);
   const accountTimeoutRef = useRef(null);
+  const authenticatorTimeoutRef = useRef(null);
+
+  const [authenticatorDropdownOpen, setAuthenticatorDropdownOpen] = useState(false);
 
   const handleCategoryMouseEnter = () => {
     if (categoryTimeoutRef.current) clearTimeout(categoryTimeoutRef.current);
@@ -104,10 +108,23 @@ export default function Header() {
     }, 160);
   };
 
+  const handleAuthenticatorMouseEnter = () => {
+    if (authenticatorTimeoutRef.current) clearTimeout(authenticatorTimeoutRef.current);
+    setAuthenticatorDropdownOpen(true);
+  };
+
+  const handleAuthenticatorMouseLeave = () => {
+    if (authenticatorTimeoutRef.current) clearTimeout(authenticatorTimeoutRef.current);
+    authenticatorTimeoutRef.current = setTimeout(() => {
+      setAuthenticatorDropdownOpen(false);
+    }, 160);
+  };
+
   useEffect(() => {
     return () => {
       if (categoryTimeoutRef.current) clearTimeout(categoryTimeoutRef.current);
       if (accountTimeoutRef.current) clearTimeout(accountTimeoutRef.current);
+      if (authenticatorTimeoutRef.current) clearTimeout(authenticatorTimeoutRef.current);
     };
   }, []);
 
@@ -186,6 +203,9 @@ export default function Header() {
       if (categoryMenuRef.current && !categoryMenuRef.current.contains(e.target)) {
         setCategoryDropdownOpen(false);
       }
+      if (authenticatorMenuRef.current && !authenticatorMenuRef.current.contains(e.target)) {
+        setAuthenticatorDropdownOpen(false);
+      }
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
@@ -207,6 +227,7 @@ export default function Header() {
     setDesktopAccountOpen(false);
     setCategoryDropdownOpen(false);
     setShowResults(false);
+    setAuthenticatorDropdownOpen(false);
   }, [location.pathname]);
 
   const handleSearchSubmit = (e) => {
@@ -630,6 +651,50 @@ export default function Header() {
                     >
                       {link.label}
                     </Link>
+                  );
+                }
+
+                // Show a small dropdown for Authenticator (hover + click)
+                if (link.path === "/authenticator") {
+                  return (
+                    <div
+                      key={link.label}
+                      ref={authenticatorMenuRef}
+                      onMouseEnter={handleAuthenticatorMouseEnter}
+                      onMouseLeave={handleAuthenticatorMouseLeave}
+                      className="relative"
+                    >
+                      <button
+                        onClick={() => setAuthenticatorDropdownOpen((v) => !v)}
+                        className={`relative py-3 transition-colors uppercase tracking-wide text-xs ${
+                          isActive ? "text-[#22c55e] font-extrabold" : "text-[#1a1a1a] hover:text-[#22c55e]"
+                        }`}
+                      >
+                        {link.label}
+                      </button>
+
+                      {authenticatorDropdownOpen && (
+                        <div className="absolute left-0 top-full mt-2 w-56 bg-white rounded-2xl shadow-2xl border border-gray-100 py-2 z-50 animate-fadeIn">
+                          <Link
+                            to="/authenticator?tab=authenticity"
+                            onClick={() => setAuthenticatorDropdownOpen(false)}
+                            className="flex items-center gap-3 px-4 py-2.5 text-xs font-medium text-gray-800 hover:bg-[#22c55e]/10 hover:text-[#22c55e] transition-colors"
+                          >
+                            <FiSearch size={14} className="text-gray-500" />
+                            Check Authenticity
+                          </Link>
+
+                          <Link
+                            to="/authenticator?tab=lab-certificate"
+                            onClick={() => setAuthenticatorDropdownOpen(false)}
+                            className="flex items-center gap-3 px-4 py-2.5 text-xs font-medium text-gray-800 hover:bg-[#22c55e]/10 hover:text-[#22c55e] transition-colors"
+                          >
+                            <FiPackage size={14} className="text-gray-500" />
+                            Protein Lab Certificate
+                          </Link>
+                        </div>
+                      )}
+                    </div>
                   );
                 }
 

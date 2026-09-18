@@ -52,7 +52,7 @@ export default function TrackOrder() {
           value={orderId}
           onChange={(e) => setOrderId(e.target.value)}
           placeholder="e.g. NX6279"
-          className="flex-1 border border-gray-200 rounded-md px-4 py-3 text-sm outline-none focus:border-[#4CAF37]"
+          className="flex-1 border border-gray-200 rounded-md px-4 py-3 text-base outline-none focus:border-[#4CAF37]"
         />
         <button
           type="submit"

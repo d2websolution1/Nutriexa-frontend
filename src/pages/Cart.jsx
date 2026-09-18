@@ -263,9 +263,12 @@ export default function Cart() {
                     </button>
                   </div>
 
-                  <span className="text-sm font-extrabold text-[#1a1a1a] dark:text-white min-w-[70px] text-right">
-                    ₹{(item.price * item.quantity).toLocaleString("en-IN")}
-                  </span>
+                  <div className="min-w-[90px] text-right">
+                    {item.mrp && item.mrp > item.price ? (
+                      <div className="text-xs text-gray-400 line-through">₹{(item.mrp * item.quantity).toLocaleString("en-IN")}</div>
+                    ) : null}
+                    <div className="text-sm font-extrabold text-[#1a1a1a] dark:text-white">₹{(item.price * item.quantity).toLocaleString("en-IN")}</div>
+                  </div>
 
                   <button
                     onClick={() => removeFromCart(item.id)}

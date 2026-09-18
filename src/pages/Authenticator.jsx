@@ -300,7 +300,7 @@ export default function Authenticator() {
     <main className="bg-[#f7f8f6] dark:bg-gray-900 transition-colors">
       {/* Hero */}
       <section className="relative overflow-hidden bg-gradient-to-b from-[#eef4ea] to-[#f7f8f6] dark:from-gray-900 dark:to-gray-800 border-b border-gray-100 dark:border-gray-700">
-        <div className="max-w-3xl mx-auto px-4 md:px-10 py-14 md:py-18 text-center relative z-10">
+        <div className="max-w-3xl mx-auto px-4 md:px-10 py-8 md:py-12 text-center relative z-10">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white dark:bg-gray-700 shadow-sm border border-gray-100 dark:border-gray-600 mb-5">
             <FiShield size={30} className="text-[#4CAF37]" />
           </div>
@@ -315,7 +315,10 @@ export default function Authenticator() {
           </p>
 
           {/* Tab Selector — 2 circular badges like reference image */}
-          <div className="mt-8 inline-flex items-center gap-6 bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700 px-6 py-4">
+          <div
+            className="mt-8 inline-flex items-center gap-6 bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700 px-6 py-4"
+            style={{ position: "relative", zIndex: 999 }}
+          >
             <button
               onClick={() => setActiveTab("authenticity")}
               className={`flex flex-col items-center gap-2 group transition-all ${
