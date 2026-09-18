@@ -203,6 +203,91 @@ export default function Authenticator() {
     },
   ];
 
+  const normalizeText = (value = "") =>
+    String(value)
+      .toLowerCase()
+      .replace(/[^a-z0-9]/g, "");
+
+  const findMatchingCertificate = useCallback((productName) => {
+    if (!productName) return LAB_CERTIFICATES[0];
+
+    const target = normalizeText(productName);
+    const match = LAB_CERTIFICATES.find((cert) => {
+      const certText = normalizeText(cert.product);
+      return certText.includes(target) || target.includes(certText);
+    });
+
+    return match || LAB_CERTIFICATES[0];
+  }, []);
+
+  const downloadCertificate = () => {
+    const cert = selectedCert;
+    const printableHtml = `
+      <html>
+        <head>
+          <title>${cert.product} Certificate</title>
+          <style>
+            body { font-family: Arial, sans-serif; margin: 24px; color: #111827; }
+            .header { border-bottom: 2px solid #4CAF37; padding-bottom: 12px; margin-bottom: 20px; }
+            .muted { color: #6b7280; }
+            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+            th, td { border: 1px solid #d1d5db; padding: 10px; text-align: left; }
+            th { background: #f3f4f6; }
+            .badge { background:#4CAF37; color:white; padding:4px 8px; border-radius:999px; font-size:12px; }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <div class="badge">CERTIFIED</div>
+            <h1>${cert.product}</h1>
+            <p class="muted">${cert.variant}</p>
+          </div>
+          <p><strong>Batch ID:</strong> ${cert.batchId}</p>
+          <p><strong>Test Date:</strong> ${cert.testDate}</p>
+          <p><strong>Testing Lab:</strong> ${cert.lab}</p>
+          <p><strong>NABL:</strong> ${cert.nabl}</p>
+          <p><strong>FSSAI:</strong> ${cert.fssai}</p>
+          <table>
+            <thead>
+              <tr><th>Parameter</th><th>Claimed</th><th>Found</th><th>Status</th></tr>
+            </thead>
+            <tbody>
+              ${cert.parameters
+                .map(
+                  (param) => `
+                    <tr>
+                      <td>${param.name}</td>
+                      <td>${param.claimed}</td>
+                      <td>${param.found}</td>
+                      <td>${param.status}</td>
+                    </tr>
+                  `
+                )
+                .join("")}
+            </tbody>
+          </table>
+        </body>
+      </html>
+    `;
+
+    const blob = new Blob([printableHtml], { type: "application/html" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `${cert.batchId}-${cert.product.replace(/\s+/g, "_")}.html`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  useEffect(() => {
+    if (result?.valid && result.product_name) {
+      setSelectedCert(findMatchingCertificate(result.product_name));
+      setActiveTab("lab-certificate");
+    }
+  }, [result, findMatchingCertificate]);
+
   // Filter lab certificates by search
   const filteredCerts = LAB_CERTIFICATES.filter(
     (c) =>
@@ -437,7 +522,10 @@ export default function Authenticator() {
                   <p className="text-[11px] text-gray-500 dark:text-gray-400">Food Safety & Standards Authority of India</p>
                 </div>
               </div>
-              <button className="flex items-center gap-2 bg-[#4CAF37] text-white text-xs font-bold px-4 py-2.5 rounded-xl hover:opacity-90 transition-opacity">
+              <button
+                onClick={downloadCertificate}
+                className="flex items-center gap-2 bg-[#4CAF37] text-white text-xs font-bold px-4 py-2.5 rounded-xl hover:opacity-90 transition-opacity"
+              >
                 <FiDownload size={14} /> Download Certificate PDF
               </button>
             </div>

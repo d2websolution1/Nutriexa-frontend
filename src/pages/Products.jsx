@@ -51,6 +51,36 @@ const GOAL_MAPPINGS = {
   },
 };
 
+const DISCOUNT_OPTIONS = [
+  { value: "up-to-30", label: "Up to 30% OFF" },
+  { value: "30-to-40", label: "30% - 40% OFF" },
+  { value: "40-to-70", label: "40% - 70% OFF" },
+  { value: "70-plus", label: "70% OFF & above" },
+];
+
+const getDiscountPercent = (product) => {
+  if (!product.mrp || product.mrp <= product.price) return 0;
+  return Math.round(((product.mrp - product.price) / product.mrp) * 100);
+};
+
+const matchesDiscountFilter = (product, discountValue) => {
+  if (!discountValue) return true;
+  const pct = getDiscountPercent(product);
+
+  switch (discountValue) {
+    case "up-to-30":
+      return pct > 0 && pct <= 30;
+    case "30-to-40":
+      return pct > 30 && pct <= 40;
+    case "40-to-70":
+      return pct > 40 && pct <= 70;
+    case "70-plus":
+      return pct > 70;
+    default:
+      return true;
+  }
+};
+
 export default function Products() {
   const [searchParams, setSearchParams] = useSearchParams();
   const initialCategory = searchParams.get("category");
@@ -67,6 +97,7 @@ export default function Products() {
   const [selectedGoals, setSelectedGoals] = useState(
     initialGoal ? [initialGoal] : []
   );
+  const [selectedDiscount, setSelectedDiscount] = useState(null);
   const [priceRange, setPriceRange] = useState({ min: 0, max: 10000 });
   const [sortBy, setSortBy] = useState("popular");
   const [isSorting, setIsSorting] = useState(false);
@@ -90,7 +121,6 @@ export default function Products() {
         const res = await fetch(API_URL);
         const data = await res.json();
 
-        // Backend se aayi hui shape ko ProductCard ke expected shape mein transform karo
         const transformed = data
           .filter((p) => p.status === "Active")
           .map((p) => ({
@@ -143,6 +173,7 @@ export default function Products() {
   const clearAll = () => {
     setSelectedCategories([]);
     setSelectedGoals([]);
+    setSelectedDiscount(null);
     setPriceRange({ min: 0, max: 10000 });
   };
 
@@ -174,6 +205,10 @@ export default function Products() {
       list = list.filter((p) => selectedCategories.includes(p.category));
     }
 
+    if (selectedDiscount) {
+      list = list.filter((p) => matchesDiscountFilter(p, selectedDiscount));
+    }
+
     if (selectedGoals.length > 0) {
       list = list.filter((p) => {
         const prodName = (p.name || "").toLowerCase();
@@ -200,7 +235,7 @@ export default function Products() {
     }
 
     return list;
-  }, [allProducts, selectedCategories, selectedGoals, priceRange, sortBy, searchQuery]);
+  }, [allProducts, selectedCategories, selectedGoals, selectedDiscount, priceRange, sortBy, searchQuery]);
 
   const recommended = useMemo(
     () =>
@@ -221,7 +256,11 @@ export default function Products() {
         <span className="text-[#1a1a1a] font-medium">Products</span>
       </div>
 
-      <PromoBanner />
+      <PromoBanner
+        products={allProducts}
+        selectedDiscount={selectedDiscount}
+        onSelectDiscount={setSelectedDiscount}
+      />
 
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl md:text-3xl font-extrabold text-[#1a1a1a]">
@@ -245,6 +284,9 @@ export default function Products() {
             selectedGoals={selectedGoals}
             onToggleGoal={toggleGoal}
             onClearAll={clearAll}
+            discountOptions={DISCOUNT_OPTIONS}
+            selectedDiscount={selectedDiscount}
+            onSelectDiscount={setSelectedDiscount}
           />
         </aside>
 
@@ -266,6 +308,9 @@ export default function Products() {
                 selectedGoals={selectedGoals}
                 onToggleGoal={toggleGoal}
                 onClearAll={clearAll}
+                discountOptions={DISCOUNT_OPTIONS}
+                selectedDiscount={selectedDiscount}
+                onSelectDiscount={setSelectedDiscount}
                 onClose={() => setShowMobileFilters(false)}
               />
             </div>
@@ -330,9 +375,21 @@ export default function Products() {
           )}
 
           {/* Active Goal or Category Filters Pills */}
-          {(selectedGoals.length > 0 || selectedCategories.length > 0) && (
+          {(selectedGoals.length > 0 || selectedCategories.length > 0 || selectedDiscount) && (
             <div className="mb-4 flex items-center gap-2 flex-wrap">
               <span className="text-xs text-gray-500 font-semibold">Active:</span>
+              {selectedDiscount && (
+                <span className="inline-flex items-center gap-1.5 bg-[#4CAF37]/15 text-[#4CAF37] text-xs font-bold px-3 py-1 rounded-full border border-[#4CAF37]/30">
+                  🔥 {DISCOUNT_OPTIONS.find((opt) => opt.value === selectedDiscount)?.label}
+                  <button
+                    type="button"
+                    onClick={() => setSelectedDiscount(null)}
+                    className="hover:text-red-500 cursor-pointer ml-1 text-sm font-black"
+                  >
+                    ×
+                  </button>
+                </span>
+              )}
               {selectedGoals.map((g) => (
                 <span
                   key={g}

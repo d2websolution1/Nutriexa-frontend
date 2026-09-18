@@ -11,6 +11,9 @@ export default function ProductFilters({
   onToggleGoal,
   onClearAll,
   onClose,
+  discountOptions = [],
+  selectedDiscount,
+  onSelectDiscount,
 }) {
   const minVal = typeof priceRange === "object" && priceRange !== null ? (priceRange.min ?? 0) : 0;
   const maxVal = typeof priceRange === "object" && priceRange !== null ? (priceRange.max ?? 10000) : (typeof priceRange === "number" ? priceRange : 10000);
@@ -56,6 +59,32 @@ export default function ProductFilters({
           )}
         </div>
       </div>
+
+      {/* Discount filter */}
+      {discountOptions.length > 0 && (
+        <div className="mb-6">
+          <h5 className="text-xs font-bold text-[#1a1a1a] uppercase tracking-wide mb-3">
+            Discount
+          </h5>
+          <div className="space-y-2.5">
+            {discountOptions.map((option) => (
+              <label
+                key={option.value}
+                className="flex items-center gap-2.5 text-sm text-gray-600 cursor-pointer select-none"
+              >
+                <input
+                  type="radio"
+                  name="discount-range"
+                  checked={selectedDiscount === option.value}
+                  onChange={() => onSelectDiscount(option.value)}
+                  className="w-4 h-4 accent-[#4CAF37] cursor-pointer"
+                />
+                <span>{option.label}</span>
+              </label>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Category */}
       <div className="mb-6">
