@@ -438,7 +438,7 @@ export default function Header() {
                 </button>
 
                 {desktopAccountOpen && (
-                  <div className="absolute right-0 top-full mt-3 w-56 bg-white text-[#1a1a1a] rounded-2xl shadow-2xl border border-gray-100 py-2.5 z-50 animate-fadeIn">
+                  <div className="absolute right-0 top-full mt-3 w-56 bg-[#f5f5f5] text-[#1a1a1a] rounded-[18px] shadow-[0_18px_35px_rgba(0,0,0,0.14)] border border-gray-200 overflow-hidden z-50 animate-fadeIn">
                     {user ? (
                       <>
                         <div className="px-4 py-2 border-b border-gray-100 bg-[#f9fafb] rounded-t-xl">
@@ -520,23 +520,29 @@ export default function Header() {
                       </>
                     ) : (
                       <>
-                        <div className="px-4 py-2 border-b border-gray-100 bg-[#f9fafb]">
-                          <p className="text-xs font-bold text-[#1a1a1a]">Welcome to Nutriexa</p>
-                          <p className="text-[10px] text-gray-500">Access orders, wishlist & more</p>
+                        <div className="px-4 py-3 border-b border-[#1f1f1f] bg-[#111111]">
+                          <p className="text-xs font-bold text-white">Welcome to Nutriexa</p>
+                          <p className="text-[10px] text-gray-300">Access orders, wishlist & more</p>
                         </div>
                         <Link
                           to="/login"
                           onClick={() => setDesktopAccountOpen(false)}
-                          className="flex items-center gap-3 px-4 py-2.5 text-xs font-semibold text-[#22c55e] hover:bg-[#22c55e]/10 transition-colors"
+                          className="flex items-center gap-3 px-4 py-2.5 text-xs font-semibold text-[#1a1a1a] hover:bg-[#22c55e]/10 transition-colors"
                         >
-                          <FiLogIn size={15} /> Login / Sign In
+                          <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#111111] text-white">
+                            <FiLogIn size={12} />
+                          </span>
+                          Login / Sign In
                         </Link>
                         <Link
                           to="/signup"
                           onClick={() => setDesktopAccountOpen(false)}
-                          className="flex items-center gap-3 px-4 py-2.5 text-xs font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+                          className="flex items-center gap-3 px-4 py-2.5 text-xs font-medium text-[#1a1a1a] hover:bg-gray-50 transition-colors"
                         >
-                          <FiUser size={15} /> Register New Account
+                          <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#4CAF37] text-white">
+                            <FiUser size={12} />
+                          </span>
+                          Register New Account
                         </Link>
                       </>
                     )}
