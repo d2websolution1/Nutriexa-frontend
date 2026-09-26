@@ -132,9 +132,13 @@ html.dark .bg-white {
 }
 
 html.dark .bg-\[\#f8f9f7\],
+html.dark .bg-\[\#f8faf7\],
 html.dark .bg-\[\#f7f8f6\],
 html.dark .bg-\[\#f9fafb\],
+html.dark .bg-\[\#fafbf9\],
 html.dark .bg-\[\#f3f6f2\],
+html.dark .bg-\[\#f4f7f2\],
+html.dark .bg-\[\#f7fbf6\],
 html.dark .bg-gray-50 {
   background-color: #0d121c !important;
 }
