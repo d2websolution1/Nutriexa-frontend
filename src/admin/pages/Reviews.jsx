@@ -10,7 +10,9 @@ import {
   FiFilter,
   FiTrash2,
   FiEye,
+  FiRefreshCw,
 } from "react-icons/fi";
+import { API_URL } from "../../config";
 
 const MOCK_REVIEWS = [
   {
@@ -115,14 +117,37 @@ export default function Reviews() {
   const [ratingFilter, setRatingFilter] = useState("All");
   const [selectedReview, setSelectedReview] = useState(null);
   const [replyText, setReplyText] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    fetchReviews();
+  }, []);
+
+  async function fetchReviews() {
+    try {
+      setLoading(true);
+      const res = await fetch(`${API_URL}/api/reviews`);
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data) && data.length > 0) {
+          setReviews(data);
+        }
+      }
+    } catch (err) {
+      console.error("Failed to load reviews:", err);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   const filtered = reviews.filter((r) => {
-    const matchSearch =
-      r.productName.toLowerCase().includes(search.toLowerCase()) ||
-      r.customerName.toLowerCase().includes(search.toLowerCase()) ||
-      r.comment.toLowerCase().includes(search.toLowerCase());
+    const pName = (r.productName || r.product_name || "").toLowerCase();
+    const cName = (r.customerName || r.customer_name || "").toLowerCase();
+    const cComment = (r.comment || "").toLowerCase();
+    const sTerm = search.toLowerCase();
+    const matchSearch = pName.includes(sTerm) || cName.includes(sTerm) || cComment.includes(sTerm);
     const matchStatus = statusFilter === "All" || r.status === statusFilter;
-    const matchRating = ratingFilter === "All" || r.rating === parseInt(ratingFilter);
+    const matchRating = ratingFilter === "All" || Number(r.rating) === parseInt(ratingFilter, 10);
     return matchSearch && matchStatus && matchRating;
   });
 
@@ -130,31 +155,74 @@ export default function Reviews() {
     total: reviews.length,
     pending: reviews.filter((r) => r.status === "Pending").length,
     approved: reviews.filter((r) => r.status === "Approved").length,
-    avgRating: (reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length).toFixed(1),
+    avgRating: reviews.length > 0
+      ? (reviews.reduce((acc, r) => acc + (Number(r.rating) || 0), 0) / reviews.length).toFixed(1)
+      : "0.0",
   };
 
-  function updateStatus(id, newStatus) {
-    setReviews((prev) =>
-      prev.map((r) => (r.id === id ? { ...r, status: newStatus } : r))
-    );
-    if (selectedReview?.id === id) setSelectedReview((prev) => ({ ...prev, status: newStatus }));
+  async function updateStatus(id, newStatus) {
+    try {
+      setReviews((prev) =>
+        prev.map((r) => (r.id === id ? { ...r, status: newStatus } : r))
+      );
+      if (selectedReview?.id === id) setSelectedReview((prev) => ({ ...prev, status: newStatus }));
+
+      await fetch(`${API_URL}/api/reviews/${id}/status`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: newStatus }),
+      });
+    } catch (err) {
+      console.error("Failed to update review status:", err);
+    }
   }
 
-  function deleteReview(id) {
-    setReviews((prev) => prev.filter((r) => r.id !== id));
-    if (selectedReview?.id === id) setSelectedReview(null);
+  async function deleteReview(id) {
+    if (!window.confirm("Are you sure you want to delete this review?")) return;
+    try {
+      setReviews((prev) => prev.filter((r) => r.id !== id));
+      if (selectedReview?.id === id) setSelectedReview(null);
+
+      await fetch(`${API_URL}/api/reviews/${id}`, {
+        method: "DELETE",
+      });
+    } catch (err) {
+      console.error("Failed to delete review:", err);
+    }
   }
 
   return (
     <div style={{ padding: "24px", minHeight: "100vh", background: "#f8fafc" }}>
       {/* Header */}
-      <div style={{ marginBottom: "24px" }}>
-        <h1 style={{ fontSize: "22px", fontWeight: 700, color: "#0f172a", margin: 0 }}>
-          Product Reviews
-        </h1>
-        <p style={{ color: "#64748b", fontSize: "14px", marginTop: "4px" }}>
-          Moderate customer reviews, approve or reject submissions.
-        </p>
+      <div style={{ marginBottom: "24px", display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+        <div>
+          <h1 style={{ fontSize: "22px", fontWeight: 700, color: "#0f172a", margin: 0 }}>
+            Product Reviews
+          </h1>
+          <p style={{ color: "#64748b", fontSize: "14px", marginTop: "4px" }}>
+            Moderate customer reviews, approve or reject submissions.
+          </p>
+        </div>
+        <button
+          onClick={fetchReviews}
+          title="Refresh Reviews"
+          style={{
+            padding: "9px 14px",
+            border: "1px solid #e2e8f0",
+            background: "#fff",
+            borderRadius: "8px",
+            cursor: "pointer",
+            color: "#64748b",
+            display: "flex",
+            alignItems: "center",
+            gap: "6px",
+            fontSize: "13px",
+            fontWeight: 600
+          }}
+        >
+          <FiRefreshCw size={14} className={loading ? "animate-spin" : ""} />
+          Refresh
+        </button>
       </div>
 
       {/* Stats */}

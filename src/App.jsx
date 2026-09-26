@@ -41,7 +41,6 @@ import Categories from "./admin/pages/Categories";
 import Inventory from "./admin/pages/Inventory";
 import Reviews from "./admin/pages/Reviews";
 import HomepageCMS from "./admin/pages/HomepageCMS";
-import ContentPages from "./admin/pages/ContentPages";
 import Shipping from "./admin/pages/Shipping";
 import Payments from "./admin/pages/Payments";
 import Notifications from "./admin/pages/Notifications";
@@ -193,7 +192,6 @@ export default function App() {
                   <Route path="inventory" element={<Inventory />} />
                   <Route path="reviews" element={<Reviews />} />
                   <Route path="cms" element={<HomepageCMS />} />
-                  <Route path="content-pages" element={<ContentPages />} />
                   <Route path="shipping" element={<Shipping />} />
                   <Route path="payments" element={<Payments />} />
                   <Route path="notifications" element={<Notifications />} />
