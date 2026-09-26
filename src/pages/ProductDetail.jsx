@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -9,12 +9,14 @@ import {
   FiStar,
   FiChevronLeft,
   FiZap,
+  FiMaximize2,
+  FiX,
 } from "react-icons/fi";
 import { useCart } from "../context/CartContext";
 import AnimateOnView from "../components/animation/AnimateOnView";
+import { API_URL as BASE_URL } from "../config";
 
-const API_URL = "https://nutriexa-backend.onrender.com/api/products";
-const BASE_URL = "https://nutriexa-backend.onrender.com";
+const API_URL = `${BASE_URL}/api/products`;
 
 function buildUrl(path) {
   if (!path) return "/images/placeholder.png";
@@ -34,8 +36,56 @@ export default function ProductDetail() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [added, setAdded] = useState(false);
-  const [hovering, setHovering] = useState(false);
   const [direction, setDirection] = useState(1);
+
+  // Amazon-style Magnifier Zoom State
+  const [isZooming, setIsZooming] = useState(false);
+  const [lensPos, setLensPos] = useState({ x: 0, y: 0 });
+  const [bgPos, setBgPos] = useState({ x: 0, y: 0 });
+  const [containerDim, setContainerDim] = useState({ width: 450, height: 450 });
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const mainImgRef = useRef(null);
+  const zoomFactor = 2.5;
+
+  const lensW = Math.round(containerDim.width / zoomFactor);
+  const lensH = Math.round(containerDim.height / zoomFactor);
+
+  const handleMouseEnter = () => {
+    if (typeof window !== "undefined" && window.innerWidth >= 768) {
+      if (mainImgRef.current) {
+        const rect = mainImgRef.current.getBoundingClientRect();
+        setContainerDim({ width: rect.width, height: rect.height });
+      }
+      setIsZooming(true);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    setIsZooming(false);
+  };
+
+  const handleMouseMove = (e) => {
+    if (!mainImgRef.current) return;
+    const rect = mainImgRef.current.getBoundingClientRect();
+    if (rect.width !== containerDim.width || rect.height !== containerDim.height) {
+      setContainerDim({ width: rect.width, height: rect.height });
+    }
+
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+
+    const currLensW = Math.round(rect.width / zoomFactor);
+    const currLensH = Math.round(rect.height / zoomFactor);
+
+    let x = mouseX - currLensW / 2;
+    let y = mouseY - currLensH / 2;
+
+    x = Math.max(0, Math.min(x, rect.width - currLensW));
+    y = Math.max(0, Math.min(y, rect.height - currLensH));
+
+    setLensPos({ x, y });
+    setBgPos({ x: x * zoomFactor, y: y * zoomFactor });
+  };
 
   useEffect(() => {
     setLoading(true);
@@ -144,12 +194,12 @@ export default function ProductDetail() {
         <span className="text-[#1a1a1a] font-medium truncate">{product.name}</span>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
+      <div className="relative grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
         {/* ── Image Gallery ── */}
         <div className="flex flex-col-reverse sm:flex-row gap-3">
-          {/* Thumbnail strip: horizontal on mobile, vertical on desktop */}
+          {/* Thumbnail strip: horizontal on mobile, vertical on desktop — handles 7+ images seamlessly */}
           {images.length > 1 && (
-            <div className="flex flex-row sm:flex-col gap-2 overflow-x-auto sm:overflow-y-auto sm:max-h-[480px] pb-1 sm:pb-0 sm:pr-0.5 scrollbar-thin">
+            <div className="flex flex-row sm:flex-col gap-2 overflow-x-auto sm:overflow-y-auto sm:max-h-[500px] pb-1 sm:pb-0 sm:pr-1 scrollbar-thin">
               {images.map((src, idx) => (
                 <motion.button
                   key={idx}
@@ -157,80 +207,150 @@ export default function ProductDetail() {
                   onClick={() => handleThumbnailClick(idx)}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className={`w-14 h-14 sm:w-16 sm:h-16 flex-shrink-0 rounded-lg overflow-hidden border-2 transition-all ${idx === activeIdx
-                    ? "border-[#4CAF37] shadow-md"
-                    : "border-gray-200 hover:border-gray-300"
-                    }`}
+                  className={`w-14 h-14 sm:w-16 sm:h-16 flex-shrink-0 rounded-lg overflow-hidden border-2 transition-all cursor-pointer ${
+                    idx === activeIdx
+                      ? "border-[#4CAF37] shadow-md ring-2 ring-[#4CAF37]/20"
+                      : "border-gray-200 hover:border-gray-300"
+                  }`}
+                  title={`Thumbnail ${idx + 1}`}
                 >
                   <img
                     src={src}
                     alt={`Thumbnail ${idx + 1}`}
-                    className="w-full h-full object-contain bg-[#f3f6f2]"
+                    className="w-full h-full object-contain p-1 bg-[#f3f6f2]"
                   />
                 </motion.button>
               ))}
             </div>
           )}
 
-          {/* Main image */}
-          <div className="relative flex-1 aspect-square bg-[#f3f6f2] rounded-xl flex items-center justify-center overflow-hidden" onMouseEnter={() => setHovering(true)} onMouseLeave={() => setHovering(false)}>
-            {discountPercent && (
-              <span className="absolute top-3 left-3 md:top-4 md:left-4 z-10 bg-[#4CAF37] text-white text-[10px] md:text-xs font-bold px-2 py-0.5 md:px-2.5 md:py-1 rounded">
-                {discountPercent}% OFF
-              </span>
-            )}
+          {/* Main image container */}
+          <div className="flex-1 flex flex-col">
+            <div
+              ref={mainImgRef}
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+              onMouseMove={handleMouseMove}
+              onClick={() => setLightboxOpen(true)}
+              className="relative aspect-square bg-[#f3f6f2] rounded-2xl flex items-center justify-center overflow-hidden cursor-crosshair border border-gray-100 shadow-xs select-none"
+            >
+              {discountPercent && (
+                <span className="absolute top-3 left-3 md:top-4 md:left-4 z-10 bg-[#4CAF37] text-white text-[10px] md:text-xs font-bold px-2 py-0.5 md:px-2.5 md:py-1 rounded shadow-xs">
+                  {discountPercent}% OFF
+                </span>
+              )}
 
-            {images.length > 1 && (
-              <>
-                <motion.button
-                  type="button"
-                  onClick={prev}
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="absolute left-1.5 md:left-2 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white shadow rounded-full p-1 md:p-1.5 text-gray-600 hover:text-[#4CAF37] transition"
-                >
-                  <FiChevronLeft size={16} className="md:w-[18px] md:h-[18px]" />
-                </motion.button>
-                <motion.button
-                  type="button"
-                  onClick={next}
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="absolute right-1.5 md:right-2 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white shadow rounded-full p-1 md:p-1.5 text-gray-600 hover:text-[#4CAF37] transition"
-                >
-                  <FiChevronRight size={16} className="md:w-[18px] md:h-[18px]" />
-                </motion.button>
-              </>
-            )}
+              {/* Magnifier Lens on Image (Desktop) */}
+              {isZooming && (
+                <div
+                  className="hidden md:block absolute pointer-events-none rounded-sm z-20"
+                  style={{
+                    left: `${lensPos.x}px`,
+                    top: `${lensPos.y}px`,
+                    width: `${lensW}px`,
+                    height: `${lensH}px`,
+                    border: "1.5px solid rgba(37, 99, 235, 0.7)",
+                    backgroundColor: "rgba(59, 130, 246, 0.16)",
+                    backgroundImage: "radial-gradient(rgba(37, 99, 235, 0.5) 1.5px, transparent 1.5px)",
+                    backgroundSize: "8px 8px",
+                    boxShadow: "0 0 0 1px rgba(255, 255, 255, 0.5) inset, 0 4px 12px rgba(0,0,0,0.1)",
+                  }}
+                />
+              )}
 
-            <AnimatePresence mode="wait">
-              <motion.img
-                key={mainImage}
-                src={mainImage}
-                alt={product.name}
-                className="w-4/5 h-4/5 object-contain"
-                initial={{ opacity: 0, x: direction > 0 ? 40 : -40 }}
-                animate={{ opacity: 1, scale: hovering ? 1.2 : 1, x: 0 }}
-                exit={{ opacity: 0, x: direction > 0 ? -40 : 40 }}
-                transition={{ duration: 0.4, ease: "easeOut" }}
-              />
-            </AnimatePresence>
-
-            {images.length > 1 && (
-              <div className="absolute bottom-2 md:bottom-3 left-0 right-0 flex justify-center gap-1.5">
-                {images.map((_, idx) => (
-                  <button
-                    key={idx}
+              {images.length > 1 && (
+                <>
+                  <motion.button
                     type="button"
-                    onClick={() => setActiveIdx(idx)}
-                    className={`h-1.5 md:h-2 rounded-full transition-all ${idx === activeIdx ? "bg-[#4CAF37] w-3.5 md:w-4" : "bg-gray-300 w-1.5 md:w-2"
+                    onClick={(e) => { e.stopPropagation(); prev(); }}
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-white/90 hover:bg-white shadow rounded-full p-2 text-gray-700 hover:text-[#4CAF37] transition cursor-pointer"
+                  >
+                    <FiChevronLeft size={18} />
+                  </motion.button>
+                  <motion.button
+                    type="button"
+                    onClick={(e) => { e.stopPropagation(); next(); }}
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-white/90 hover:bg-white shadow rounded-full p-2 text-gray-700 hover:text-[#4CAF37] transition cursor-pointer"
+                  >
+                    <FiChevronRight size={18} />
+                  </motion.button>
+                </>
+              )}
+
+              <AnimatePresence mode="wait">
+                <motion.img
+                  key={mainImage}
+                  src={mainImage}
+                  alt={product.name}
+                  className="w-full h-full object-contain p-6"
+                  initial={{ opacity: 0, x: direction > 0 ? 30 : -30 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: direction > 0 ? -30 : 30 }}
+                  transition={{ duration: 0.25, ease: "easeOut" }}
+                />
+              </AnimatePresence>
+
+              {images.length > 1 && (
+                <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-1.5 z-10">
+                  {images.map((_, idx) => (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={(e) => { e.stopPropagation(); setActiveIdx(idx); }}
+                      className={`h-1.5 rounded-full transition-all cursor-pointer ${
+                        idx === activeIdx ? "bg-[#4CAF37] w-5" : "bg-gray-300 w-1.5 hover:bg-gray-400"
                       }`}
-                  />
-                ))}
-              </div>
-            )}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Click to see full view & Hover hint */}
+            <div className="flex items-center justify-between text-xs text-gray-400 mt-2.5 px-1">
+              <button
+                type="button"
+                onClick={() => setLightboxOpen(true)}
+                className="text-gray-500 hover:text-[#4CAF37] font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
+              >
+                <FiMaximize2 size={13} /> Click to see full view
+              </button>
+              <span className="hidden md:flex items-center gap-1 text-[11px] text-gray-400 font-medium">
+                🔍 Roll over image to magnify
+              </span>
+            </div>
           </div>
         </div>
+
+        {/* ── Side Magnified View Window (Desktop Amazon style) ── */}
+        {isZooming && (
+          <div
+            className="hidden md:block absolute left-[calc(50%+1.25rem)] top-0 w-[calc(50%-1.25rem)] aspect-square z-30 bg-[#f3f6f2] rounded-2xl shadow-2xl border-2 border-gray-200 overflow-hidden pointer-events-none"
+          >
+            <div className="relative w-full h-full overflow-hidden">
+              <img
+                src={mainImage}
+                alt="Magnified View"
+                className="absolute pointer-events-none max-w-none"
+                style={{
+                  width: `${containerDim.width * zoomFactor}px`,
+                  height: `${containerDim.height * zoomFactor}px`,
+                  objectFit: "contain",
+                  padding: `${24 * zoomFactor}px`,
+                  left: `-${bgPos.x}px`,
+                  top: `-${bgPos.y}px`,
+                }}
+              />
+            </div>
+            <div className="absolute bottom-3 right-3 bg-black/75 backdrop-blur-xs text-white text-[10px] font-bold px-2.5 py-1 rounded-full shadow flex items-center gap-1">
+              <span>🔍</span> {zoomFactor}x Magnified View
+            </div>
+          </div>
+        )}
 
         {/* ── Product Details ── */}
         <div>
@@ -377,6 +497,76 @@ export default function ProductDetail() {
           Buy Now
         </button>
       </div>
+
+      {/* Fullscreen Lightbox Modal */}
+      <AnimatePresence>
+        {lightboxOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex flex-col items-center justify-center p-4 sm:p-8"
+            onClick={() => setLightboxOpen(false)}
+          >
+            <button
+              onClick={() => setLightboxOpen(false)}
+              className="absolute top-5 right-5 text-white/80 hover:text-white p-2 rounded-full bg-white/10 hover:bg-white/20 transition cursor-pointer"
+              title="Close"
+            >
+              <FiX size={24} />
+            </button>
+
+            {images.length > 1 && (
+              <>
+                <button
+                  onClick={(e) => { e.stopPropagation(); prev(); }}
+                  className="absolute left-4 top-1/2 -translate-y-1/2 text-white/80 hover:text-white p-3 rounded-full bg-white/10 hover:bg-white/20 transition cursor-pointer"
+                  title="Previous image"
+                >
+                  <FiChevronLeft size={28} />
+                </button>
+                <button
+                  onClick={(e) => { e.stopPropagation(); next(); }}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-white/80 hover:text-white p-3 rounded-full bg-white/10 hover:bg-white/20 transition cursor-pointer"
+                  title="Next image"
+                >
+                  <FiChevronRight size={28} />
+                </button>
+              </>
+            )}
+
+            <div
+              className="max-w-4xl max-h-[80vh] flex items-center justify-center"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <img
+                src={mainImage}
+                alt={product.name}
+                className="max-w-full max-h-[80vh] object-contain drop-shadow-2xl rounded-lg"
+              />
+            </div>
+
+            {images.length > 1 && (
+              <div
+                className="flex items-center gap-2 mt-4 overflow-x-auto max-w-full p-2"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {images.map((src, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setActiveIdx(idx)}
+                    className={`w-14 h-14 rounded-lg overflow-hidden border-2 transition-all shrink-0 cursor-pointer ${
+                      idx === activeIdx ? "border-[#4CAF37] scale-105" : "border-white/30 opacity-60 hover:opacity-100"
+                    }`}
+                  >
+                    <img src={src} alt="" className="w-full h-full object-contain bg-white/5 p-1" />
+                  </button>
+                ))}
+              </div>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </main>
   );
 }

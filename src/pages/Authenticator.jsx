@@ -128,10 +128,18 @@ export default function Authenticator() {
   }, [code]);
 
   useEffect(() => {
+    const tabParam = searchParams.get("tab");
+    if (tabParam === "lab-certificate") {
+      setActiveTab("lab-certificate");
+    } else if (tabParam === "authenticity") {
+      setActiveTab("authenticity");
+    }
+
     const codeParam = searchParams.get("code");
     if (codeParam) {
       const trimmed = codeParam.trim().toUpperCase();
       setCode(trimmed);
+      setActiveTab("authenticity");
       verifyCode(trimmed);
     }
   }, [searchParams, verifyCode]);
@@ -284,7 +292,8 @@ export default function Authenticator() {
   useEffect(() => {
     if (result?.valid && result.product_name) {
       setSelectedCert(findMatchingCertificate(result.product_name));
-      setActiveTab("lab-certificate");
+      // Stay on authenticity tab to display verification status
+      setActiveTab("authenticity");
     }
   }, [result, findMatchingCertificate]);
 
@@ -622,16 +631,26 @@ export default function Authenticator() {
                             Security Code: {result.code}
                           </p>
                         )}
-                        {(result.product_id || result.slug) && (
-                          <div className="mt-3">
+                        <div className="mt-3 flex flex-wrap items-center gap-2">
+                          {(result.product_id || result.slug) && (
                             <Link
                               to={`/product/${result.slug || result.product_id}`}
                               className="inline-flex items-center gap-1 text-xs font-bold text-[#4CAF37] hover:text-[#3e8e2e] hover:underline"
                             >
                               View Complete Product Info &rarr;
                             </Link>
-                          </div>
-                        )}
+                          )}
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setSelectedCert(findMatchingCertificate(result.product_name));
+                              setActiveTab("lab-certificate");
+                            }}
+                            className="inline-flex items-center gap-1 text-xs font-bold bg-[#4CAF37]/10 text-[#4CAF37] hover:bg-[#4CAF37] hover:text-white px-3 py-1 rounded-lg transition-colors cursor-pointer"
+                          >
+                            📜 View Lab Certificate
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>

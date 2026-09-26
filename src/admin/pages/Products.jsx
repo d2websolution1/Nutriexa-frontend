@@ -17,9 +17,11 @@ import { API_URL as BASE_URL } from "../../config";
 import { useAuth } from "../../context/AuthContext";
 
 const STATUS_STYLES = {
-  Active: "bg-green-100 text-green-700",
-  "Out of Stock": "bg-red-100 text-red-700",
-  Draft: "bg-gray-100 text-gray-600",
+  Active: "bg-emerald-50 text-emerald-700 border-emerald-200",
+  Inactive: "bg-amber-50 text-amber-700 border-amber-200",
+  Disabled: "bg-rose-50 text-rose-700 border-rose-200",
+  "Out of Stock": "bg-red-50 text-red-700 border-red-200",
+  Draft: "bg-gray-100 text-gray-600 border-gray-200",
 };
 
 const PRODUCTS_API = `${BASE_URL}/api/products`;
@@ -33,10 +35,12 @@ function buildImageUrl(path) {
 export default function Products() {
   const { hasPermission } = useAuth();
   const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState("All");
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [deletingId, setDeletingId] = useState(null);
+  const [updatingStatusId, setUpdatingStatusId] = useState(null);
 
   // Import Modal State
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
@@ -91,6 +95,34 @@ export default function Products() {
       alert(err.message || "Failed to delete product. Please try again.");
     } finally {
       setDeletingId(null);
+    }
+  };
+
+  const handleStatusChange = async (id, newStatus) => {
+    setUpdatingStatusId(id);
+    const token = localStorage.getItem("adminToken");
+    try {
+      const res = await fetch(`${PRODUCTS_API}/${id}/status`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ status: newStatus }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.message || "Failed to update status");
+      }
+
+      setProducts((prev) =>
+        prev.map((p) => (p.id === id ? { ...p, status: newStatus } : p))
+      );
+    } catch (err) {
+      alert(err.message || "Could not update status.");
+    } finally {
+      setUpdatingStatusId(null);
     }
   };
 
@@ -260,12 +292,15 @@ export default function Products() {
     }
   };
 
-  const filtered = products.filter(
-    (p) =>
+  const filtered = products.filter((p) => {
+    const matchesSearch =
       p.name?.toLowerCase().includes(search.toLowerCase()) ||
       p.sku?.toLowerCase().includes(search.toLowerCase()) ||
-      p.category?.toLowerCase().includes(search.toLowerCase())
-  );
+      p.category?.toLowerCase().includes(search.toLowerCase());
+    const currentStatus = p.status || "Active";
+    const matchesStatus = statusFilter === "All" || currentStatus === statusFilter;
+    return matchesSearch && matchesStatus;
+  });
 
   return (
     <div className="space-y-5">
@@ -318,16 +353,36 @@ export default function Products() {
       {/* Table & Search Container */}
       <div className="bg-white rounded-xl border border-gray-100 shadow-xs overflow-hidden">
         <div className="p-4 border-b border-gray-100 flex items-center justify-between flex-wrap gap-3">
-          <div className="flex items-center gap-2 bg-[#f5f6f4] rounded-lg px-3 py-2 w-full sm:w-80 border border-gray-200/50">
-            <FiSearch className="text-gray-400 shrink-0" size={15} />
-            <input
-              type="text"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search by name, SKU, category..."
-              className="bg-transparent text-xs outline-none w-full placeholder:text-gray-400 text-gray-800"
-            />
+          <div className="flex items-center gap-3 flex-wrap flex-1">
+            <div className="flex items-center gap-2 bg-[#f5f6f4] rounded-lg px-3 py-2 w-full sm:w-80 border border-gray-200/50">
+              <FiSearch className="text-gray-400 shrink-0" size={15} />
+              <input
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search by name, SKU, category..."
+                className="bg-transparent text-xs outline-none w-full placeholder:text-gray-400 text-gray-800"
+              />
+            </div>
+
+            <div className="flex items-center gap-1 bg-[#f5f6f4] p-1 rounded-lg border border-gray-200/50 text-[11px] font-semibold text-gray-600">
+              {["All", "Active", "Inactive", "Disabled"].map((st) => (
+                <button
+                  key={st}
+                  type="button"
+                  onClick={() => setStatusFilter(st)}
+                  className={`px-2.5 py-1 rounded-md transition-all cursor-pointer ${
+                    statusFilter === st
+                      ? "bg-white text-[#22c55e] font-bold shadow-2xs"
+                      : "hover:text-gray-900"
+                  }`}
+                >
+                  {st}
+                </button>
+              ))}
+            </div>
           </div>
+
           <span className="text-xs text-gray-400 font-medium">
             Total {filtered.length} products listed
           </span>
@@ -430,13 +485,21 @@ export default function Products() {
 
                     {/* Status */}
                     <td className="px-4 py-3 whitespace-nowrap">
-                      <span
-                        className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold ${
-                          STATUS_STYLES[product.status] || "bg-gray-100 text-gray-700"
-                        }`}
+                      <select
+                        value={product.status || "Active"}
+                        disabled={!canEdit || updatingStatusId === product.id}
+                        onChange={(e) => handleStatusChange(product.id, e.target.value)}
+                        className={`text-[11px] font-bold px-2.5 py-1 rounded-full border cursor-pointer outline-none transition-all ${
+                          STATUS_STYLES[product.status] || "bg-gray-100 text-gray-700 border-gray-200"
+                        } ${updatingStatusId === product.id ? "opacity-50 cursor-wait" : ""}`}
+                        title="Change Product Status"
                       >
-                        {product.status}
-                      </span>
+                        <option value="Active" className="bg-white text-emerald-700 font-semibold">Active</option>
+                        <option value="Inactive" className="bg-white text-amber-700 font-semibold">Inactive</option>
+                        <option value="Disabled" className="bg-white text-rose-700 font-semibold">Disabled</option>
+                        <option value="Draft" className="bg-white text-gray-600 font-semibold">Draft</option>
+                        <option value="Out of Stock" className="bg-white text-red-600 font-semibold">Out of Stock</option>
+                      </select>
                     </td>
 
                     {/* Actions */}

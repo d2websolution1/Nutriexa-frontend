@@ -148,7 +148,7 @@ export default function AuthenticatorCodes() {
     // Generate QR codes linking directly to website verification URL
     const labelsData = await Promise.all(
       codes.map(async (code) => {
-        const verifyUrl = `${window.location.origin}/authenticator?code=${encodeURIComponent(code)}`;
+        const verifyUrl = `${window.location.origin}/authenticator?tab=authenticity&code=${encodeURIComponent(code)}`;
         let qrDataUrl = "";
         try {
           qrDataUrl = await QRCode.toDataURL(verifyUrl, {

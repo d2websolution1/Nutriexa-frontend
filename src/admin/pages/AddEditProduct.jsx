@@ -4,7 +4,7 @@ import { FiUploadCloud, FiChevronLeft, FiX, FiImage } from "react-icons/fi";
 import { API_URL as BASE_URL } from "../../config";
 
 const API_URL = `${BASE_URL}/api/products`;
-const MAX_IMAGES = 5;
+const MAX_IMAGES = 10;
 
 export default function AddEditProduct() {
 
@@ -493,6 +493,8 @@ export default function AddEditProduct() {
                 className="w-full border border-gray-200 rounded-md px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
               >
                 <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+                <option value="Disabled">Disabled</option>
                 <option value="Draft">Draft</option>
                 <option value="Out of Stock">Out of Stock</option>
               </select>

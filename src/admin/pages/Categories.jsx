@@ -29,9 +29,11 @@ export default function Categories() {
     description: "",
     image: "",
     is_active: true,
+    status: "Active",
   });
   const [modalSubmitting, setModalSubmitting] = useState(false);
   const [modalError, setModalError] = useState("");
+  const [updatingStatusId, setUpdatingStatusId] = useState(null);
 
   const getToken = () => localStorage.getItem("adminToken");
 
@@ -62,6 +64,7 @@ export default function Categories() {
       description: "",
       image: "",
       is_active: true,
+      status: "Active",
     });
     setModalError("");
     setIsModalOpen(true);
@@ -69,12 +72,14 @@ export default function Categories() {
 
   const openEditModal = (cat) => {
     setEditingCategory(cat);
+    const catStatus = cat.status || (cat.is_active !== false ? "Active" : "Disabled");
     setFormData({
       name: cat.name || "",
       slug: cat.slug || "",
       description: cat.description || "",
       image: cat.image || "",
-      is_active: cat.is_active ?? true,
+      is_active: catStatus === "Active",
+      status: catStatus,
     });
     setModalError("");
     setIsModalOpen(true);
@@ -129,6 +134,38 @@ export default function Categories() {
       setModalError(err.message);
     } finally {
       setModalSubmitting(false);
+    }
+  };
+
+  const handleStatusChange = async (id, newStatus) => {
+    setUpdatingStatusId(id);
+    const token = getToken();
+    try {
+      const res = await fetch(`${BASE_URL}/api/categories/${id}/status`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ status: newStatus }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.message || "Failed to update category status");
+      }
+
+      setCategories((prev) =>
+        prev.map((c) =>
+          c.id === id
+            ? { ...c, status: newStatus, is_active: newStatus === "Active" }
+            : c
+        )
+      );
+    } catch (err) {
+      alert(err.message || "Failed to update status.");
+    } finally {
+      setUpdatingStatusId(null);
     }
   };
 
@@ -251,15 +288,23 @@ export default function Categories() {
                       </span>
                     </td>
                     <td className="px-4 py-3 whitespace-nowrap">
-                      <span
-                        className={`px-2.5 py-0.5 rounded-full text-[10.5px] font-bold ${
-                          cat.is_active !== false
-                            ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
-                            : "bg-gray-100 text-gray-600 border border-gray-200"
-                        }`}
+                      <select
+                        value={cat.status || (cat.is_active !== false ? "Active" : "Disabled")}
+                        disabled={updatingStatusId === cat.id}
+                        onChange={(e) => handleStatusChange(cat.id, e.target.value)}
+                        className={`px-2.5 py-1 rounded-full text-[10.5px] font-bold border cursor-pointer outline-none transition-all ${
+                          (cat.status === "Active" || (!cat.status && cat.is_active !== false))
+                            ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                            : cat.status === "Inactive"
+                              ? "bg-amber-50 text-amber-700 border-amber-200"
+                              : "bg-rose-50 text-rose-700 border-rose-200"
+                        } ${updatingStatusId === cat.id ? "opacity-50 cursor-wait" : ""}`}
+                        title="Change Category Status"
                       >
-                        {cat.is_active !== false ? "Active" : "Inactive"}
-                      </span>
+                        <option value="Active" className="bg-white text-emerald-700 font-semibold">Active</option>
+                        <option value="Inactive" className="bg-white text-amber-700 font-semibold">Inactive</option>
+                        <option value="Disabled" className="bg-white text-rose-700 font-semibold">Disabled</option>
+                      </select>
                     </td>
                     <td className="px-4 py-3 text-right whitespace-nowrap">
                       <div className="flex items-center justify-end gap-1.5">
@@ -360,17 +405,25 @@ export default function Categories() {
                 />
               </div>
 
-              <div className="flex items-center gap-2 pt-1">
-                <input
-                  type="checkbox"
-                  id="category_active"
-                  checked={formData.is_active}
-                  onChange={(e) => setFormData({ ...formData, is_active: e.target.checked })}
-                  className="rounded text-[#22c55e] focus:ring-[#22c55e] cursor-pointer"
-                />
-                <label htmlFor="category_active" className="text-xs font-medium text-gray-700 cursor-pointer">
-                  Category is Active and visible in store
+              <div>
+                <label className="text-xs font-bold text-gray-700 mb-1 block">
+                  Category Status
                 </label>
+                <select
+                  value={formData.status}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      status: e.target.value,
+                      is_active: e.target.value === "Active",
+                    })
+                  }
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-[#22c55e]"
+                >
+                  <option value="Active">Active (Visible in store)</option>
+                  <option value="Inactive">Inactive (Temporarily hidden)</option>
+                  <option value="Disabled">Disabled (Completely turned off)</option>
+                </select>
               </div>
 
               <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100">
