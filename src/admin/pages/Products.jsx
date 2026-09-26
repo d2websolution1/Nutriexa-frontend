@@ -112,8 +112,8 @@ export default function Products() {
       });
 
       if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.message || "Failed to update status");
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || data.message || "Failed to update status");
       }
 
       setProducts((prev) =>
