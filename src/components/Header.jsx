@@ -337,19 +337,12 @@ export default function Header() {
           {/* Top Dark Bar (80px height) */}
           <div className="bg-[#0b0e14] text-white h-[80px] px-6 lg:px-12 flex items-center justify-between gap-6 border-b border-[#1b2230]">
             {/* Nutriexa Brand Logo (Clean text-only with side lines matching reference) */}
-            <Link to="/" className="flex flex-col items-center justify-center shrink-0 group select-none py-1">
-              <div className="flex items-baseline">
-                <span className="text-2xl lg:text-[28px] font-black italic tracking-wider text-white leading-none group-hover:opacity-90 transition-opacity">
-                  NUTRI<span className="text-[#22c55e]">EXA</span>
-                </span>
-              </div>
-              <div className="flex items-center gap-2 mt-1.5 w-full justify-center">
-                <span className="h-[1.5px] w-3.5 lg:w-4 bg-[#22c55e] rounded-full" />
-                <span className="text-[7.5px] lg:text-[8px] tracking-[0.22em] text-[#22c55e] font-bold uppercase whitespace-nowrap leading-none">
-                  Nutrition For Excellence
-                </span>
-                <span className="h-[1.5px] w-3.5 lg:w-4 bg-[#22c55e] rounded-full" />
-              </div>
+            <Link to="/" className="flex items-center justify-center shrink-0 group select-none py-1">
+              <img
+                src={nutriexaLogo}
+                alt="Nutriexa"
+                className="h-10 lg:h-12 w-auto object-contain group-hover:opacity-90 transition-opacity"
+              />
             </Link>
 
             {/* Desktop Search Bar (Rounded pill with green accent border) */}
@@ -801,19 +794,12 @@ export default function Header() {
               </button>
 
               {/* Center: Nutriexa Logo (Text only with side lines) */}
-              <Link to="/" className="flex flex-col items-center justify-center shrink-0 select-none py-0.5">
-                <div className="flex items-baseline">
-                  <span className="text-xl font-black italic tracking-wider text-white leading-none">
-                    NUTRI<span className="text-[#22c55e]">EXA</span>
-                  </span>
-                </div>
-                <div className="flex items-center gap-1.5 mt-1 justify-center">
-                  <span className="h-[1px] w-2.5 bg-[#22c55e] rounded-full" />
-                  <span className="text-[7px] tracking-[0.18em] text-[#22c55e] font-bold uppercase whitespace-nowrap leading-none">
-                    Nutrition For Excellence
-                  </span>
-                  <span className="h-[1px] w-2.5 bg-[#22c55e] rounded-full" />
-                </div>
+              <Link to="/" className="flex items-center justify-center shrink-0 select-none py-0.5">
+                <img
+                  src={nutriexaLogo}
+                  alt="Nutriexa"
+                  className="h-8 w-auto object-contain"
+                />
               </Link>
 
               {/* Right: Search, Theme Toggle, Account & Cart */}
@@ -977,20 +963,13 @@ export default function Header() {
           <Link
             to="/"
             onClick={() => setDrawerOpen(false)}
-            className="flex flex-col items-start justify-center select-none"
+            className="flex items-center justify-center select-none"
           >
-            <div className="flex items-baseline">
-              <span className="text-xl font-black italic tracking-wider text-white leading-none">
-                NUTRI<span className="text-[#22c55e]">EXA</span>
-              </span>
-            </div>
-            <div className="flex items-center gap-1.5 mt-1">
-              <span className="h-[1px] w-2.5 bg-[#22c55e] rounded-full" />
-              <span className="text-[7px] tracking-[0.18em] text-[#22c55e] font-bold uppercase whitespace-nowrap">
-                Nutrition For Excellence
-              </span>
-              <span className="h-[1px] w-2.5 bg-[#22c55e] rounded-full" />
-            </div>
+            <img
+              src={nutriexaLogo}
+              alt="Nutriexa"
+              className="h-8 w-auto object-contain"
+            />
           </Link>
 
           <button

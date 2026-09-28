@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import nutriexaLogo from "../assets/nutriexa-logo.png";
 import { FiMail, FiPhone, FiMapPin, FiFacebook, FiInstagram, FiTwitter, FiYoutube } from "react-icons/fi";
 import { TbTruckDelivery, TbLock, TbRefresh } from "react-icons/tb";
 
@@ -57,20 +58,13 @@ export default function Footer() {
         <div className="sm:col-span-2 md:col-span-1">
           <Link
             to="/"
-            className="inline-flex flex-col items-center sm:items-start justify-center shrink-0 group select-none mb-4"
+            className="inline-flex items-center justify-center sm:justify-start shrink-0 group select-none mb-4"
           >
-            <div className="flex items-baseline">
-              <span className="text-2xl sm:text-[26px] font-black italic tracking-wider text-white leading-none group-hover:opacity-90 transition-opacity">
-                NUTRI<span className="text-[#22c55e]">EXA</span>
-              </span>
-            </div>
-            <div className="flex items-center gap-2 mt-1.5 w-full justify-center sm:justify-start">
-              <span className="h-[1.5px] w-3 sm:w-3.5 bg-[#22c55e] rounded-full" />
-              <span className="text-[7.5px] sm:text-[8px] tracking-[0.22em] text-[#22c55e] font-bold uppercase whitespace-nowrap leading-none">
-                Nutrition For Excellence
-              </span>
-              <span className="h-[1.5px] w-3 sm:w-3.5 bg-[#22c55e] rounded-full" />
-            </div>
+            <img
+              src={nutriexaLogo}
+              alt="Nutriexa"
+              className="h-10 w-auto object-contain group-hover:opacity-90 transition-opacity"
+            />
           </Link>
           <p className="text-gray-400 text-xs leading-relaxed max-w-xs mx-auto sm:mx-0">
             Premium, science-backed supplements crafted to help you fuel your
