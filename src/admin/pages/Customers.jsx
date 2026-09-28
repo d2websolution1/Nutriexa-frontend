@@ -313,14 +313,14 @@ export default function Customers() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-extrabold text-[#1a1a1a] tracking-tight">Customers Management</h1>
-          <p className="text-sm text-gray-500 mt-0.5">
+          <h1 className="text-2xl font-extrabold text-[#1a1a1a] dark:text-white tracking-tight">Customers Management</h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
             Manage customer accounts, verify emails, edit details, and delete pending or test IDs.
           </p>
         </div>
         <button
           onClick={fetchCustomers}
-          className="flex items-center gap-2 px-3.5 py-2 bg-white border border-gray-200 text-gray-700 hover:text-[#22c55e] text-xs font-semibold rounded-xl shadow-2xs transition-colors cursor-pointer self-start sm:self-auto"
+          className="flex items-center gap-2 px-3.5 py-2 bg-white dark:bg-white/10 border border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-300 hover:text-[#22c55e] text-xs font-semibold rounded-xl shadow-2xs transition-colors cursor-pointer self-start sm:self-auto"
         >
           <FiRefreshCw size={14} className={loading ? "animate-spin text-[#22c55e]" : ""} />
           <span>Refresh List</span>
@@ -329,42 +329,42 @@ export default function Customers() {
 
       {/* Top 4 KPI Overview Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5">
-        <div className="bg-white rounded-xl p-4 border border-gray-100 shadow-xs flex items-center gap-3">
+        <div className="bg-white dark:bg-white/5 rounded-xl p-4 border border-gray-100 dark:border-white/10 shadow-xs flex items-center gap-3">
           <div className="w-10 h-10 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold shrink-0">
             <FiUser size={20} />
           </div>
           <div className="min-w-0">
-            <p className="text-[11px] text-gray-500 font-medium truncate">Total Customers</p>
-            <p className="text-xl font-bold text-gray-900 leading-tight">{totalCustomers}</p>
+            <p className="text-[11px] text-gray-500 dark:text-gray-400 font-medium truncate">Total Customers</p>
+            <p className="text-xl font-bold text-gray-900 dark:text-white leading-tight">{totalCustomers}</p>
           </div>
         </div>
 
-        <div className="bg-white rounded-xl p-4 border border-gray-100 shadow-xs flex items-center gap-3">
+        <div className="bg-white dark:bg-white/5 rounded-xl p-4 border border-gray-100 dark:border-white/10 shadow-xs flex items-center gap-3">
           <div className="w-10 h-10 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center font-bold shrink-0">
             <FiUserX size={20} />
           </div>
           <div className="min-w-0">
-            <p className="text-[11px] text-gray-500 font-medium truncate">Pending / Unverified</p>
+            <p className="text-[11px] text-gray-500 dark:text-gray-400 font-medium truncate">Pending / Unverified</p>
             <p className="text-xl font-bold text-amber-600 leading-tight">{pendingCount}</p>
           </div>
         </div>
 
-        <div className="bg-white rounded-xl p-4 border border-gray-100 shadow-xs flex items-center gap-3">
+        <div className="bg-white dark:bg-white/5 rounded-xl p-4 border border-gray-100 dark:border-white/10 shadow-xs flex items-center gap-3">
           <div className="w-10 h-10 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center font-bold shrink-0">
             <FiShoppingBag size={20} />
           </div>
           <div className="min-w-0">
-            <p className="text-[11px] text-gray-500 font-medium truncate">Active Buyers</p>
+            <p className="text-[11px] text-gray-500 dark:text-gray-400 font-medium truncate">Active Buyers</p>
             <p className="text-xl font-bold text-blue-600 leading-tight">{withOrdersCount}</p>
           </div>
         </div>
 
-        <div className="bg-white rounded-xl p-4 border border-gray-100 shadow-xs flex items-center gap-3">
+        <div className="bg-white dark:bg-white/5 rounded-xl p-4 border border-gray-100 dark:border-white/10 shadow-xs flex items-center gap-3">
           <div className="w-10 h-10 rounded-lg bg-green-50 text-green-600 flex items-center justify-center font-bold shrink-0">
             <FiDollarSign size={20} />
           </div>
           <div className="min-w-0">
-            <p className="text-[11px] text-gray-500 font-medium truncate">Total Lifetime Revenue</p>
+            <p className="text-[11px] text-gray-500 dark:text-gray-400 font-medium truncate">Total Lifetime Revenue</p>
             <p className="text-xl font-bold text-green-600 leading-tight">
               ₹{totalCustomerRevenue.toLocaleString("en-IN")}
             </p>
@@ -373,12 +373,12 @@ export default function Customers() {
       </div>
 
       {/* Main Container: Search, Filter Tabs & Table */}
-      <div className="bg-white rounded-xl border border-gray-100 shadow-xs overflow-hidden">
+      <div className="bg-white dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/10 shadow-xs overflow-hidden">
         {/* Search & Filter Bar */}
-        <div className="p-4 border-b border-gray-100 flex flex-wrap items-center justify-between gap-3">
+        <div className="p-4 border-b border-gray-100 dark:border-white/10 flex flex-wrap items-center justify-between gap-3">
           {/* Filter Tabs */}
           <div className="flex items-center gap-1.5 flex-wrap">
-            <span className="text-xs font-bold text-gray-500 flex items-center gap-1 mr-1">
+            <span className="text-xs font-bold text-gray-500 dark:text-gray-400 flex items-center gap-1 mr-1">
               <FiFilter size={13} className="text-[#22c55e]" /> Filter:
             </span>
             {[
@@ -394,7 +394,7 @@ export default function Customers() {
                 className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                   statusFilter === tab.key
                     ? "bg-[#22c55e] text-white shadow-xs font-bold"
-                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                    : "bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/20"
                 }`}
               >
                 {tab.label}
@@ -403,14 +403,14 @@ export default function Customers() {
           </div>
 
           {/* Search box */}
-          <div className="flex items-center gap-2 bg-[#f5f6f4] rounded-lg px-3 py-2 w-full sm:w-72 border border-gray-200/50">
+          <div className="flex items-center gap-2 bg-[#f5f6f4] dark:bg-white/10 rounded-lg px-3 py-2 w-full sm:w-72 border border-gray-200/50 dark:border-white/10">
             <FiSearch className="text-gray-400" size={15} />
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search by name, email, phone..."
-              className="bg-transparent text-xs outline-none w-full placeholder:text-gray-400 text-gray-800"
+              className="bg-transparent text-xs outline-none w-full placeholder:text-gray-400 dark:placeholder:text-gray-500 text-gray-800 dark:text-white"
             />
           </div>
         </div>
@@ -419,7 +419,7 @@ export default function Customers() {
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
             <thead>
-              <tr className="text-gray-500 border-b border-gray-100 bg-[#fafbf9]">
+              <tr className="text-gray-500 dark:text-gray-400 border-b border-gray-100 dark:border-white/10 bg-[#fafbf9] dark:bg-white/5">
                 <th className="px-4 py-3.5 font-semibold">Customer</th>
                 <th className="px-4 py-3.5 font-semibold">Account Status</th>
                 <th className="px-4 py-3.5 font-semibold">Total Orders</th>
@@ -428,7 +428,7 @@ export default function Customers() {
                 <th className="px-4 py-3.5 font-semibold text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-50">
+            <tbody className="divide-y divide-gray-50 dark:divide-white/5">
               {loading ? (
                 <tr>
                   <td colSpan={6} className="text-center py-12 text-gray-400 text-xs">
@@ -457,7 +457,7 @@ export default function Customers() {
                     <tr
                       key={c.id}
                       onClick={() => openCustomerDetail(c)}
-                      className="hover:bg-[#fafbf9] transition-colors cursor-pointer group"
+                      className="hover:bg-[#fafbf9] dark:hover:bg-white/5 transition-colors cursor-pointer group"
                       title="Click to view complete customer profile and order history"
                     >
                       {/* Customer info */}
@@ -467,7 +467,7 @@ export default function Customers() {
                             {c.name ? c.name.charAt(0).toUpperCase() : "U"}
                           </div>
                           <div className="min-w-0">
-                            <p className="font-bold text-gray-900 group-hover:text-[#22c55e] transition-colors">
+                            <p className="font-bold text-gray-900 dark:text-white group-hover:text-[#22c55e] transition-colors">
                               {c.name || "Anonymous User"}
                             </p>
                             <p className="text-[11px] text-gray-500 flex items-center gap-1.5 mt-0.5">
@@ -529,7 +529,7 @@ export default function Customers() {
                       </td>
 
                       {/* Total Spent */}
-                      <td className="px-4 py-3.5 whitespace-nowrap font-bold text-gray-900">
+                      <td className="px-4 py-3.5 whitespace-nowrap font-bold text-gray-900 dark:text-white">
                         {spentNum > 0 ? (
                           <span className="text-[#2e7d32]">₹{spentNum.toLocaleString("en-IN")}</span>
                         ) : (
@@ -538,7 +538,7 @@ export default function Customers() {
                       </td>
 
                       {/* Joined Date */}
-                      <td className="px-4 py-3.5 whitespace-nowrap text-gray-600">
+                      <td className="px-4 py-3.5 whitespace-nowrap text-gray-600 dark:text-gray-400">
                         {formatDate(c.created_at)}
                       </td>
 
@@ -588,64 +588,64 @@ export default function Customers() {
          ========================================================================= */}
       {editingCustomer && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fadeIn">
-          <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl border border-gray-100 p-6 space-y-4 relative">
+          <div className="bg-white dark:bg-[#1a1a1a] rounded-2xl w-full max-w-md shadow-2xl border border-gray-100 dark:border-white/10 p-6 space-y-4 relative">
             <button
               onClick={() => setEditingCustomer(null)}
-              className="absolute top-5 right-5 text-gray-400 hover:text-gray-700 p-1 rounded-lg"
+              className="absolute top-5 right-5 text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 p-1 rounded-lg cursor-pointer"
             >
               <FiX size={18} />
             </button>
 
-            <div className="flex items-center gap-3 pb-2 border-b border-gray-100">
+            <div className="flex items-center gap-3 pb-2 border-b border-gray-100 dark:border-white/10">
               <div className="w-10 h-10 rounded-xl bg-emerald-50 text-[#22c55e] flex items-center justify-center font-bold">
                 <FiEdit2 size={18} />
               </div>
               <div>
-                <h3 className="text-base font-bold text-gray-900">Edit Customer Details</h3>
-                <p className="text-xs text-gray-500">Update profile info or account verification status</p>
+                <h3 className="text-base font-bold text-gray-900 dark:text-white">Edit Customer Details</h3>
+                <p className="text-xs text-gray-500 dark:text-gray-400">Update profile info or account verification status</p>
               </div>
             </div>
 
             <form onSubmit={handleEditSubmit} className="space-y-3.5">
               <div>
-                <label className="block text-xs font-semibold text-gray-700 mb-1">Full Name</label>
+                <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">Full Name</label>
                 <input
                   type="text"
                   required
                   value={editForm.name}
                   onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
                   placeholder="e.g. Rahul Sharma"
-                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-xs text-gray-800 outline-none focus:border-[#22c55e]"
+                  className="w-full bg-gray-50 dark:bg-white/10 border border-gray-200 dark:border-white/10 rounded-xl px-3 py-2 text-xs text-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 outline-none focus:border-[#22c55e]"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-gray-700 mb-1">Email Address</label>
+                <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">Email Address</label>
                 <input
                   type="email"
                   required
                   value={editForm.email}
                   onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
                   placeholder="name@example.com"
-                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-xs text-gray-800 outline-none focus:border-[#22c55e]"
+                  className="w-full bg-gray-50 dark:bg-white/10 border border-gray-200 dark:border-white/10 rounded-xl px-3 py-2 text-xs text-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 outline-none focus:border-[#22c55e]"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-gray-700 mb-1">Phone Number</label>
+                <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">Phone Number</label>
                 <input
                   type="tel"
                   value={editForm.phone}
                   onChange={(e) => setEditForm({ ...editForm, phone: e.target.value })}
                   placeholder="e.g. +91 98765 43210"
-                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-xs text-gray-800 outline-none focus:border-[#22c55e]"
+                  className="w-full bg-gray-50 dark:bg-white/10 border border-gray-200 dark:border-white/10 rounded-xl px-3 py-2 text-xs text-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 outline-none focus:border-[#22c55e]"
                 />
               </div>
 
               <div className="pt-1">
-                <label className="block text-xs font-semibold text-gray-700 mb-1.5">Verification Status</label>
+                <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Verification Status</label>
                 <div className="flex items-center gap-3">
-                  <label className="flex items-center gap-2 cursor-pointer text-xs font-medium text-gray-700">
+                  <label className="flex items-center gap-2 cursor-pointer text-xs font-medium text-gray-700 dark:text-gray-300">
                     <input
                       type="radio"
                       name="is_verified"
@@ -656,7 +656,7 @@ export default function Customers() {
                     <span>Verified</span>
                   </label>
 
-                  <label className="flex items-center gap-2 cursor-pointer text-xs font-medium text-gray-700">
+                  <label className="flex items-center gap-2 cursor-pointer text-xs font-medium text-gray-700 dark:text-gray-300">
                     <input
                       type="radio"
                       name="is_verified"
@@ -669,11 +669,11 @@ export default function Customers() {
                 </div>
               </div>
 
-              <div className="pt-3 flex items-center justify-end gap-2 border-t border-gray-100">
+              <div className="pt-3 flex items-center justify-end gap-2 border-t border-gray-100 dark:border-white/10">
                 <button
                   type="button"
                   onClick={() => setEditingCustomer(null)}
-                  className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold rounded-xl transition-colors cursor-pointer"
+                  className="px-4 py-2 bg-gray-100 dark:bg-white/10 hover:bg-gray-200 dark:hover:bg-white/20 text-gray-700 dark:text-gray-300 text-xs font-semibold rounded-xl transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>
@@ -695,16 +695,16 @@ export default function Customers() {
          ========================================================================= */}
       {selectedCustomer && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/60 backdrop-blur-xs animate-fadeIn">
-          <div className="bg-white rounded-2xl w-full max-w-4xl max-h-[92vh] flex flex-col shadow-2xl border border-gray-100 overflow-hidden relative">
+          <div className="bg-white dark:bg-[#18181b] rounded-2xl w-full max-w-4xl max-h-[92vh] flex flex-col shadow-2xl border border-gray-100 dark:border-white/10 overflow-hidden relative">
             {/* Modal Header */}
-            <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between gap-4 bg-gradient-to-r from-gray-50 to-white">
+            <div className="px-6 py-4 border-b border-gray-100 dark:border-white/10 flex items-center justify-between gap-4 bg-gradient-to-r from-gray-50 to-white dark:from-white/5 dark:to-white/5">
               <div className="flex items-center gap-3 min-w-0">
                 <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-[#22c55e] to-[#16a34a] text-white font-black text-lg flex items-center justify-center shrink-0 shadow-md">
                   {selectedCustomer.name ? selectedCustomer.name.charAt(0).toUpperCase() : "U"}
                 </div>
                 <div className="min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <h2 className="text-base sm:text-lg font-black text-gray-900 truncate">
+                    <h2 className="text-base sm:text-lg font-black text-gray-900 dark:text-white truncate">
                       {selectedCustomer.name || "Customer Profile"}
                     </h2>
                     <span
@@ -717,7 +717,7 @@ export default function Customers() {
                       {selectedCustomer.is_verified ? "Verified Customer" : "Pending Verification"}
                     </span>
                   </div>
-                  <div className="flex items-center gap-3 text-xs text-gray-500 mt-0.5 flex-wrap">
+                  <div className="flex items-center gap-3 text-xs text-gray-500 dark:text-gray-400 mt-0.5 flex-wrap">
                     <span className="flex items-center gap-1">
                       <FiMail size={12} className="text-gray-400" />
                       {selectedCustomer.email}
@@ -740,7 +740,7 @@ export default function Customers() {
                 {/* Edit Button */}
                 <button
                   onClick={() => openEditModal(selectedCustomer)}
-                  className="p-2 rounded-xl bg-gray-100 hover:bg-emerald-50 text-gray-600 hover:text-emerald-600 transition-colors cursor-pointer"
+                  className="p-2 rounded-xl bg-gray-100 dark:bg-white/10 hover:bg-emerald-50 dark:hover:bg-white/20 text-gray-600 dark:text-gray-300 hover:text-emerald-600 transition-colors cursor-pointer"
                   title="Edit Customer"
                 >
                   <FiEdit2 size={16} />
@@ -749,7 +749,7 @@ export default function Customers() {
                 {/* Delete Button */}
                 <button
                   onClick={() => handleDeleteCustomer(selectedCustomer)}
-                  className="p-2 rounded-xl bg-gray-100 hover:bg-rose-50 text-gray-600 hover:text-rose-600 transition-colors cursor-pointer"
+                  className="p-2 rounded-xl bg-gray-100 dark:bg-white/10 hover:bg-rose-50 dark:hover:bg-white/20 text-gray-600 dark:text-gray-300 hover:text-rose-600 transition-colors cursor-pointer"
                   title="Delete Customer Account"
                 >
                   <FiTrash2 size={16} />
@@ -758,7 +758,7 @@ export default function Customers() {
                 {/* Close Button */}
                 <button
                   onClick={closeDetail}
-                  className="text-gray-400 hover:text-gray-700 p-2 rounded-xl hover:bg-gray-100 transition-colors cursor-pointer"
+                  className="text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-white/10 transition-colors cursor-pointer"
                   aria-label="Close modal"
                 >
                   <FiX size={20} />
@@ -784,37 +784,37 @@ export default function Customers() {
                 <>
                   {/* Summary Metric Stats Bar */}
                   <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
-                    <div className="bg-gray-50 rounded-xl p-3 border border-gray-100 text-center">
-                      <p className="text-[10.5px] font-medium text-gray-500">Total Orders</p>
-                      <p className="text-lg font-bold text-gray-900 mt-0.5">
+                    <div className="bg-gray-50 dark:bg-white/5 rounded-xl p-3 border border-gray-100 dark:border-white/10 text-center">
+                      <p className="text-[10.5px] font-medium text-gray-500 dark:text-gray-400">Total Orders</p>
+                      <p className="text-lg font-bold text-gray-900 dark:text-white mt-0.5">
                         {customerDetail.metrics?.total_orders || 0}
                       </p>
                     </div>
 
-                    <div className="bg-gray-50 rounded-xl p-3 border border-gray-100 text-center">
-                      <p className="text-[10.5px] font-medium text-gray-500">Total Spent</p>
+                    <div className="bg-gray-50 dark:bg-white/5 rounded-xl p-3 border border-gray-100 dark:border-white/10 text-center">
+                      <p className="text-[10.5px] font-medium text-gray-500 dark:text-gray-400">Total Spent</p>
                       <p className="text-lg font-bold text-[#2e7d32] mt-0.5">
                         ₹{Number(customerDetail.metrics?.total_spent || 0).toLocaleString("en-IN")}
                       </p>
                     </div>
 
-                    <div className="bg-gray-50 rounded-xl p-3 border border-gray-100 text-center">
-                      <p className="text-[10.5px] font-medium text-gray-500">Delivered Orders</p>
+                    <div className="bg-gray-50 dark:bg-white/5 rounded-xl p-3 border border-gray-100 dark:border-white/10 text-center">
+                      <p className="text-[10.5px] font-medium text-gray-500 dark:text-gray-400">Delivered Orders</p>
                       <p className="text-lg font-bold text-emerald-600 mt-0.5">
                         {customerDetail.metrics?.delivered_orders || 0}
                       </p>
                     </div>
 
-                    <div className="bg-gray-50 rounded-xl p-3 border border-gray-100 text-center">
-                      <p className="text-[10.5px] font-medium text-gray-500">Pending / In-Transit</p>
+                    <div className="bg-gray-50 dark:bg-white/5 rounded-xl p-3 border border-gray-100 dark:border-white/10 text-center">
+                      <p className="text-[10.5px] font-medium text-gray-500 dark:text-gray-400">Pending / In-Transit</p>
                       <p className="text-lg font-bold text-amber-600 mt-0.5">
                         {(customerDetail.metrics?.pending_orders || 0) + (customerDetail.metrics?.shipped_orders || 0)}
                       </p>
                     </div>
 
-                    <div className="bg-gray-50 rounded-xl p-3 border border-gray-100 text-center col-span-2 sm:col-span-1">
-                      <p className="text-[10.5px] font-medium text-gray-500">Average Order Value</p>
-                      <p className="text-lg font-bold text-gray-900 mt-0.5">
+                    <div className="bg-gray-50 dark:bg-white/5 rounded-xl p-3 border border-gray-100 dark:border-white/10 text-center col-span-2 sm:col-span-1">
+                      <p className="text-[10.5px] font-medium text-gray-500 dark:text-gray-400">Average Order Value</p>
+                      <p className="text-lg font-bold text-gray-900 dark:text-white mt-0.5">
                         ₹{Number(customerDetail.metrics?.avg_order_value || 0).toLocaleString("en-IN")}
                       </p>
                     </div>
@@ -823,7 +823,7 @@ export default function Customers() {
                   {/* Orders List Section */}
                   <div>
                     <div className="flex items-center justify-between mb-3">
-                      <h3 className="text-sm font-bold text-gray-900 flex items-center gap-2">
+                      <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
                         <FiShoppingBag size={16} className="text-[#22c55e]" />
                         <span>All Customer Orders ({customerDetail.orders?.length || 0})</span>
                       </h3>
@@ -860,17 +860,17 @@ export default function Customers() {
                           return (
                             <div
                               key={order.id}
-                              className="border border-gray-100 rounded-2xl p-4 sm:p-5 bg-white hover:border-gray-200 transition-all shadow-2xs space-y-4"
+                              className="border border-gray-100 dark:border-white/10 rounded-2xl p-4 sm:p-5 bg-white dark:bg-white/5 hover:border-gray-200 dark:hover:border-white/20 transition-all shadow-2xs space-y-4"
                             >
                               {/* Order Card Top Bar */}
-                              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-gray-100">
+                              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-gray-100 dark:border-white/10">
                                 <div className="flex items-center gap-3">
                                   <div className="w-9 h-9 rounded-xl bg-emerald-50 text-[#22c55e] flex items-center justify-center font-bold shrink-0">
                                     <FiPackage size={18} />
                                   </div>
                                   <div>
                                     <div className="flex items-center gap-2">
-                                      <p className="font-extrabold text-sm text-gray-900">
+                                      <p className="font-extrabold text-sm text-gray-900 dark:text-white">
                                         {order.order_number}
                                       </p>
                                       <span
@@ -911,7 +911,7 @@ export default function Customers() {
                               {/* Order Details: Items Table + Delivery Info */}
                               <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
                                 {/* Ordered Products Table (8 Cols) */}
-                                <div className="md:col-span-8 bg-gray-50/60 rounded-xl p-3 border border-gray-100">
+                                <div className="md:col-span-8 bg-gray-50/60 dark:bg-white/5 rounded-xl p-3 border border-gray-100 dark:border-white/10">
                                   <p className="text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-2">
                                     Ordered Items ({items.length})
                                   </p>
@@ -925,14 +925,14 @@ export default function Customers() {
                                           className="py-2 flex items-center justify-between gap-3 text-xs"
                                         >
                                           <div className="min-w-0">
-                                            <p className="font-bold text-gray-800 truncate">
+                                            <p className="font-bold text-gray-800 dark:text-gray-200 truncate">
                                               {item.product_name}
                                             </p>
-                                            <p className="text-[11px] text-gray-500">
-                                              Qty: <span className="font-semibold text-gray-700">{item.quantity}</span> &times; ₹{Number(item.price || 0).toLocaleString("en-IN")}
+                                            <p className="text-[11px] text-gray-500 dark:text-gray-400">
+                                              Qty: <span className="font-semibold text-gray-700 dark:text-gray-300">{item.quantity}</span> &times; ₹{Number(item.price || 0).toLocaleString("en-IN")}
                                             </p>
                                           </div>
-                                          <p className="font-bold text-gray-900 shrink-0">
+                                          <p className="font-bold text-gray-900 dark:text-white shrink-0">
                                             ₹{(Number(item.quantity || 1) * Number(item.price || 0)).toLocaleString("en-IN")}
                                           </p>
                                         </div>
@@ -942,22 +942,22 @@ export default function Customers() {
                                 </div>
 
                                 {/* Shipping / Delivery Info (4 Cols) */}
-                                <div className="md:col-span-4 bg-gray-50/60 rounded-xl p-3 border border-gray-100 text-xs space-y-1.5">
+                                <div className="md:col-span-4 bg-gray-50/60 dark:bg-white/5 rounded-xl p-3 border border-gray-100 dark:border-white/10 text-xs space-y-1.5">
                                   <p className="text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1 flex items-center gap-1">
                                     <FiTruck size={12} className="text-[#22c55e]" /> Delivery Address
                                   </p>
-                                  <p className="text-gray-800 font-medium">
+                                  <p className="text-gray-800 dark:text-gray-200 font-medium">
                                     {order.shipping_address || "Address not provided"}
                                   </p>
                                   {(order.shipping_city || order.shipping_state || order.shipping_pincode) && (
-                                    <p className="text-[11px] text-gray-600">
+                                    <p className="text-[11px] text-gray-600 dark:text-gray-400">
                                       {[order.shipping_city, order.shipping_state, order.shipping_pincode]
                                         .filter(Boolean)
                                         .join(", ")}
                                     </p>
                                   )}
                                   {order.shipping_phone && (
-                                    <p className="text-[11px] text-gray-600 flex items-center gap-1 pt-1 border-t border-gray-100">
+                                    <p className="text-[11px] text-gray-600 dark:text-gray-400 flex items-center gap-1 pt-1 border-t border-gray-100 dark:border-white/10">
                                       <FiPhone size={10} className="text-gray-400" />
                                       <span>Phone: {order.shipping_phone}</span>
                                     </p>
@@ -975,13 +975,13 @@ export default function Customers() {
             </div>
 
             {/* Modal Footer */}
-            <div className="px-6 py-3 border-t border-gray-100 bg-gray-50/80 flex items-center justify-between text-xs">
-              <span className="text-gray-500 font-medium">
+            <div className="px-6 py-3 border-t border-gray-100 dark:border-white/10 bg-gray-50/80 dark:bg-white/5 flex items-center justify-between text-xs">
+              <span className="text-gray-500 dark:text-gray-400 font-medium">
                 Customer ID: #{selectedCustomer.id}
               </span>
               <button
                 onClick={closeDetail}
-                className="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold rounded-xl transition-colors cursor-pointer"
+                className="px-4 py-2 bg-gray-200 dark:bg-white/10 hover:bg-gray-300 dark:hover:bg-white/20 text-gray-800 dark:text-white font-bold rounded-xl transition-colors cursor-pointer"
               >
                 Close
               </button>

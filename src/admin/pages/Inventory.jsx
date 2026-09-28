@@ -233,11 +233,11 @@ export default function Inventory() {
       </div>
 
       {/* Filter Bar & Status Controls */}
-      <div className="bg-white rounded-xl border border-gray-100 shadow-xs p-4 space-y-3">
+      <div className="bg-white dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/10 shadow-xs p-4 space-y-3">
         <div className="flex flex-wrap items-center justify-between gap-3">
           {/* Status Filter Tabs */}
           <div className="flex items-center gap-1.5 flex-wrap">
-            <span className="text-xs font-bold text-gray-500 flex items-center gap-1 mr-1">
+            <span className="text-xs font-bold text-gray-500 dark:text-gray-400 flex items-center gap-1 mr-1">
               <FiFilter size={13} className="text-[#22c55e]" /> Status:
             </span>
             {[
@@ -254,7 +254,7 @@ export default function Inventory() {
                 className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                   statusFilter === tab.key
                     ? "bg-[#22c55e] text-white shadow-xs font-bold"
-                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                    : "bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/20"
                 }`}
               >
                 {tab.label}
@@ -263,22 +263,22 @@ export default function Inventory() {
           </div>
 
           {/* Search Box */}
-          <div className="flex items-center gap-2 bg-[#f5f6f4] rounded-lg px-3 py-2 w-full sm:w-72 border border-gray-200/50">
+          <div className="flex items-center gap-2 bg-[#f5f6f4] dark:bg-white/10 rounded-lg px-3 py-2 w-full sm:w-72 border border-gray-200/50 dark:border-white/10">
             <FiSearch className="text-gray-400" size={15} />
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search product, category or SKU..."
-              className="bg-transparent text-xs outline-none w-full placeholder:text-gray-400 text-gray-800"
+              className="bg-transparent text-xs outline-none w-full placeholder:text-gray-400 dark:placeholder:text-gray-500 text-gray-800 dark:text-white"
             />
           </div>
         </div>
       </div>
 
       {/* Inventory Table */}
-      <div className="bg-white rounded-xl border border-gray-100 shadow-xs overflow-hidden">
-        <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between text-xs text-gray-500 font-medium">
+      <div className="bg-white dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/10 shadow-xs overflow-hidden">
+        <div className="px-4 py-3 border-b border-gray-100 dark:border-white/10 flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 font-medium">
           <span>Showing {filtered.length} of {products.length} products</span>
           <span className="text-[11px] text-gray-400">Status changes instantly sync with Product Catalog</span>
         </div>
@@ -286,7 +286,7 @@ export default function Inventory() {
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
             <thead>
-              <tr className="text-gray-500 border-b border-gray-100 bg-[#fafbf9]">
+              <tr className="text-gray-500 dark:text-gray-400 border-b border-gray-100 dark:border-white/10 bg-[#fafbf9] dark:bg-white/5">
                 <th className="px-4 py-3 font-semibold">Product</th>
                 <th className="px-4 py-3 font-semibold">SKU</th>
                 <th className="px-4 py-3 font-semibold">Category</th>
@@ -295,7 +295,7 @@ export default function Inventory() {
                 <th className="px-4 py-3 font-semibold text-right">Update Stock</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-50">
+            <tbody className="divide-y divide-gray-50 dark:divide-white/5">
               {loading ? (
                 <tr>
                   <td colSpan={6} className="text-center py-12 text-gray-400 text-xs">
@@ -316,7 +316,7 @@ export default function Inventory() {
                   const currentStatus = prod.status || (isOut ? "Out of Stock" : "Active");
 
                   return (
-                    <tr key={prod.id} className="hover:bg-[#fafbf9] transition-colors">
+                    <tr key={prod.id} className="hover:bg-[#fafbf9] dark:hover:bg-white/5 transition-colors">
                       <td className="px-4 py-3">
                         <p className="font-semibold text-gray-900">{prod.name}</p>
                         <p className="text-[11px] text-gray-400">{prod.variant || "-"}</p>
@@ -369,7 +369,7 @@ export default function Inventory() {
                             onChange={(e) =>
                               setEditStockMap({ ...editStockMap, [prod.id]: e.target.value })
                             }
-                            className="w-16 border border-gray-200 rounded-md px-2 py-1 text-xs text-center font-semibold text-gray-800 focus:outline-none focus:border-[#22c55e]"
+                            className="w-16 border border-gray-200 dark:border-white/20 rounded-md px-2 py-1 text-xs text-center font-semibold text-gray-800 dark:text-white dark:bg-white/10 focus:outline-none focus:border-[#22c55e]"
                           />
                           <button
                             onClick={() => handleUpdateStock(prod.id)}

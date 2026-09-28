@@ -22,15 +22,15 @@ export default function Settings() {
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="text-2xl font-extrabold text-[#1a1a1a]">Settings</h1>
-        <p className="text-sm text-gray-500 mt-1">
+        <h1 className="text-2xl font-extrabold text-[#1a1a1a] dark:text-white">Settings</h1>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
           Manage your store configuration and preferences.
         </p>
       </div>
 
       <div className="grid md:grid-cols-[220px_1fr] gap-5">
         {/* Tabs sidebar */}
-        <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-3 h-fit">
+        <div className="bg-white dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/10 shadow-sm p-3 h-fit">
           {TABS.map((tab) => (
             <button
               key={tab.id}
@@ -38,7 +38,7 @@ export default function Settings() {
               className={`w-full flex items-center gap-2.5 px-3.5 py-2.5 rounded-md text-sm font-medium mb-1 last:mb-0 transition-colors ${
                 activeTab === tab.id
                   ? "bg-[#4CAF37] text-white"
-                  : "text-gray-600 hover:bg-[#f5f6f4]"
+                  : "text-gray-600 dark:text-gray-300 hover:bg-[#f5f6f4] dark:hover:bg-white/10"
               }`}
             >
               {tab.icon}
@@ -48,64 +48,64 @@ export default function Settings() {
         </div>
 
         {/* Tab content */}
-        <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6">
+        <div className="bg-white dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/10 shadow-sm p-6">
           {activeTab === "general" && (
             <div className="space-y-5 max-w-xl">
-              <h2 className="font-bold text-[#1a1a1a]">Store Information</h2>
+              <h2 className="font-bold text-[#1a1a1a] dark:text-white">Store Information</h2>
 
               <div>
-                <label className="text-sm font-medium text-[#1a1a1a] mb-1.5 block">
+                <label className="text-sm font-medium text-[#1a1a1a] dark:text-gray-300 mb-1.5 block">
                   Store Name
                 </label>
                 <input
                   type="text"
                   defaultValue="Nutriexa"
-                  className="w-full border border-gray-200 rounded-md px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
+                  className="w-full border border-gray-200 dark:border-white/10 bg-white dark:bg-white/10 text-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 rounded-md px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
                 />
               </div>
 
               <div>
-                <label className="text-sm font-medium text-[#1a1a1a] mb-1.5 block">
+                <label className="text-sm font-medium text-[#1a1a1a] dark:text-gray-300 mb-1.5 block">
                   Store Tagline
                 </label>
                 <input
                   type="text"
                   defaultValue="Nutrition for Excellence"
-                  className="w-full border border-gray-200 rounded-md px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
+                  className="w-full border border-gray-200 dark:border-white/10 bg-white dark:bg-white/10 text-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 rounded-md px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
                 />
               </div>
 
               <div className="grid sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-sm font-medium text-[#1a1a1a] mb-1.5 block">
+                  <label className="text-sm font-medium text-[#1a1a1a] dark:text-gray-300 mb-1.5 block">
                     Support Email
                   </label>
                   <input
                     type="email"
                     defaultValue="support@nutriexa.com"
-                    className="w-full border border-gray-200 rounded-md px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
+                    className="w-full border border-gray-200 dark:border-white/10 bg-white dark:bg-white/10 text-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 rounded-md px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-[#1a1a1a] mb-1.5 block">
+                  <label className="text-sm font-medium text-[#1a1a1a] dark:text-gray-300 mb-1.5 block">
                     Support Phone
                   </label>
                   <input
                     type="text"
                     defaultValue="+91 98765 43210"
-                    className="w-full border border-gray-200 rounded-md px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
+                    className="w-full border border-gray-200 dark:border-white/10 bg-white dark:bg-white/10 text-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 rounded-md px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="text-sm font-medium text-[#1a1a1a] mb-1.5 block">
+                <label className="text-sm font-medium text-[#1a1a1a] dark:text-gray-300 mb-1.5 block">
                   Store Address
                 </label>
                 <textarea
                   rows={3}
                   defaultValue="123, Industrial Area, Agra, Uttar Pradesh, India"
-                  className="w-full border border-gray-200 rounded-md px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37] resize-none"
+                  className="w-full border border-gray-200 dark:border-white/10 bg-white dark:bg-white/10 text-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 rounded-md px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37] resize-none"
                 />
               </div>
               <button className="flex items-center gap-2 bg-[#4CAF37] text-white font-semibold text-sm px-5 py-2.5 rounded-md hover:opacity-90">
@@ -116,48 +116,48 @@ export default function Settings() {
 
           {activeTab === "security" && (
             <div className="space-y-5 max-w-xl">
-              <h2 className="font-bold text-[#1a1a1a]">Security</h2>
+              <h2 className="font-bold text-[#1a1a1a] dark:text-white">Security</h2>
 
               <div>
-                <label className="text-sm font-medium text-[#1a1a1a] mb-1.5 block">
+                <label className="text-sm font-medium text-[#1a1a1a] dark:text-gray-300 mb-1.5 block">
                   Current Password
                 </label>
                 <input
                   type="password"
                   placeholder="••••••••"
-                  className="w-full border border-gray-200 rounded-md px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
+                  className="w-full border border-gray-200 dark:border-white/10 bg-white dark:bg-white/10 text-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 rounded-md px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
                 />
               </div>
 
               <div className="grid sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-sm font-medium text-[#1a1a1a] mb-1.5 block">
+                  <label className="text-sm font-medium text-[#1a1a1a] dark:text-gray-300 mb-1.5 block">
                     New Password
                   </label>
                   <input
                     type="password"
                     placeholder="••••••••"
-                    className="w-full border border-gray-200 rounded-md px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
+                    className="w-full border border-gray-200 dark:border-white/10 bg-white dark:bg-white/10 text-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 rounded-md px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-[#1a1a1a] mb-1.5 block">
+                  <label className="text-sm font-medium text-[#1a1a1a] dark:text-gray-300 mb-1.5 block">
                     Confirm Password
                   </label>
                   <input
                     type="password"
                     placeholder="••••••••"
-                    className="w-full border border-gray-200 rounded-md px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
+                    className="w-full border border-gray-200 dark:border-white/10 bg-white dark:bg-white/10 text-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 rounded-md px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
                   />
                 </div>
               </div>
 
-              <div className="flex items-center justify-between border border-gray-100 rounded-md px-4 py-3">
+              <div className="flex items-center justify-between border border-gray-100 dark:border-white/10 rounded-md px-4 py-3 bg-white dark:bg-white/5">
                 <div>
-                  <p className="text-sm font-medium text-[#1a1a1a]">
+                  <p className="text-sm font-medium text-[#1a1a1a] dark:text-white">
                     Two-Factor Authentication
                   </p>
-                  <p className="text-xs text-gray-500 mt-0.5">
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
                     Add an extra layer of security to your admin account.
                   </p>
                 </div>
@@ -176,47 +176,47 @@ export default function Settings() {
 
           {activeTab === "shipping" && (
             <div className="space-y-5 max-w-xl">
-              <h2 className="font-bold text-[#1a1a1a]">Shipping Settings</h2>
+              <h2 className="font-bold text-[#1a1a1a] dark:text-white">Shipping Settings</h2>
 
               <div>
-                <label className="text-sm font-medium text-[#1a1a1a] mb-1.5 block">
+                <label className="text-sm font-medium text-[#1a1a1a] dark:text-gray-300 mb-1.5 block">
                   Free Shipping Threshold (₹)
                 </label>
                 <input
                   type="number"
                   defaultValue="1999"
-                  className="w-full border border-gray-200 rounded-md px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
+                  className="w-full border border-gray-200 dark:border-white/10 bg-white dark:bg-white/10 text-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 rounded-md px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
                 />
               </div>
 
               <div>
-                <label className="text-sm font-medium text-[#1a1a1a] mb-1.5 block">
+                <label className="text-sm font-medium text-[#1a1a1a] dark:text-gray-300 mb-1.5 block">
                   Standard Shipping Charge (₹)
                 </label>
                 <input
                   type="number"
                   defaultValue="79"
-                  className="w-full border border-gray-200 rounded-md px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
+                  className="w-full border border-gray-200 dark:border-white/10 bg-white dark:bg-white/10 text-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 rounded-md px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
                 />
               </div>
 
               <div>
-                <label className="text-sm font-medium text-[#1a1a1a] mb-1.5 block">
+                <label className="text-sm font-medium text-[#1a1a1a] dark:text-gray-300 mb-1.5 block">
                   Estimated Delivery Time (Days)
                 </label>
                 <input
                   type="text"
                   defaultValue="4-6 business days"
-                  className="w-full border border-gray-200 rounded-md px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
+                  className="w-full border border-gray-200 dark:border-white/10 bg-white dark:bg-white/10 text-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 rounded-md px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
                 />
               </div>
 
-              <div className="flex items-center justify-between border border-gray-100 rounded-md px-4 py-3">
+              <div className="flex items-center justify-between border border-gray-100 dark:border-white/10 rounded-md px-4 py-3 bg-white dark:bg-white/5">
                 <div>
-                  <p className="text-sm font-medium text-[#1a1a1a]">
+                  <p className="text-sm font-medium text-[#1a1a1a] dark:text-white">
                     Enable Cash on Delivery
                   </p>
-                  <p className="text-xs text-gray-500 mt-0.5">
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
                     Allow customers to pay on delivery.
                   </p>
                 </div>
@@ -235,7 +235,7 @@ export default function Settings() {
 
           {activeTab === "payments" && (
             <div className="space-y-5 max-w-xl">
-              <h2 className="font-bold text-[#1a1a1a]">Payment Methods</h2>
+              <h2 className="font-bold text-[#1a1a1a] dark:text-white">Payment Methods</h2>
 
               {[
                 { name: "Razorpay", desc: "Cards, UPI, Netbanking, Wallets", enabled: true },
@@ -244,11 +244,11 @@ export default function Settings() {
               ].map((method) => (
                 <div
                   key={method.name}
-                  className="flex items-center justify-between border border-gray-100 rounded-md px-4 py-3"
+                  className="flex items-center justify-between border border-gray-100 dark:border-white/10 rounded-md px-4 py-3 bg-white dark:bg-white/5"
                 >
                   <div>
-                    <p className="text-sm font-medium text-[#1a1a1a]">{method.name}</p>
-                    <p className="text-xs text-gray-500 mt-0.5">{method.desc}</p>
+                    <p className="text-sm font-medium text-[#1a1a1a] dark:text-white">{method.name}</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{method.desc}</p>
                   </div>
                   <label className="relative inline-flex items-center cursor-pointer shrink-0">
                     <input type="checkbox" defaultChecked={method.enabled} className="sr-only peer" />
@@ -266,7 +266,7 @@ export default function Settings() {
 
           {activeTab === "notifications" && (
             <div className="space-y-5 max-w-xl">
-              <h2 className="font-bold text-[#1a1a1a]">Notification Preferences</h2>
+              <h2 className="font-bold text-[#1a1a1a] dark:text-white">Notification Preferences</h2>
 
               {[
                 { label: "New Order Alerts", desc: "Get notified when a new order is placed", enabled: true },
@@ -276,11 +276,11 @@ export default function Settings() {
               ].map((item) => (
                 <div
                   key={item.label}
-                  className="flex items-center justify-between border border-gray-100 rounded-md px-4 py-3"
+                  className="flex items-center justify-between border border-gray-100 dark:border-white/10 rounded-md px-4 py-3 bg-white dark:bg-white/5"
                 >
                   <div>
-                    <p className="text-sm font-medium text-[#1a1a1a]">{item.label}</p>
-                    <p className="text-xs text-gray-500 mt-0.5">{item.desc}</p>
+                    <p className="text-sm font-medium text-[#1a1a1a] dark:text-white">{item.label}</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{item.desc}</p>
                   </div>
                   <label className="relative inline-flex items-center cursor-pointer shrink-0">
                     <input type="checkbox" defaultChecked={item.enabled} className="sr-only peer" />

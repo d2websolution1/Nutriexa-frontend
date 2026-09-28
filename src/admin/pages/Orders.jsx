@@ -247,7 +247,7 @@ export default function Orders() {
       </div>
 
       <div className="bg-white rounded-xl border border-gray-100 shadow-xs p-4 space-y-4">
-        <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-gray-100">
+        <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-gray-100 dark:border-white/10">
           <div className="flex items-center gap-1.5 flex-wrap">
             <span className="text-xs font-bold text-gray-500 flex items-center gap-1 mr-1">
               <FiCalendar size={13} className="text-[#22c55e]" /> Date Filter:
@@ -276,7 +276,7 @@ export default function Orders() {
           </div>
 
           <div className="flex items-center gap-2 flex-wrap text-xs">
-            <div className="flex items-center gap-1.5 bg-gray-50 border border-gray-200 rounded-lg px-2.5 py-1">
+            <div className="flex items-center gap-1.5 bg-gray-50 dark:bg-white/10 border border-gray-200 dark:border-white/10 rounded-lg px-2.5 py-1">
               <span className="text-gray-400 font-medium">From:</span>
               <input
                 type="date"
@@ -285,10 +285,10 @@ export default function Orders() {
                   setStartDate(e.target.value);
                   setDatePreset("custom");
                 }}
-                className="bg-transparent text-gray-700 outline-none text-xs cursor-pointer"
+                className="bg-transparent text-gray-700 dark:text-gray-200 outline-none text-xs cursor-pointer"
               />
             </div>
-            <div className="flex items-center gap-1.5 bg-gray-50 border border-gray-200 rounded-lg px-2.5 py-1">
+            <div className="flex items-center gap-1.5 bg-gray-50 dark:bg-white/10 border border-gray-200 dark:border-white/10 rounded-lg px-2.5 py-1">
               <span className="text-gray-400 font-medium">To:</span>
               <input
                 type="date"
@@ -297,7 +297,7 @@ export default function Orders() {
                   setEndDate(e.target.value);
                   setDatePreset("custom");
                 }}
-                className="bg-transparent text-gray-700 outline-none text-xs cursor-pointer"
+                className="bg-transparent text-gray-700 dark:text-gray-200 outline-none text-xs cursor-pointer"
               />
             </div>
             {(startDate || endDate || activeTab !== "All" || search) && (
@@ -321,7 +321,7 @@ export default function Orders() {
                 className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
                   activeTab === tab
                     ? "bg-[#16a34a] text-white shadow-xs"
-                    : "bg-[#f5f6f4] text-gray-600 hover:bg-gray-200"
+                    : "bg-[#f5f6f4] dark:bg-white/10 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/20"
                 }`}
               >
                 {tab}
@@ -329,24 +329,24 @@ export default function Orders() {
             ))}
           </div>
 
-          <div className="flex items-center gap-2 bg-[#f5f6f4] rounded-lg px-3 py-1.5 w-full sm:w-64 border border-gray-200/50">
+          <div className="flex items-center gap-2 bg-[#f5f6f4] dark:bg-white/10 rounded-lg px-3 py-1.5 w-full sm:w-64 border border-gray-200/50 dark:border-white/10">
             <FiSearch className="text-gray-400" size={15} />
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search order ID or customer..."
-              className="bg-transparent text-xs outline-none w-full placeholder:text-gray-400 text-gray-800"
+              className="bg-transparent text-xs outline-none w-full placeholder:text-gray-400 dark:placeholder:text-gray-500 text-gray-800 dark:text-white"
             />
           </div>
         </div>
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-100 shadow-xs overflow-hidden">
+      <div className="bg-white dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/10 shadow-xs overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
             <thead>
-              <tr className="text-gray-500 border-b border-gray-100 bg-[#fafbf9]">
+              <tr className="text-gray-500 dark:text-gray-400 border-b border-gray-100 dark:border-white/10 dark:border-white/10 bg-[#fafbf9] dark:bg-white/5">
                 <th className="px-4 py-3 font-semibold">Order ID</th>
                 <th className="px-4 py-3 font-semibold">Customer</th>
                 <th className="px-4 py-3 font-semibold">Date &amp; Time</th>
@@ -357,7 +357,7 @@ export default function Orders() {
                 <th className="px-4 py-3 font-semibold text-right">Action</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-50">
+            <tbody className="divide-y divide-gray-50 dark:divide-white/5">
               {loading ? (
                 <tr>
                   <td colSpan={8} className="text-center py-12 text-gray-400 text-xs">
@@ -378,16 +378,16 @@ export default function Orders() {
                 </tr>
               ) : (
                 orders.map((order) => (
-                  <tr key={order.id} className="hover:bg-[#fafbf9] transition-colors">
-                    <td className="px-4 py-3 font-bold text-gray-900 whitespace-nowrap">
+                  <tr key={order.id} className="hover:bg-[#fafbf9] dark:hover:bg-white/5 transition-colors">
+                    <td className="px-4 py-3 font-bold text-gray-900 dark:text-white whitespace-nowrap">
                       {order.order_number}
                     </td>
-                    <td className="px-4 py-3 text-gray-700 whitespace-nowrap font-medium">
+                    <td className="px-4 py-3 text-gray-700 dark:text-gray-300 whitespace-nowrap font-medium">
                       {order.customer_name}
                     </td>
-                    <td className="px-4 py-3 text-gray-600 whitespace-nowrap">
+                    <td className="px-4 py-3 text-gray-600 dark:text-gray-400 whitespace-nowrap">
                       <div className="flex flex-col">
-                        <span className="font-semibold text-gray-800">
+                        <span className="font-semibold text-gray-800 dark:text-gray-200">
                           {formatDateOnly(order.created_at)}
                         </span>
                         <span className="text-[10px] text-gray-400">
@@ -395,13 +395,13 @@ export default function Orders() {
                         </span>
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-gray-600 whitespace-nowrap">
+                    <td className="px-4 py-3 text-gray-600 dark:text-gray-400 whitespace-nowrap">
                       {order.item_count || 1} items
                     </td>
-                    <td className="px-4 py-3 text-gray-600 whitespace-nowrap">
+                    <td className="px-4 py-3 text-gray-600 dark:text-gray-400 whitespace-nowrap">
                       {order.payment_method || "Online"}
                     </td>
-                    <td className="px-4 py-3 font-bold text-gray-900 whitespace-nowrap">
+                    <td className="px-4 py-3 font-bold text-gray-900 dark:text-white whitespace-nowrap">
                       ₹{Number(order.total_amount).toLocaleString("en-IN")}
                     </td>
                     <td className="px-4 py-3 whitespace-nowrap">
@@ -444,10 +444,10 @@ export default function Orders() {
             className="absolute inset-0 bg-black/50 backdrop-blur-xs"
             onClick={() => setSelectedOrder(null)}
           />
-          <div className="relative bg-white rounded-2xl w-full max-w-lg p-6 z-10 shadow-2xl border border-gray-100">
+          <div className="relative bg-white dark:bg-[#18181b] rounded-2xl w-full max-w-lg p-6 z-10 shadow-2xl border border-gray-100 dark:border-white/10">
             <button
               onClick={() => setSelectedOrder(null)}
-              className="absolute top-4 right-4 text-gray-400 hover:text-gray-700 p-1 rounded-lg hover:bg-gray-100 cursor-pointer"
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 cursor-pointer"
             >
               <FiX size={18} />
             </button>
@@ -456,9 +456,9 @@ export default function Orders() {
               <p className="text-xs text-gray-500 py-10 text-center">Loading order details...</p>
             ) : (
               <>
-                <div className="flex items-center justify-between border-b border-gray-100 pb-3">
+                <div className="flex items-center justify-between border-b border-gray-100 dark:border-white/10 pb-3">
                   <div>
-                    <h2 className="text-base font-extrabold text-gray-900">
+                    <h2 className="text-base font-extrabold text-gray-900 dark:text-white">
                       Order {selectedOrder.order_number}
                     </h2>
                     <p className="text-xs text-gray-500 mt-0.5">
@@ -474,14 +474,14 @@ export default function Orders() {
                   </span>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3 py-3 text-xs border-b border-gray-100 text-gray-600">
+                <div className="grid grid-cols-2 gap-3 py-3 text-xs border-b border-gray-100 dark:border-white/10 text-gray-600">
                   <div>
                     <p className="text-gray-400 text-[10.5px]">Placed On</p>
-                    <p className="font-semibold text-gray-800">{formatDateTime(selectedOrder.created_at)}</p>
+                    <p className="font-semibold text-gray-800 dark:text-gray-200">{formatDateTime(selectedOrder.created_at)}</p>
                   </div>
                   <div>
                     <p className="text-gray-400 text-[10.5px]">Payment Method</p>
-                    <p className="font-semibold text-gray-800">{selectedOrder.payment_method || "Online"}</p>
+                    <p className="font-semibold text-gray-800 dark:text-gray-200">{selectedOrder.payment_method || "Online"}</p>
                   </div>
                 </div>
 
@@ -490,18 +490,18 @@ export default function Orders() {
                   {selectedOrder.items?.map((item) => (
                     <div key={item.id} className="flex items-center justify-between text-xs py-1">
                       <div>
-                        <p className="font-medium text-gray-900">{item.product_name}</p>
+                        <p className="font-medium text-gray-900 dark:text-white">{item.product_name}</p>
                         <p className="text-gray-400 text-[11px]">Qty: {item.quantity}</p>
                       </div>
-                      <span className="font-bold text-gray-900">
+                      <span className="font-bold text-gray-900 dark:text-white">
                         ₹{Number(item.price * item.quantity).toLocaleString("en-IN")}
                       </span>
                     </div>
                   ))}
                 </div>
 
-                <div className="flex items-center justify-between pt-3 border-t border-gray-100">
-                  <span className="text-xs font-bold text-gray-700">Total Amount</span>
+                <div className="flex items-center justify-between pt-3 border-t border-gray-100 dark:border-white/10">
+                  <span className="text-xs font-bold text-gray-700 dark:text-gray-300">Total Amount</span>
                   <span className="text-base font-extrabold text-[#16a34a]">
                     ₹{Number(selectedOrder.total_amount).toLocaleString("en-IN")}
                   </span>

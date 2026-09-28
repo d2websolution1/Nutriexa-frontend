@@ -438,59 +438,59 @@ export default function StaffManagement() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-4 flex items-center gap-3.5">
+        <div className="bg-white dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/10 shadow-sm p-4 flex items-center gap-3.5">
           <div className="w-11 h-11 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
             <FiUsers size={20} />
           </div>
           <div>
-            <p className="text-xs text-gray-500 font-medium">Total Staff</p>
-            <p className="text-xl font-extrabold text-[#1a1a1a]">{stats.totalStaff}</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">Total Staff</p>
+            <p className="text-xl font-extrabold text-[#1a1a1a] dark:text-white">{stats.totalStaff}</p>
           </div>
         </div>
 
-        <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-4 flex items-center gap-3.5">
+        <div className="bg-white dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/10 shadow-sm p-4 flex items-center gap-3.5">
           <div className="w-11 h-11 rounded-lg bg-green-50 text-green-600 flex items-center justify-center shrink-0">
             <FiUserCheck size={20} />
           </div>
           <div>
-            <p className="text-xs text-gray-500 font-medium">Active Members</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">Active Members</p>
             <p className="text-xl font-extrabold text-green-600">{stats.activeStaff}</p>
           </div>
         </div>
 
-        <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-4 flex items-center gap-3.5">
+        <div className="bg-white dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/10 shadow-sm p-4 flex items-center gap-3.5">
           <div className="w-11 h-11 rounded-lg bg-red-50 text-red-600 flex items-center justify-center shrink-0">
             <FiUserX size={20} />
           </div>
           <div>
-            <p className="text-xs text-gray-500 font-medium">Deactivated</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">Deactivated</p>
             <p className="text-xl font-extrabold text-red-600">{stats.deactivatedStaff}</p>
           </div>
         </div>
 
-        <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-4 flex items-center gap-3.5">
+        <div className="bg-white dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/10 shadow-sm p-4 flex items-center gap-3.5">
           <div className="w-11 h-11 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center shrink-0">
             <FiShield size={20} />
           </div>
           <div>
-            <p className="text-xs text-gray-500 font-medium">Super Admins</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">Super Admins</p>
             <p className="text-xl font-extrabold text-purple-700">{stats.superAdmins}</p>
           </div>
         </div>
       </div>
 
       {/* Main Staff Table Container */}
-      <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+      <div className="bg-white dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/10 shadow-sm overflow-hidden">
         {/* Search and Filters Bar */}
-        <div className="p-4 border-b border-gray-100 flex flex-col md:flex-row items-center justify-between gap-3 bg-[#fafbf9]">
-          <div className="flex items-center gap-2 bg-white border border-gray-200 rounded-lg px-3 py-2 w-full md:w-80 shadow-xs">
+        <div className="p-4 border-b border-gray-100 dark:border-white/10 dark:border-white/10 flex flex-col md:flex-row items-center justify-between gap-3 bg-[#fafbf9] dark:bg-white/5">
+          <div className="flex items-center gap-2 bg-white dark:bg-white/10 border border-gray-200 dark:border-white/10 rounded-lg px-3 py-2 w-full md:w-80 shadow-xs">
             <FiSearch className="text-gray-400 shrink-0" size={16} />
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search by name, email, phone..."
-              className="bg-transparent text-xs sm:text-sm outline-none w-full placeholder:text-gray-400"
+              className="bg-transparent text-xs sm:text-sm outline-none w-full placeholder:text-gray-400 dark:placeholder:text-gray-500 text-gray-800 dark:text-white"
             />
           </div>
 
@@ -498,7 +498,7 @@ export default function StaffManagement() {
             <select
               value={roleFilter}
               onChange={(e) => setRoleFilter(e.target.value)}
-              className="bg-white border border-gray-200 text-xs rounded-lg px-3 py-2 text-gray-700 focus:outline-none focus:border-[#4CAF37] cursor-pointer"
+              className="bg-white dark:bg-white/10 border border-gray-200 dark:border-white/10 text-xs rounded-lg px-3 py-2 text-gray-700 dark:text-gray-200 focus:outline-none focus:border-[#4CAF37] cursor-pointer"
             >
               <option value="All">All Roles</option>
               {rolesMeta.roles.map((r) => (
@@ -511,7 +511,7 @@ export default function StaffManagement() {
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="bg-white border border-gray-200 text-xs rounded-lg px-3 py-2 text-gray-700 focus:outline-none focus:border-[#4CAF37] cursor-pointer"
+              className="bg-white dark:bg-white/10 border border-gray-200 dark:border-white/10 text-xs rounded-lg px-3 py-2 text-gray-700 dark:text-gray-200 focus:outline-none focus:border-[#4CAF37] cursor-pointer"
             >
               <option value="All">All Statuses</option>
               <option value="Active">Active Only</option>
@@ -524,7 +524,7 @@ export default function StaffManagement() {
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">
             <thead>
-              <tr className="text-xs text-gray-500 uppercase tracking-wider border-b border-gray-100 bg-[#f7f8f6]">
+              <tr className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider border-b border-gray-100 dark:border-white/10 dark:border-white/10 bg-[#f7f8f6] dark:bg-white/5">
                 <th className="px-4 py-3.5 font-semibold">Staff Member</th>
                 <th className="px-4 py-3.5 font-semibold">Role</th>
                 <th className="px-4 py-3.5 font-semibold">Permissions</th>
@@ -533,7 +533,7 @@ export default function StaffManagement() {
                 <th className="px-4 py-3.5 font-semibold text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
+            <tbody className="divide-y divide-gray-100 dark:divide-white/5">
               {loading && (
                 <tr>
                   <td colSpan={6} className="text-center py-12 text-gray-400 text-sm">
@@ -568,7 +568,7 @@ export default function StaffManagement() {
                   const isWildcard = perms.includes("*") || isSuper;
 
                   return (
-                    <tr key={staff.id} className="hover:bg-[#fafbf9] transition-colors">
+                    <tr key={staff.id} className="hover:bg-[#fafbf9] dark:hover:bg-white/5 transition-colors">
                       {/* Name & Contact */}
                       <td className="px-4 py-3.5">
                         <div className="flex items-center gap-3">
@@ -577,7 +577,7 @@ export default function StaffManagement() {
                           </div>
                           <div>
                             <div className="flex items-center gap-2">
-                              <p className="font-semibold text-[#1a1a1a]">{staff.name}</p>
+                              <p className="font-semibold text-[#1a1a1a] dark:text-white">{staff.name}</p>
                               {isSelf && (
                                 <span className="text-[10px] bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded font-medium">
                                   You
@@ -676,7 +676,7 @@ export default function StaffManagement() {
                       </td>
 
                       {/* Date */}
-                      <td className="px-4 py-3.5 text-xs text-gray-500">
+                      <td className="px-4 py-3.5 text-xs text-gray-500 dark:text-gray-400">
                         {new Date(staff.created_at || Date.now()).toLocaleDateString("en-IN", {
                           day: "numeric",
                           month: "short",
@@ -728,18 +728,18 @@ export default function StaffManagement() {
       {/* ================= ADD STAFF MODAL ================= */}
       {isAddModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 overflow-y-auto">
-          <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] flex flex-col shadow-2xl animate-in fade-in zoom-in-95 duration-150 my-8">
+          <div className="bg-white dark:bg-[#18181b] rounded-2xl max-w-2xl w-full max-h-[90vh] flex flex-col shadow-2xl border border-gray-100 dark:border-white/10 animate-in fade-in zoom-in-95 duration-150 my-8">
             {/* Modal Header */}
-            <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+            <div className="px-6 py-4 border-b border-gray-100 dark:border-white/10 flex items-center justify-between">
               <div className="flex items-center gap-2.5">
                 <div className="p-2 bg-[#4CAF37]/10 text-[#4CAF37] rounded-lg">
                   <FiUserPlus size={18} />
                 </div>
-                <h2 className="text-lg font-bold text-[#1a1a1a]">Add New Staff Member</h2>
+                <h2 className="text-lg font-bold text-[#1a1a1a] dark:text-white">Add New Staff Member</h2>
               </div>
               <button
                 onClick={() => setIsAddModalOpen(false)}
-                className="text-gray-400 hover:text-gray-600 p-1 rounded-md"
+                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 p-1 rounded-md cursor-pointer"
               >
                 <FiX size={20} />
               </button>
@@ -757,7 +757,7 @@ export default function StaffManagement() {
               {/* Basic Fields */}
               <div className="grid sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-xs font-semibold text-[#1a1a1a] mb-1 block">
+                  <label className="text-xs font-semibold text-[#1a1a1a] dark:text-gray-300 mb-1 block">
                     Full Name <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -766,12 +766,12 @@ export default function StaffManagement() {
                     placeholder="e.g. Rahul Sharma"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full border border-gray-200 rounded-lg px-3.5 py-2 text-sm focus:outline-none focus:border-[#4CAF37]"
+                    className="w-full border border-gray-200 dark:border-white/10 bg-white dark:bg-white/10 rounded-lg px-3.5 py-2 text-sm text-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:border-[#4CAF37]"
                   />
                 </div>
 
                 <div>
-                  <label className="text-xs font-semibold text-[#1a1a1a] mb-1 block">
+                  <label className="text-xs font-semibold text-[#1a1a1a] dark:text-gray-300 mb-1 block">
                     Email Address <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -780,12 +780,12 @@ export default function StaffManagement() {
                     placeholder="e.g. rahul@nutriexa.com"
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full border border-gray-200 rounded-lg px-3.5 py-2 text-sm focus:outline-none focus:border-[#4CAF37]"
+                    className="w-full border border-gray-200 dark:border-white/10 bg-white dark:bg-white/10 rounded-lg px-3.5 py-2 text-sm text-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:border-[#4CAF37]"
                   />
                 </div>
 
                 <div>
-                  <label className="text-xs font-semibold text-[#1a1a1a] mb-1 block">
+                  <label className="text-xs font-semibold text-[#1a1a1a] dark:text-gray-300 mb-1 block">
                     Phone Number (Optional)
                   </label>
                   <input
@@ -793,12 +793,12 @@ export default function StaffManagement() {
                     placeholder="e.g. +91 9876543210"
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="w-full border border-gray-200 rounded-lg px-3.5 py-2 text-sm focus:outline-none focus:border-[#4CAF37]"
+                    className="w-full border border-gray-200 dark:border-white/10 bg-white dark:bg-white/10 rounded-lg px-3.5 py-2 text-sm text-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:border-[#4CAF37]"
                   />
                 </div>
 
                 <div>
-                  <label className="text-xs font-semibold text-[#1a1a1a] mb-1 block">
+                  <label className="text-xs font-semibold text-[#1a1a1a] dark:text-gray-300 mb-1 block">
                     Password <span className="text-red-500">*</span>
                   </label>
                   <div className="relative">
@@ -808,7 +808,7 @@ export default function StaffManagement() {
                       placeholder="Min 6 characters"
                       value={formData.password}
                       onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                      className="w-full border border-gray-200 rounded-lg px-3.5 py-2 pr-10 text-sm focus:outline-none focus:border-[#4CAF37]"
+                      className="w-full border border-gray-200 dark:border-white/10 bg-white dark:bg-white/10 rounded-lg px-3.5 py-2 pr-10 text-sm text-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:border-[#4CAF37]"
                     />
                     <button
                       type="button"
@@ -822,8 +822,8 @@ export default function StaffManagement() {
               </div>
 
               {/* Role Preset Selector - Only Manager and Sales for Staff creation */}
-              <div className="border-t border-gray-100 pt-4">
-                <label className="text-xs font-semibold text-[#1a1a1a] mb-1.5 block">
+              <div className="border-t border-gray-100 dark:border-white/10 pt-4">
+                <label className="text-xs font-semibold text-[#1a1a1a] dark:text-gray-300 mb-1.5 block">
                   Assign Staff Role (Manager or Sales)
                 </label>
                 <div className="grid grid-cols-2 gap-3">
@@ -860,7 +860,7 @@ export default function StaffManagement() {
               </div>
 
               {/* Granular Permission Matrix */}
-              <div className="border-t border-gray-100 pt-4">
+              <div className="border-t border-gray-100 dark:border-white/10 pt-4">
                 <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
                   <div>
                     <h3 className="text-xs font-bold text-[#1a1a1a] uppercase tracking-wider">
@@ -956,9 +956,9 @@ export default function StaffManagement() {
               </div>
 
               {/* Status */}
-              <div className="border-t border-gray-100 pt-3 flex items-center justify-between">
+              <div className="border-t border-gray-100 dark:border-white/10 pt-3 flex items-center justify-between">
                 <div>
-                  <p className="text-xs font-semibold text-[#1a1a1a]">Staff Account Active</p>
+                  <p className="text-xs font-semibold text-[#1a1a1a] dark:text-white">Staff Account Active</p>
                   <p className="text-[11px] text-gray-500">Allow this staff member to sign in immediately</p>
                 </div>
                 <input
@@ -970,11 +970,11 @@ export default function StaffManagement() {
               </div>
 
               {/* Modal Footer */}
-              <div className="border-t border-gray-100 pt-4 flex items-center justify-end gap-2.5">
+              <div className="border-t border-gray-100 dark:border-white/10 pt-4 flex items-center justify-end gap-2.5">
                 <button
                   type="button"
                   onClick={() => setIsAddModalOpen(false)}
-                  className="px-4 py-2 text-xs font-semibold text-gray-600 hover:bg-gray-100 rounded-lg cursor-pointer"
+                  className="px-4 py-2 text-xs font-semibold text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg cursor-pointer"
                 >
                   Cancel
                 </button>
@@ -996,19 +996,19 @@ export default function StaffManagement() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 overflow-y-auto">
           <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] flex flex-col shadow-2xl animate-in fade-in zoom-in-95 duration-150 my-8">
             {/* Modal Header */}
-            <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+            <div className="px-6 py-4 border-b border-gray-100 dark:border-white/10 flex items-center justify-between">
               <div className="flex items-center gap-2.5">
                 <div className="p-2 bg-blue-50 text-blue-600 rounded-lg">
                   <FiEdit2 size={18} />
                 </div>
                 <div>
-                  <h2 className="text-lg font-bold text-[#1a1a1a]">Edit Staff Member</h2>
+                  <h2 className="text-lg font-bold text-[#1a1a1a] dark:text-white">Edit Staff Member</h2>
                   <p className="text-xs text-gray-500">{selectedStaff.email}</p>
                 </div>
               </div>
               <button
                 onClick={() => setIsEditModalOpen(false)}
-                className="text-gray-400 hover:text-gray-600 p-1 rounded-md"
+                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 p-1 rounded-md cursor-pointer"
               >
                 <FiX size={20} />
               </button>
@@ -1026,7 +1026,7 @@ export default function StaffManagement() {
               {/* Basic Fields */}
               <div className="grid sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-xs font-semibold text-[#1a1a1a] mb-1 block">
+                  <label className="text-xs font-semibold text-[#1a1a1a] dark:text-gray-300 mb-1 block">
                     Full Name <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -1034,12 +1034,12 @@ export default function StaffManagement() {
                     required
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full border border-gray-200 rounded-lg px-3.5 py-2 text-sm focus:outline-none focus:border-[#4CAF37]"
+                    className="w-full border border-gray-200 dark:border-white/10 bg-white dark:bg-white/10 rounded-lg px-3.5 py-2 text-sm text-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:border-[#4CAF37]"
                   />
                 </div>
 
                 <div>
-                  <label className="text-xs font-semibold text-[#1a1a1a] mb-1 block">
+                  <label className="text-xs font-semibold text-[#1a1a1a] dark:text-gray-300 mb-1 block">
                     Email Address <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -1047,24 +1047,24 @@ export default function StaffManagement() {
                     required
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full border border-gray-200 rounded-lg px-3.5 py-2 text-sm focus:outline-none focus:border-[#4CAF37]"
+                    className="w-full border border-gray-200 dark:border-white/10 bg-white dark:bg-white/10 rounded-lg px-3.5 py-2 text-sm text-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:border-[#4CAF37]"
                   />
                 </div>
 
                 <div>
-                  <label className="text-xs font-semibold text-[#1a1a1a] mb-1 block">
+                  <label className="text-xs font-semibold text-[#1a1a1a] dark:text-gray-300 mb-1 block">
                     Phone Number
                   </label>
                   <input
                     type="text"
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="w-full border border-gray-200 rounded-lg px-3.5 py-2 text-sm focus:outline-none focus:border-[#4CAF37]"
+                    className="w-full border border-gray-200 dark:border-white/10 bg-white dark:bg-white/10 rounded-lg px-3.5 py-2 text-sm text-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:border-[#4CAF37]"
                   />
                 </div>
 
                 <div>
-                  <label className="text-xs font-semibold text-[#1a1a1a] mb-1 block">
+                  <label className="text-xs font-semibold text-[#1a1a1a] dark:text-gray-300 mb-1 block">
                     New Password (leave blank to keep unchanged)
                   </label>
                   <div className="relative">
@@ -1073,7 +1073,7 @@ export default function StaffManagement() {
                       placeholder="••••••••"
                       value={formData.password}
                       onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                      className="w-full border border-gray-200 rounded-lg px-3.5 py-2 pr-10 text-sm focus:outline-none focus:border-[#4CAF37]"
+                      className="w-full border border-gray-200 dark:border-white/10 bg-white dark:bg-white/10 rounded-lg px-3.5 py-2 pr-10 text-sm text-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:border-[#4CAF37]"
                     />
                     <button
                       type="button"
@@ -1087,8 +1087,8 @@ export default function StaffManagement() {
               </div>
 
               {/* Role Preset Selector */}
-              <div className="border-t border-gray-100 pt-4">
-                <label className="text-xs font-semibold text-[#1a1a1a] mb-1.5 block">
+              <div className="border-t border-gray-100 dark:border-white/10 pt-4">
+                <label className="text-xs font-semibold text-[#1a1a1a] dark:text-gray-300 mb-1.5 block">
                   Change Role Preset (Manager or Sales)
                 </label>
                 <div className="grid grid-cols-2 gap-3">
@@ -1135,7 +1135,7 @@ export default function StaffManagement() {
               </div>
 
               {/* Granular Permission Matrix */}
-              <div className="border-t border-gray-100 pt-4">
+              <div className="border-t border-gray-100 dark:border-white/10 pt-4">
                 <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
                   <div>
                     <h3 className="text-xs font-bold text-[#1a1a1a] uppercase tracking-wider">
@@ -1231,9 +1231,9 @@ export default function StaffManagement() {
               </div>
 
               {/* Status */}
-              <div className="border-t border-gray-100 pt-3 flex items-center justify-between">
+              <div className="border-t border-gray-100 dark:border-white/10 pt-3 flex items-center justify-between">
                 <div>
-                  <p className="text-xs font-semibold text-[#1a1a1a]">Account Status</p>
+                  <p className="text-xs font-semibold text-[#1a1a1a] dark:text-white">Account Status</p>
                   <p className="text-[11px] text-gray-500">Deactivated users cannot log in to the admin panel</p>
                 </div>
                 <input
@@ -1245,11 +1245,11 @@ export default function StaffManagement() {
               </div>
 
               {/* Modal Footer */}
-              <div className="border-t border-gray-100 pt-4 flex items-center justify-end gap-2.5">
+              <div className="border-t border-gray-100 dark:border-white/10 pt-4 flex items-center justify-end gap-2.5">
                 <button
                   type="button"
                   onClick={() => setIsEditModalOpen(false)}
-                  className="px-4 py-2 text-xs font-semibold text-gray-600 hover:bg-gray-100 rounded-lg cursor-pointer"
+                  className="px-4 py-2 text-xs font-semibold text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg cursor-pointer"
                 >
                   Cancel
                 </button>
@@ -1269,14 +1269,14 @@ export default function StaffManagement() {
       {/* ================= DETAIL / BREAKDOWN MODAL ================= */}
       {isDetailModalOpen && selectedStaff && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 overflow-y-auto">
-          <div className="bg-white rounded-2xl max-w-lg w-full max-h-[85vh] flex flex-col shadow-2xl animate-in fade-in zoom-in-95 duration-150">
-            <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+          <div className="bg-white dark:bg-[#18181b] rounded-2xl max-w-lg w-full max-h-[85vh] flex flex-col shadow-2xl border border-gray-100 dark:border-white/10 animate-in fade-in zoom-in-95 duration-150">
+            <div className="px-6 py-4 border-b border-gray-100 dark:border-white/10 flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-[#4CAF37]/10 text-[#4CAF37] font-bold flex items-center justify-center text-sm uppercase">
                   {selectedStaff.name.charAt(0)}
                 </div>
                 <div>
-                  <h2 className="text-base font-bold text-[#1a1a1a]">{selectedStaff.name}</h2>
+                  <h2 className="text-base font-bold text-[#1a1a1a] dark:text-white">{selectedStaff.name}</h2>
                   <span
                     className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-semibold border ${
                       ROLE_BADGE_STYLES[selectedStaff.role] || ROLE_BADGE_STYLES["Custom Staff"]
@@ -1288,21 +1288,21 @@ export default function StaffManagement() {
               </div>
               <button
                 onClick={() => setIsDetailModalOpen(false)}
-                className="text-gray-400 hover:text-gray-600 p-1 rounded-md"
+                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 p-1 rounded-md cursor-pointer"
               >
                 <FiX size={20} />
               </button>
             </div>
 
             <div className="p-6 overflow-y-auto space-y-4">
-              <div className="bg-[#fafbf9] border border-gray-100 rounded-lg p-3 grid grid-cols-2 gap-2 text-xs">
+              <div className="bg-[#fafbf9] dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-lg p-3 grid grid-cols-2 gap-2 text-xs">
                 <div>
                   <span className="text-gray-400 block text-[10px]">Email</span>
-                  <span className="font-semibold text-gray-700">{selectedStaff.email}</span>
+                  <span className="font-semibold text-gray-700 dark:text-gray-300">{selectedStaff.email}</span>
                 </div>
                 <div>
                   <span className="text-gray-400 block text-[10px]">Phone</span>
-                  <span className="font-semibold text-gray-700">{selectedStaff.phone || "Not set"}</span>
+                  <span className="font-semibold text-gray-700 dark:text-gray-300">{selectedStaff.phone || "Not set"}</span>
                 </div>
                 <div>
                   <span className="text-gray-400 block text-[10px]">Status</span>
@@ -1316,14 +1316,14 @@ export default function StaffManagement() {
                 </div>
                 <div>
                   <span className="text-gray-400 block text-[10px]">Member Since</span>
-                  <span className="font-semibold text-gray-700">
+                  <span className="font-semibold text-gray-700 dark:text-gray-300">
                     {new Date(selectedStaff.created_at || Date.now()).toLocaleDateString("en-IN")}
                   </span>
                 </div>
               </div>
 
               <div>
-                <h4 className="text-xs font-bold text-[#1a1a1a] uppercase tracking-wider mb-2">
+                <h4 className="text-xs font-bold text-[#1a1a1a] dark:text-white uppercase tracking-wider mb-2">
                   Assigned Permissions List
                 </h4>
 
@@ -1345,7 +1345,7 @@ export default function StaffManagement() {
                       if (grantedInCat.length === 0) return null;
 
                       return (
-                        <div key={category.category} className="border border-gray-100 rounded-lg p-2.5 bg-white">
+                        <div key={category.category} className="border border-gray-100 dark:border-white/10 rounded-lg p-2.5 bg-white dark:bg-white/5">
                           <p className="text-[11px] font-bold text-gray-700 mb-1">{category.category}</p>
                           <div className="flex flex-wrap gap-1.5">
                             {grantedInCat.map((p) => (
@@ -1365,10 +1365,10 @@ export default function StaffManagement() {
               </div>
             </div>
 
-            <div className="px-6 py-3 border-t border-gray-100 flex justify-end">
+            <div className="px-6 py-3 border-t border-gray-100 dark:border-white/10 flex justify-end">
               <button
                 onClick={() => setIsDetailModalOpen(false)}
-                className="px-4 py-1.5 text-xs font-semibold bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg cursor-pointer"
+                className="px-4 py-1.5 text-xs font-semibold bg-gray-100 dark:bg-white/10 hover:bg-gray-200 dark:hover:bg-white/20 text-gray-700 dark:text-gray-300 rounded-lg cursor-pointer"
               >
                 Close
               </button>

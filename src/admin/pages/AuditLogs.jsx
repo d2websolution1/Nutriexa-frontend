@@ -146,8 +146,12 @@ const MOCK_LOGS = [
 
 function formatDateTime(iso) {
   return new Date(iso).toLocaleString("en-GB", {
-    day: "2-digit", month: "short", year: "numeric",
-    hour: "2-digit", minute: "2-digit", second: "2-digit",
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
   });
 }
 
@@ -177,110 +181,129 @@ export default function AuditLogs() {
   };
 
   return (
-    <div style={{ padding: "24px", minHeight: "100vh", background: "#f8fafc" }}>
+    <div className="space-y-6">
       {/* Header */}
-      <div style={{ marginBottom: "24px", display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h1 style={{ fontSize: "22px", fontWeight: 700, color: "#0f172a", margin: 0, display: "flex", alignItems: "center", gap: "10px" }}>
-            <FiActivity size={22} style={{ color: "#6366f1" }} /> Audit Logs
+          <h1 className="text-2xl font-extrabold text-[#1a1a1a] dark:text-white flex items-center gap-2.5">
+            <FiActivity size={24} className="text-indigo-600 dark:text-indigo-400" /> Audit Logs
           </h1>
-          <p style={{ color: "#64748b", fontSize: "14px", marginTop: "4px" }}>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
             Complete history of all admin actions, logins, and system events.
           </p>
         </div>
-        <button style={{ padding: "10px 18px", border: "1px solid #e2e8f0", borderRadius: "8px", background: "#fff", fontWeight: 600, fontSize: "13px", cursor: "pointer", color: "#6366f1", display: "flex", alignItems: "center", gap: "6px" }}>
+        <button className="flex items-center gap-1.5 px-3.5 py-2 bg-white dark:bg-white/10 border border-gray-200/60 dark:border-white/10 rounded-xl text-xs font-semibold text-indigo-600 dark:text-indigo-400 cursor-pointer shadow-xs hover:bg-gray-50 dark:hover:bg-white/20 transition-colors self-start sm:self-auto">
           <FiDownload size={14} /> Export CSV
         </button>
       </div>
 
-      {/* Stats */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "16px", marginBottom: "24px" }}>
+      {/* Stats Cards */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5">
         {[
-          { label: "Total Logged Events", value: stats.total, color: "#6366f1" },
-          { label: "Events Today", value: stats.today, color: "#10b981" },
-          { label: "Failed Login Attempts", value: stats.failed, color: "#ef4444" },
-          { label: "Active Admin Users", value: stats.admins, color: "#f59e0b" },
+          { label: "Total Logged Events", value: stats.total, color: "text-indigo-600 dark:text-indigo-400" },
+          { label: "Events Today", value: stats.today, color: "text-emerald-600 dark:text-emerald-400" },
+          { label: "Failed Login Attempts", value: stats.failed, color: "text-rose-600 dark:text-rose-400" },
+          { label: "Active Admin Users", value: stats.admins, color: "text-amber-600 dark:text-amber-400" },
         ].map((s) => (
-          <div key={s.label} style={{ background: "#fff", borderRadius: "12px", padding: "20px", border: "1px solid #e2e8f0" }}>
-            <div style={{ fontSize: "28px", fontWeight: 800, color: s.color }}>{s.value}</div>
-            <div style={{ fontSize: "13px", color: "#64748b", marginTop: "4px" }}>{s.label}</div>
+          <div key={s.label} className="bg-white dark:bg-white/5 rounded-xl p-4 border border-gray-100 dark:border-white/10 shadow-xs">
+            <div className={`text-2xl font-extrabold ${s.color}`}>{s.value}</div>
+            <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">{s.label}</div>
           </div>
         ))}
       </div>
 
-      {/* Filters */}
-      <div style={{ background: "#fff", borderRadius: "12px", padding: "16px 20px", border: "1px solid #e2e8f0", marginBottom: "20px", display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "center" }}>
-        <div style={{ position: "relative", flex: 1, minWidth: "200px" }}>
-          <FiSearch size={16} style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", color: "#94a3b8" }} />
+      {/* Search and Filters Bar */}
+      <div className="bg-white dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/10 shadow-xs p-4 flex flex-wrap gap-3 items-center">
+        <div className="relative flex-1 min-w-[200px]">
+          <FiSearch size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" />
           <input
-            placeholder="Search logs..."
+            placeholder="Search logs by action, user, details..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            style={{ width: "100%", padding: "9px 12px 9px 36px", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "14px", outline: "none", boxSizing: "border-box" }}
+            className="w-full pl-9 pr-3 py-2 bg-[#f5f6f4] dark:bg-white/10 border border-gray-200/50 dark:border-white/10 rounded-lg text-sm outline-none text-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500"
           />
         </div>
-        <select value={actionFilter} onChange={(e) => setActionFilter(e.target.value)}
-          style={{ padding: "9px 12px", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "14px", outline: "none" }}>
-          <option value="All">All Actions</option>
+        <select
+          value={actionFilter}
+          onChange={(e) => setActionFilter(e.target.value)}
+          className="px-3 py-2 bg-[#f5f6f4] dark:bg-white/10 border border-gray-200/50 dark:border-white/10 rounded-lg text-sm outline-none text-gray-700 dark:text-gray-200 cursor-pointer"
+        >
+          <option value="All" className="bg-white dark:bg-zinc-900 text-gray-800 dark:text-white">All Actions</option>
           {Object.keys(ACTION_CONFIG).map((a) => (
-            <option key={a} value={a}>{ACTION_CONFIG[a].label}</option>
+            <option key={a} value={a} className="bg-white dark:bg-zinc-900 text-gray-800 dark:text-white">
+              {ACTION_CONFIG[a].label}
+            </option>
           ))}
         </select>
-        <select value={actorFilter} onChange={(e) => setActorFilter(e.target.value)}
-          style={{ padding: "9px 12px", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "14px", outline: "none" }}>
-          <option value="All">All Users</option>
-          {uniqueActors.map((a) => <option key={a} value={a}>{a}</option>)}
+        <select
+          value={actorFilter}
+          onChange={(e) => setActorFilter(e.target.value)}
+          className="px-3 py-2 bg-[#f5f6f4] dark:bg-white/10 border border-gray-200/50 dark:border-white/10 rounded-lg text-sm outline-none text-gray-700 dark:text-gray-200 cursor-pointer"
+        >
+          <option value="All" className="bg-white dark:bg-zinc-900 text-gray-800 dark:text-white">All Users</option>
+          {uniqueActors.map((a) => (
+            <option key={a} value={a} className="bg-white dark:bg-zinc-900 text-gray-800 dark:text-white">
+              {a}
+            </option>
+          ))}
         </select>
       </div>
 
-      {/* Log Timeline */}
-      <div style={{ background: "#fff", borderRadius: "12px", border: "1px solid #e2e8f0", overflow: "hidden" }}>
-        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "14px" }}>
-          <thead>
-            <tr style={{ background: "#f8fafc", borderBottom: "1px solid #e2e8f0" }}>
-              {["Action", "Performed By", "Details", "IP Address", "Timestamp"].map((h) => (
-                <th key={h} style={{ padding: "12px 16px", textAlign: "left", fontWeight: 600, color: "#374151", fontSize: "13px" }}>
-                  {h}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.map((log) => {
-              const conf = ACTION_CONFIG[log.action] || ACTION_CONFIG.LOGIN;
-              return (
-                <tr key={log.id} style={{ borderBottom: "1px solid #f1f5f9" }}>
-                  <td style={{ padding: "14px 16px" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                      <div style={{ width: "30px", height: "30px", background: conf.bg, borderRadius: "8px", display: "flex", alignItems: "center", justifyContent: "center", color: conf.color, flexShrink: 0 }}>
-                        {conf.icon}
+      {/* Log Timeline Table */}
+      <div className="bg-white dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/10 shadow-xs overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-xs">
+            <thead>
+              <tr className="text-gray-500 dark:text-gray-400 border-b border-gray-100 dark:border-white/10 bg-[#fafbf9] dark:bg-white/5">
+                {["Action", "Performed By", "Details", "IP Address", "Timestamp"].map((h) => (
+                  <th key={h} className="px-4 py-3 font-semibold">
+                    {h}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-50 dark:divide-white/5">
+              {filtered.map((log) => {
+                const conf = ACTION_CONFIG[log.action] || ACTION_CONFIG.LOGIN;
+                return (
+                  <tr key={log.id} className="hover:bg-[#fafbf9] dark:hover:bg-white/5 transition-colors">
+                    <td className="px-4 py-3.5">
+                      <div className="flex items-center gap-2">
+                        <div
+                          style={{ background: conf.bg, color: conf.color }}
+                          className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0"
+                        >
+                          {conf.icon}
+                        </div>
+                        <span style={{ color: conf.color }} className="font-semibold text-xs">
+                          {conf.label}
+                        </span>
                       </div>
-                      <span style={{ fontWeight: 600, fontSize: "13px", color: conf.color }}>{conf.label}</span>
-                    </div>
-                  </td>
-                  <td style={{ padding: "14px 16px" }}>
-                    <div style={{ fontWeight: 600, color: "#0f172a", fontSize: "13px" }}>{log.actorName}</div>
-                    <div style={{ fontSize: "12px", color: "#94a3b8" }}>{log.actor}</div>
-                  </td>
-                  <td style={{ padding: "14px 16px", color: "#374151", fontSize: "13px", maxWidth: "320px", lineHeight: "1.5" }}>
-                    {log.details}
-                  </td>
-                  <td style={{ padding: "14px 16px" }}>
-                    <code style={{ fontSize: "12px", color: "#64748b", background: "#f1f5f9", padding: "3px 8px", borderRadius: "5px" }}>
-                      {log.ip}
-                    </code>
-                  </td>
-                  <td style={{ padding: "14px 16px", color: "#64748b", fontSize: "12px", whiteSpace: "nowrap" }}>
-                    {formatDateTime(log.timestamp)}
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-        {filtered.length === 0 && (
-          <div style={{ padding: "40px", textAlign: "center", color: "#94a3b8" }}>No log entries found.</div>
-        )}
+                    </td>
+                    <td className="px-4 py-3.5">
+                      <div className="font-semibold text-gray-900 dark:text-white text-xs">{log.actorName}</div>
+                      <div className="text-[11px] text-gray-400 dark:text-gray-500">{log.actor}</div>
+                    </td>
+                    <td className="px-4 py-3.5 text-gray-700 dark:text-gray-300 max-w-sm text-xs leading-relaxed">
+                      {log.details}
+                    </td>
+                    <td className="px-4 py-3.5">
+                      <code className="text-[11px] text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-white/10 px-2 py-0.5 rounded font-mono">
+                        {log.ip}
+                      </code>
+                    </td>
+                    <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs whitespace-nowrap">
+                      {formatDateTime(log.timestamp)}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+          {filtered.length === 0 && (
+            <div className="py-12 text-center text-gray-400 text-xs">No log entries found.</div>
+          )}
+        </div>
       </div>
     </div>
   );

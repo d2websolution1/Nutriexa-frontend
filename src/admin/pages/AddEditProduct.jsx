@@ -212,16 +212,16 @@ export default function AddEditProduct() {
     <div className="space-y-5 max-w-4xl">
       <button
         onClick={() => navigate("/admin/products")}
-        className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-[#4CAF37]"
+        className="flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400 hover:text-[#4CAF37] dark:hover:text-[#4CAF37] cursor-pointer"
       >
         <FiChevronLeft size={16} /> Back to Products
       </button>
 
       <div>
-        <h1 className="text-2xl font-extrabold text-[#1a1a1a]">
+        <h1 className="text-2xl font-extrabold text-[#1a1a1a] dark:text-white">
           {isEdit ? "Edit Product" : "Add New Product"}
         </h1>
-        <p className="text-sm text-gray-500 mt-1">
+        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
           {isEdit
             ? "Update product details below."
             : "Fill in the details to list a new product."}
@@ -237,10 +237,10 @@ export default function AddEditProduct() {
       <form onSubmit={handleSubmit} className="grid md:grid-cols-3 gap-5">
         {/* Left: main fields */}
         <div className="md:col-span-2 space-y-5">
-          <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5 space-y-4">
+          <div className="bg-white dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/10 shadow-sm p-5 space-y-4">
             <div className="grid sm:grid-cols-3 gap-4">
               <div className="sm:col-span-2">
-                <label className="text-sm font-medium text-[#1a1a1a] mb-1.5 block">
+                <label className="text-sm font-medium text-[#1a1a1a] dark:text-gray-300 mb-1.5 block">
                   Product Name <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -249,13 +249,13 @@ export default function AddEditProduct() {
                   value={form.name}
                   onChange={handleChange}
                   placeholder="e.g. Nutriexa Whey Protein"
-                  className="w-full border border-gray-200 rounded-md px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
+                  className="w-full border border-gray-200 dark:border-white/10 bg-white dark:bg-white/10 text-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 rounded-md px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
                   required
                 />
               </div>
               <div>
                 <div className="flex items-center justify-between mb-1.5">
-                  <label className="text-sm font-medium text-[#1a1a1a] block">
+                  <label className="text-sm font-medium text-[#1a1a1a] dark:text-gray-300 block">
                     Product SKU
                   </label>
                   <button
@@ -272,14 +272,14 @@ export default function AddEditProduct() {
                   value={form.sku}
                   onChange={handleChange}
                   placeholder="e.g. NX-WHE-101"
-                  className="w-full font-mono border border-gray-200 rounded-md px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
+                  className="w-full font-mono border border-gray-200 dark:border-white/10 bg-white dark:bg-white/10 text-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 rounded-md px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
                 />
               </div>
             </div>
 
             <div className="grid sm:grid-cols-2 gap-4">
               <div>
-                <label className="text-sm font-medium text-[#1a1a1a] mb-1.5 block">
+                <label className="text-sm font-medium text-[#1a1a1a] dark:text-gray-300 mb-1.5 block">
                   Variant
                 </label>
                 <input
@@ -288,18 +288,18 @@ export default function AddEditProduct() {
                   value={form.variant}
                   onChange={handleChange}
                   placeholder="e.g. 2KG | Chocolate"
-                  className="w-full border border-gray-200 rounded-md px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
+                  className="w-full border border-gray-200 dark:border-white/10 bg-white dark:bg-white/10 text-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 rounded-md px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
                 />
               </div>
               <div>
-                <label className="text-sm font-medium text-[#1a1a1a] mb-1.5 block">
+                <label className="text-sm font-medium text-[#1a1a1a] dark:text-gray-300 mb-1.5 block">
                   Category <span className="text-red-500">*</span>
                 </label>
                 <select
                   name="category"
                   value={form.category}
                   onChange={handleChange}
-                  className="w-full border border-gray-200 rounded-md px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37] capitalize"
+                  className="w-full border border-gray-200 dark:border-white/10 bg-white dark:bg-white/10 text-gray-800 dark:text-white rounded-md px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37] capitalize"
                 >
                   {categoryOptions.map((c) => (
                     <option key={c.slug} value={c.slug}>
@@ -311,7 +311,7 @@ export default function AddEditProduct() {
             </div>
 
             <div>
-              <label className="text-sm font-medium text-[#1a1a1a] mb-1.5 block">
+              <label className="text-sm font-medium text-[#1a1a1a] dark:text-gray-300 mb-1.5 block">
                 Description
               </label>
               <textarea
@@ -320,16 +320,16 @@ export default function AddEditProduct() {
                 onChange={handleChange}
                 rows={5}
                 placeholder="Write product description..."
-                className="w-full border border-gray-200 rounded-md px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37] resize-none"
+                className="w-full border border-gray-200 dark:border-white/10 bg-white dark:bg-white/10 text-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 rounded-md px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37] resize-none"
               />
             </div>
           </div>
 
           {/* Multi-image upload section */}
-          <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
+          <div className="bg-white dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/10 shadow-sm p-5">
             <div className="flex items-center justify-between mb-3">
               <div>
-                <label className="text-sm font-medium text-[#1a1a1a] block">
+                <label className="text-sm font-medium text-[#1a1a1a] dark:text-gray-300 block">
                   Product Images
                 </label>
                 <p className="text-xs text-gray-400 mt-0.5">
@@ -404,7 +404,7 @@ export default function AddEditProduct() {
 
             {/* Upload dropzone */}
             {canAddMore ? (
-              <label className="border-2 border-dashed border-gray-200 rounded-lg py-8 flex flex-col items-center justify-center text-center cursor-pointer hover:border-[#4CAF37] transition-colors block">
+              <label className="border-2 border-dashed border-gray-200 dark:border-white/20 rounded-lg py-8 flex flex-col items-center justify-center text-center cursor-pointer hover:border-[#4CAF37] transition-colors block bg-gray-50/50 dark:bg-white/5">
                 <FiUploadCloud size={26} className="text-gray-400 mb-2" />
                 <p className="text-sm text-gray-500">
                   <span className="text-[#4CAF37] font-semibold">Click to upload</span>{" "}
@@ -439,11 +439,11 @@ export default function AddEditProduct() {
 
         {/* Right: pricing / status / actions */}
         <div className="space-y-5">
-          <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5 space-y-4">
-            <h3 className="font-bold text-[#1a1a1a] text-sm">Pricing &amp; Stock</h3>
+          <div className="bg-white dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/10 shadow-sm p-5 space-y-4">
+            <h3 className="font-bold text-[#1a1a1a] dark:text-white text-sm">Pricing &amp; Stock</h3>
 
             <div>
-              <label className="text-xs font-medium text-gray-600 mb-1.5 block">
+              <label className="text-xs font-medium text-gray-600 dark:text-gray-300 mb-1.5 block">
                 Selling Price (₹)
               </label>
               <input
@@ -451,13 +451,13 @@ export default function AddEditProduct() {
                 name="price"
                 value={form.price}
                 onChange={handleChange}
-                className="w-full border border-gray-200 rounded-md px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
+                className="w-full border border-gray-200 dark:border-white/10 bg-white dark:bg-white/10 text-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 rounded-md px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
                 required
               />
             </div>
 
             <div>
-              <label className="text-xs font-medium text-gray-600 mb-1.5 block">
+              <label className="text-xs font-medium text-gray-600 dark:text-gray-300 mb-1.5 block">
                 MRP (₹)
               </label>
               <input
@@ -465,12 +465,12 @@ export default function AddEditProduct() {
                 name="mrp"
                 value={form.mrp}
                 onChange={handleChange}
-                className="w-full border border-gray-200 rounded-md px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
+                className="w-full border border-gray-200 dark:border-white/10 bg-white dark:bg-white/10 text-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 rounded-md px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
               />
             </div>
 
             <div>
-              <label className="text-xs font-medium text-gray-600 mb-1.5 block">
+              <label className="text-xs font-medium text-gray-600 dark:text-gray-300 mb-1.5 block">
                 Stock Quantity
               </label>
               <input
@@ -478,19 +478,19 @@ export default function AddEditProduct() {
                 name="stock"
                 value={form.stock}
                 onChange={handleChange}
-                className="w-full border border-gray-200 rounded-md px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
+                className="w-full border border-gray-200 dark:border-white/10 bg-white dark:bg-white/10 text-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 rounded-md px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
               />
             </div>
 
             <div>
-              <label className="text-xs font-medium text-gray-600 mb-1.5 block">
+              <label className="text-xs font-medium text-gray-600 dark:text-gray-300 mb-1.5 block">
                 Status
               </label>
               <select
                 name="status"
                 value={form.status}
                 onChange={handleChange}
-                className="w-full border border-gray-200 rounded-md px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
+                className="w-full border border-gray-200 dark:border-white/10 bg-white dark:bg-white/10 text-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 rounded-md px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
               >
                 <option value="Active">Active</option>
                 <option value="Inactive">Inactive</option>
@@ -501,7 +501,7 @@ export default function AddEditProduct() {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5 flex flex-col gap-2.5">
+          <div className="bg-white dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/10 shadow-sm p-5 flex flex-col gap-2.5">
             <button
               type="submit"
               disabled={loading}
@@ -512,7 +512,7 @@ export default function AddEditProduct() {
             <button
               type="button"
               onClick={() => navigate("/admin/products")}
-              className="border border-gray-200 text-[#1a1a1a] font-semibold text-sm py-2.5 rounded-md hover:bg-gray-50"
+              className="border border-gray-200 dark:border-white/10 text-[#1a1a1a] dark:text-gray-200 font-semibold text-sm py-2.5 rounded-md hover:bg-gray-50 dark:hover:bg-white/10 cursor-pointer"
             >
               Cancel
             </button>

@@ -110,7 +110,7 @@ export default function Notifications() {
   const unreadCount = notifications.filter((n) => !n.isRead).length;
 
   function markRead(id) {
-    setNotifications((prev) => prev.map((n) => n.id === id ? { ...n, isRead: true } : n));
+    setNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, isRead: true } : n)));
   }
 
   function markAllRead() {
@@ -130,94 +130,120 @@ export default function Notifications() {
   }
 
   return (
-    <div style={{ padding: "24px", minHeight: "100vh", background: "#f8fafc" }}>
+    <div className="space-y-6">
       {/* Header */}
-      <div style={{ marginBottom: "24px", display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h1 style={{ fontSize: "22px", fontWeight: 700, color: "#0f172a", margin: 0, display: "flex", alignItems: "center", gap: "10px" }}>
+          <h1 className="text-2xl font-extrabold text-[#1a1a1a] dark:text-white flex items-center gap-2.5">
             Notifications
             {unreadCount > 0 && (
-              <span style={{ padding: "2px 10px", background: "#ef4444", color: "#fff", borderRadius: "20px", fontSize: "13px", fontWeight: 700 }}>
+              <span className="bg-rose-500 text-white text-xs px-2.5 py-0.5 rounded-full font-bold">
                 {unreadCount}
               </span>
             )}
           </h1>
-          <p style={{ color: "#64748b", fontSize: "14px", marginTop: "4px" }}>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
             Order alerts, stock warnings, and system events.
           </p>
         </div>
         {unreadCount > 0 && (
-          <button onClick={markAllRead}
-            style={{ padding: "9px 18px", border: "1px solid #e2e8f0", borderRadius: "8px", background: "#fff", fontWeight: 600, fontSize: "13px", cursor: "pointer", color: "#6366f1", display: "flex", alignItems: "center", gap: "6px" }}>
+          <button
+            onClick={markAllRead}
+            className="flex items-center gap-1.5 px-3.5 py-2 bg-white dark:bg-white/10 border border-gray-200/60 dark:border-white/10 rounded-xl text-xs font-semibold text-indigo-600 dark:text-indigo-400 cursor-pointer shadow-xs hover:bg-gray-50 dark:hover:bg-white/20 transition-colors self-start sm:self-auto"
+          >
             <FiCheck size={14} /> Mark All Read
           </button>
         )}
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 360px", gap: "20px" }}>
+      <div className="grid lg:grid-cols-[1fr_360px] gap-6">
         {/* Notifications Feed */}
         <div>
           {/* Filters */}
-          <div style={{ display: "flex", gap: "8px", marginBottom: "16px", flexWrap: "wrap" }}>
-            <select value={filterType} onChange={(e) => setFilterType(e.target.value)}
-              style={{ padding: "8px 12px", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "13px", outline: "none", background: "#fff" }}>
-              <option value="All">All Types</option>
-              <option value="order">Orders</option>
-              <option value="user">Customers</option>
-              <option value="stock">Inventory</option>
-              <option value="review">Reviews</option>
-              <option value="payment">Payments</option>
+          <div className="flex gap-2 mb-4 flex-wrap">
+            <select
+              value={filterType}
+              onChange={(e) => setFilterType(e.target.value)}
+              className="px-3 py-2 bg-white dark:bg-white/10 border border-gray-200/60 dark:border-white/10 rounded-lg text-xs font-medium text-gray-700 dark:text-gray-200 cursor-pointer shadow-xs outline-none"
+            >
+              <option value="All" className="bg-white dark:bg-zinc-900 text-gray-800 dark:text-white">All Types</option>
+              <option value="order" className="bg-white dark:bg-zinc-900 text-gray-800 dark:text-white">Orders</option>
+              <option value="user" className="bg-white dark:bg-zinc-900 text-gray-800 dark:text-white">Customers</option>
+              <option value="stock" className="bg-white dark:bg-zinc-900 text-gray-800 dark:text-white">Inventory</option>
+              <option value="review" className="bg-white dark:bg-zinc-900 text-gray-800 dark:text-white">Reviews</option>
+              <option value="payment" className="bg-white dark:bg-zinc-900 text-gray-800 dark:text-white">Payments</option>
             </select>
-            <select value={filterRead} onChange={(e) => setFilterRead(e.target.value)}
-              style={{ padding: "8px 12px", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "13px", outline: "none", background: "#fff" }}>
-              <option value="All">All</option>
-              <option value="Unread">Unread Only</option>
-              <option value="Read">Read</option>
+            <select
+              value={filterRead}
+              onChange={(e) => setFilterRead(e.target.value)}
+              className="px-3 py-2 bg-white dark:bg-white/10 border border-gray-200/60 dark:border-white/10 rounded-lg text-xs font-medium text-gray-700 dark:text-gray-200 cursor-pointer shadow-xs outline-none"
+            >
+              <option value="All" className="bg-white dark:bg-zinc-900 text-gray-800 dark:text-white">All</option>
+              <option value="Unread" className="bg-white dark:bg-zinc-900 text-gray-800 dark:text-white">Unread Only</option>
+              <option value="Read" className="bg-white dark:bg-zinc-900 text-gray-800 dark:text-white">Read</option>
             </select>
           </div>
 
           {/* Notification list */}
-          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+          <div className="flex flex-col gap-2.5">
             {filtered.map((n) => {
               const conf = TYPE_CONFIG[n.type] || TYPE_CONFIG.order;
               return (
-                <div key={n.id} style={{
-                  background: n.isRead ? "#fff" : "#fafbff",
-                  borderRadius: "12px",
-                  border: `1px solid ${n.isRead ? "#e2e8f0" : "#c7d2fe"}`,
-                  padding: "16px",
-                  display: "flex",
-                  gap: "14px",
-                  alignItems: "flex-start",
-                  transition: "all 0.15s"
-                }}>
-                  <div style={{ width: "38px", height: "38px", background: conf.bg, borderRadius: "10px", display: "flex", alignItems: "center", justifyContent: "center", color: conf.color, flexShrink: 0 }}>
+                <div
+                  key={n.id}
+                  className={`p-4 rounded-xl border flex gap-3.5 items-start transition-all shadow-2xs ${
+                    n.isRead
+                      ? "bg-white dark:bg-white/5 border-gray-100 dark:border-white/10"
+                      : "bg-indigo-50/40 dark:bg-indigo-950/20 border-indigo-200/70 dark:border-indigo-800/40"
+                  }`}
+                >
+                  <div
+                    style={{ background: conf.bg, color: conf.color }}
+                    className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
+                  >
                     {conf.icon}
                   </div>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                      <div style={{ fontWeight: n.isRead ? 500 : 700, color: "#0f172a", fontSize: "14px" }}>{n.title}</div>
-                      <div style={{ fontSize: "12px", color: "#94a3b8", flexShrink: 0, marginLeft: "8px" }}>{formatRelativeTime(n.timestamp)}</div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex justify-between items-center">
+                      <div
+                        className={`text-sm ${
+                          n.isRead
+                            ? "font-semibold text-gray-800 dark:text-gray-200"
+                            : "font-extrabold text-gray-900 dark:text-white"
+                        }`}
+                      >
+                        {n.title}
+                      </div>
+                      <div className="text-[11px] text-gray-400 shrink-0 ml-2">
+                        {formatRelativeTime(n.timestamp)}
+                      </div>
                     </div>
-                    <div style={{ fontSize: "13px", color: "#64748b", marginTop: "4px", lineHeight: "1.5" }}>{n.message}</div>
+                    <div className="text-xs text-gray-600 dark:text-gray-400 mt-1 leading-relaxed">
+                      {n.message}
+                    </div>
                     {!n.isRead && (
-                      <div style={{ display: "flex", gap: "8px", marginTop: "8px" }}>
-                        <button onClick={() => markRead(n.id)}
-                          style={{ padding: "4px 12px", border: "1px solid #c7d2fe", borderRadius: "6px", background: "#eef2ff", color: "#6366f1", fontSize: "12px", fontWeight: 600, cursor: "pointer" }}>
+                      <div className="flex gap-2 mt-2">
+                        <button
+                          onClick={() => markRead(n.id)}
+                          className="px-2.5 py-1 border border-indigo-200 dark:border-indigo-700/50 rounded-md bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 text-xs font-semibold hover:bg-indigo-100 dark:hover:bg-indigo-900/50 cursor-pointer"
+                        >
                           Mark as Read
                         </button>
                       </div>
                     )}
                   </div>
-                  <button onClick={() => deleteNotification(n.id)}
-                    style={{ background: "none", border: "none", cursor: "pointer", color: "#94a3b8", padding: "4px" }}>
+                  <button
+                    onClick={() => deleteNotification(n.id)}
+                    className="text-gray-400 hover:text-rose-500 p-1 cursor-pointer transition-colors"
+                    title="Delete notification"
+                  >
                     <FiTrash2 size={14} />
                   </button>
                 </div>
               );
             })}
             {filtered.length === 0 && (
-              <div style={{ padding: "40px", textAlign: "center", color: "#94a3b8", background: "#fff", borderRadius: "12px", border: "1px solid #e2e8f0" }}>
+              <div className="p-10 text-center text-gray-400 dark:text-gray-500 bg-white dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/10 text-xs">
                 No notifications found.
               </div>
             )}
@@ -226,55 +252,66 @@ export default function Notifications() {
 
         {/* Broadcast Panel */}
         <div>
-          <div style={{ background: "#fff", borderRadius: "12px", border: "1px solid #e2e8f0", padding: "24px" }}>
-            <h3 style={{ margin: "0 0 16px", fontSize: "15px", fontWeight: 700, color: "#0f172a", display: "flex", alignItems: "center", gap: "8px" }}>
-              <FiRadio size={16} style={{ color: "#6366f1" }} /> Broadcast Notification
+          <div className="bg-white dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/10 shadow-xs p-5">
+            <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2 mb-1">
+              <FiRadio size={16} className="text-indigo-600 dark:text-indigo-400" /> Broadcast Notification
             </h3>
-            <p style={{ fontSize: "13px", color: "#64748b", margin: "0 0 16px", lineHeight: "1.5" }}>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mb-4 leading-relaxed">
               Send a promotional or important message to all customers.
             </p>
 
             {broadcastSent && (
-              <div style={{ padding: "10px 14px", background: "#ecfdf5", color: "#10b981", borderRadius: "8px", fontSize: "13px", fontWeight: 600, marginBottom: "16px" }}>
+              <div className="p-3 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/40 rounded-lg text-xs font-bold mb-4">
                 ✓ Broadcast sent successfully!
               </div>
             )}
 
-            <div style={{ marginBottom: "14px" }}>
-              <label style={{ display: "block", fontSize: "13px", fontWeight: 600, color: "#374151", marginBottom: "6px" }}>Channel</label>
-              <select value={broadcastChannel} onChange={(e) => setBroadcastChannel(e.target.value)}
-                style={{ width: "100%", padding: "9px 12px", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "14px", outline: "none" }}>
-                <option>Email</option>
-                <option>SMS</option>
-                <option>Push Notification</option>
-                <option>All Channels</option>
+            <div className="mb-3.5">
+              <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">
+                Channel
+              </label>
+              <select
+                value={broadcastChannel}
+                onChange={(e) => setBroadcastChannel(e.target.value)}
+                className="w-full border border-gray-200 dark:border-white/10 bg-[#f5f6f4] dark:bg-white/10 rounded-lg px-3 py-2 text-xs text-gray-800 dark:text-white outline-none cursor-pointer"
+              >
+                <option value="Email" className="bg-white dark:bg-zinc-900 text-gray-800 dark:text-white">Email</option>
+                <option value="SMS" className="bg-white dark:bg-zinc-900 text-gray-800 dark:text-white">SMS</option>
+                <option value="Push Notification" className="bg-white dark:bg-zinc-900 text-gray-800 dark:text-white">Push Notification</option>
+                <option value="All Channels" className="bg-white dark:bg-zinc-900 text-gray-800 dark:text-white">All Channels</option>
               </select>
             </div>
 
-            <div style={{ marginBottom: "14px" }}>
-              <label style={{ display: "block", fontSize: "13px", fontWeight: 600, color: "#374151", marginBottom: "6px" }}>Subject / Title</label>
+            <div className="mb-3.5">
+              <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">
+                Subject / Title
+              </label>
               <input
                 value={broadcastTitle}
                 onChange={(e) => setBroadcastTitle(e.target.value)}
                 placeholder="e.g. Flash Sale: 40% OFF Today!"
-                style={{ width: "100%", padding: "9px 12px", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "14px", outline: "none", boxSizing: "border-box" }}
+                className="w-full border border-gray-200 dark:border-white/10 bg-[#f5f6f4] dark:bg-white/10 rounded-lg px-3 py-2 text-xs text-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 outline-none focus:border-indigo-500"
               />
             </div>
 
-            <div style={{ marginBottom: "20px" }}>
-              <label style={{ display: "block", fontSize: "13px", fontWeight: 600, color: "#374151", marginBottom: "6px" }}>Message</label>
+            <div className="mb-4">
+              <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">
+                Message
+              </label>
               <textarea
                 rows={4}
                 value={broadcastMessage}
                 onChange={(e) => setBroadcastMessage(e.target.value)}
                 placeholder="Write your broadcast message here..."
-                style={{ width: "100%", padding: "10px 12px", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "14px", outline: "none", resize: "vertical", boxSizing: "border-box", fontFamily: "inherit" }}
+                className="w-full border border-gray-200 dark:border-white/10 bg-[#f5f6f4] dark:bg-white/10 rounded-lg px-3 py-2 text-xs text-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 outline-none focus:border-indigo-500 resize-none font-inherit"
               />
             </div>
 
-            <button onClick={sendBroadcast}
-              style={{ width: "100%", padding: "11px", background: "#6366f1", color: "#fff", border: "none", borderRadius: "8px", fontWeight: 700, fontSize: "14px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}>
-              <FiSend size={15} /> Send Broadcast
+            <button
+              onClick={sendBroadcast}
+              className="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-bold text-xs cursor-pointer shadow-xs transition-colors flex items-center justify-center gap-2"
+            >
+              <FiSend size={14} /> Send Broadcast
             </button>
           </div>
         </div>

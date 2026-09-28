@@ -192,93 +192,66 @@ export default function Reviews() {
   }
 
   return (
-    <div style={{ padding: "24px", minHeight: "100vh", background: "#f8fafc" }}>
+    <div className="space-y-6 pb-12">
       {/* Header */}
-      <div style={{ marginBottom: "24px", display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h1 style={{ fontSize: "22px", fontWeight: 700, color: "#0f172a", margin: 0 }}>
-            Product Reviews
-          </h1>
-          <p style={{ color: "#64748b", fontSize: "14px", marginTop: "4px" }}>
+          <h1 className="text-2xl font-extrabold text-[#1a1a1a] dark:text-white tracking-tight">Product Reviews</h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
             Moderate customer reviews, approve or reject submissions.
           </p>
         </div>
         <button
           onClick={fetchReviews}
           title="Refresh Reviews"
-          style={{
-            padding: "9px 14px",
-            border: "1px solid #e2e8f0",
-            background: "#fff",
-            borderRadius: "8px",
-            cursor: "pointer",
-            color: "#64748b",
-            display: "flex",
-            alignItems: "center",
-            gap: "6px",
-            fontSize: "13px",
-            fontWeight: 600
-          }}
+          className="flex items-center gap-2 px-3.5 py-2 bg-white dark:bg-white/10 border border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-300 hover:text-[#22c55e] text-xs font-semibold rounded-xl shadow-2xs transition-colors cursor-pointer self-start sm:self-auto"
         >
-          <FiRefreshCw size={14} className={loading ? "animate-spin" : ""} />
-          Refresh
+          <FiRefreshCw size={14} className={loading ? "animate-spin text-[#22c55e]" : ""} />
+          <span>Refresh</span>
         </button>
       </div>
 
       {/* Stats */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "16px", marginBottom: "24px" }}>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5">
         {[
-          { label: "Total Reviews", value: stats.total, color: "#6366f1" },
-          { label: "Pending Approval", value: stats.pending, color: "#f59e0b" },
-          { label: "Approved", value: stats.approved, color: "#10b981" },
-          { label: "Avg. Rating", value: stats.avgRating + " ★", color: "#f59e0b" },
+          { label: "Total Reviews", value: stats.total, color: "text-indigo-500" },
+          { label: "Pending Approval", value: stats.pending, color: "text-amber-500" },
+          { label: "Approved", value: stats.approved, color: "text-emerald-600" },
+          { label: "Avg. Rating", value: stats.avgRating + " ★", color: "text-amber-500" },
         ].map((s) => (
-          <div key={s.label} style={{
-            background: "#fff",
-            borderRadius: "12px",
-            padding: "20px",
-            border: "1px solid #e2e8f0",
-            boxShadow: "0 1px 4px rgba(0,0,0,0.05)"
-          }}>
-            <div style={{ fontSize: "26px", fontWeight: 800, color: s.color }}>{s.value}</div>
-            <div style={{ fontSize: "13px", color: "#64748b", marginTop: "4px" }}>{s.label}</div>
+          <div key={s.label} className="bg-white dark:bg-white/5 rounded-xl p-4 border border-gray-100 dark:border-white/10 shadow-xs">
+            <div className={`text-2xl font-extrabold ${s.color}`}>{s.value}</div>
+            <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">{s.label}</div>
           </div>
         ))}
       </div>
 
       {/* Filters */}
-      <div style={{
-        background: "#fff",
-        borderRadius: "12px",
-        padding: "16px 20px",
-        border: "1px solid #e2e8f0",
-        marginBottom: "20px",
-        display: "flex",
-        gap: "12px",
-        alignItems: "center",
-        flexWrap: "wrap"
-      }}>
-        <div style={{ position: "relative", flex: 1, minWidth: "200px" }}>
-          <FiSearch size={16} style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", color: "#94a3b8" }} />
+      <div className="bg-white dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/10 shadow-xs p-4 flex flex-wrap gap-3 items-center">
+        <div className="relative flex-1 min-w-[200px]">
+          <FiSearch size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
           <input
             placeholder="Search reviews, products, customers..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            style={{
-              width: "100%", padding: "9px 12px 9px 36px", border: "1px solid #e2e8f0",
-              borderRadius: "8px", fontSize: "14px", outline: "none", boxSizing: "border-box"
-            }}
+            className="w-full pl-9 pr-3 py-2 bg-[#f5f6f4] dark:bg-white/10 border border-gray-200/50 dark:border-white/10 rounded-lg text-sm outline-none text-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500"
           />
         </div>
-        <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}
-          style={{ padding: "9px 12px", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "14px", outline: "none" }}>
+        <select
+          value={statusFilter}
+          onChange={(e) => setStatusFilter(e.target.value)}
+          className="px-3 py-2 bg-[#f5f6f4] dark:bg-white/10 border border-gray-200/50 dark:border-white/10 rounded-lg text-sm outline-none text-gray-700 dark:text-gray-200 cursor-pointer"
+        >
           <option value="All">All Status</option>
           <option value="Pending">Pending</option>
           <option value="Approved">Approved</option>
           <option value="Rejected">Rejected</option>
         </select>
-        <select value={ratingFilter} onChange={(e) => setRatingFilter(e.target.value)}
-          style={{ padding: "9px 12px", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "14px", outline: "none" }}>
+        <select
+          value={ratingFilter}
+          onChange={(e) => setRatingFilter(e.target.value)}
+          className="px-3 py-2 bg-[#f5f6f4] dark:bg-white/10 border border-gray-200/50 dark:border-white/10 rounded-lg text-sm outline-none text-gray-700 dark:text-gray-200 cursor-pointer"
+        >
           <option value="All">All Ratings</option>
           <option value="5">5 Stars</option>
           <option value="4">4 Stars</option>
@@ -289,134 +262,131 @@ export default function Reviews() {
       </div>
 
       {/* Main content */}
-      <div style={{ display: "grid", gridTemplateColumns: selectedReview ? "1fr 380px" : "1fr", gap: "20px" }}>
+      <div className={`grid gap-5 ${selectedReview ? "grid-cols-1 xl:grid-cols-[1fr_380px]" : "grid-cols-1"}`}>
         {/* Reviews Table */}
-        <div style={{ background: "#fff", borderRadius: "12px", border: "1px solid #e2e8f0", overflow: "hidden" }}>
-          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "14px" }}>
-            <thead>
-              <tr style={{ background: "#f8fafc", borderBottom: "1px solid #e2e8f0" }}>
-                {["Product & Customer", "Rating", "Review", "Status", "Date", "Actions"].map((h) => (
-                  <th key={h} style={{ padding: "12px 16px", textAlign: "left", fontWeight: 600, color: "#374151", fontSize: "13px" }}>
-                    {h}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.map((review) => (
-                <tr key={review.id} style={{ borderBottom: "1px solid #f1f5f9", transition: "background 0.15s" }}
-                  onMouseEnter={(e) => e.currentTarget.style.background = "#f8fafc"}
-                  onMouseLeave={(e) => e.currentTarget.style.background = ""}>
-                  <td style={{ padding: "14px 16px" }}>
-                    <div style={{ fontWeight: 600, color: "#0f172a" }}>{review.productName}</div>
-                    <div style={{ fontSize: "12px", color: "#64748b" }}>{review.customerName}</div>
-                  </td>
-                  <td style={{ padding: "14px 16px" }}>
-                    <StarRating rating={review.rating} />
-                  </td>
-                  <td style={{ padding: "14px 16px", maxWidth: "220px" }}>
-                    <div style={{ fontWeight: 600, color: "#374151", fontSize: "13px" }}>{review.title}</div>
-                    <div style={{ color: "#64748b", fontSize: "12px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                      {review.comment}
-                    </div>
-                  </td>
-                  <td style={{ padding: "14px 16px" }}>
-                    <span style={{
-                      padding: "3px 10px", borderRadius: "20px", fontSize: "12px", fontWeight: 500,
-                      ...STATUS_STYLES[review.status] && {}
-                    }} className={STATUS_STYLES[review.status]}>
-                      {review.status}
-                    </span>
-                  </td>
-                  <td style={{ padding: "14px 16px", color: "#64748b", fontSize: "13px" }}>
-                    {formatDate(review.date)}
-                  </td>
-                  <td style={{ padding: "14px 16px" }}>
-                    <div style={{ display: "flex", gap: "6px" }}>
-                      <button onClick={() => setSelectedReview(review)} title="View Detail"
-                        style={{ padding: "5px", borderRadius: "6px", border: "1px solid #e2e8f0", background: "#fff", cursor: "pointer", color: "#6366f1" }}>
-                        <FiEye size={14} />
-                      </button>
-                      {review.status === "Pending" && (
-                        <>
-                          <button onClick={() => updateStatus(review.id, "Approved")} title="Approve"
-                            style={{ padding: "5px", borderRadius: "6px", border: "1px solid #d1fae5", background: "#ecfdf5", cursor: "pointer", color: "#10b981" }}>
-                            <FiCheck size={14} />
-                          </button>
-                          <button onClick={() => updateStatus(review.id, "Rejected")} title="Reject"
-                            style={{ padding: "5px", borderRadius: "6px", border: "1px solid #fee2e2", background: "#fef2f2", cursor: "pointer", color: "#ef4444" }}>
-                            <FiX size={14} />
-                          </button>
-                        </>
-                      )}
-                      <button onClick={() => deleteReview(review.id)} title="Delete"
-                        style={{ padding: "5px", borderRadius: "6px", border: "1px solid #fee2e2", background: "#fef2f2", cursor: "pointer", color: "#ef4444" }}>
-                        <FiTrash2 size={14} />
-                      </button>
-                    </div>
-                  </td>
+        <div className="bg-white dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/10 shadow-xs overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs">
+              <thead>
+                <tr className="text-gray-500 dark:text-gray-400 border-b border-gray-100 dark:border-white/10 bg-[#fafbf9] dark:bg-white/5">
+                  {["Product & Customer", "Rating", "Review", "Status", "Date", "Actions"].map((h) => (
+                    <th key={h} className="px-4 py-3 font-semibold">{h}</th>
+                  ))}
                 </tr>
-              ))}
-            </tbody>
-          </table>
-          {filtered.length === 0 && (
-            <div style={{ padding: "40px", textAlign: "center", color: "#94a3b8" }}>
-              No reviews found matching your filters.
-            </div>
-          )}
+              </thead>
+              <tbody className="divide-y divide-gray-50 dark:divide-white/5">
+                {filtered.map((review) => (
+                  <tr key={review.id} className="hover:bg-[#fafbf9] dark:hover:bg-white/5 transition-colors">
+                    <td className="px-4 py-3.5">
+                      <div className="font-semibold text-gray-900 dark:text-white text-xs">{review.productName || review.product_name}</div>
+                      <div className="text-[11px] text-gray-500 dark:text-gray-400">{review.customerName || review.customer_name}</div>
+                    </td>
+                    <td className="px-4 py-3.5">
+                      <StarRating rating={review.rating} />
+                    </td>
+                    <td className="px-4 py-3.5 max-w-[220px]">
+                      <div className="font-semibold text-gray-700 dark:text-gray-200 text-xs">{review.title}</div>
+                      <div className="text-[11px] text-gray-500 dark:text-gray-400 overflow-hidden text-ellipsis whitespace-nowrap">
+                        {review.comment}
+                      </div>
+                    </td>
+                    <td className="px-4 py-3.5">
+                      <span className={`px-2.5 py-1 rounded-full text-[10.5px] font-bold border ${STATUS_STYLES[review.status]}`}>
+                        {review.status}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">
+                      {formatDate(review.date)}
+                    </td>
+                    <td className="px-4 py-3.5">
+                      <div className="flex items-center gap-1.5">
+                        <button onClick={() => setSelectedReview(review)} title="View Detail"
+                          className="p-1.5 rounded-lg bg-gray-50 dark:bg-white/10 hover:bg-indigo-50 text-gray-600 dark:text-gray-300 hover:text-indigo-600 border border-gray-200 dark:border-white/10 transition-colors cursor-pointer">
+                          <FiEye size={14} />
+                        </button>
+                        {review.status === "Pending" && (
+                          <>
+                            <button onClick={() => updateStatus(review.id, "Approved")} title="Approve"
+                              className="p-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-600 border border-emerald-200 transition-colors cursor-pointer">
+                              <FiCheck size={14} />
+                            </button>
+                            <button onClick={() => updateStatus(review.id, "Rejected")} title="Reject"
+                              className="p-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 transition-colors cursor-pointer">
+                              <FiX size={14} />
+                            </button>
+                          </>
+                        )}
+                        <button onClick={() => deleteReview(review.id)} title="Delete"
+                          className="p-1.5 rounded-lg bg-rose-50 dark:bg-rose-900/20 hover:bg-rose-100 text-rose-600 border border-rose-200 dark:border-rose-800/30 transition-colors cursor-pointer">
+                          <FiTrash2 size={14} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            {filtered.length === 0 && (
+              <div className="py-12 text-center text-gray-400 text-xs">
+                No reviews found matching your filters.
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Detail Panel */}
         {selectedReview && (
-          <div style={{ background: "#fff", borderRadius: "12px", border: "1px solid #e2e8f0", padding: "24px", height: "fit-content" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-              <h3 style={{ margin: 0, fontSize: "15px", fontWeight: 700, color: "#0f172a" }}>Review Detail</h3>
+          <div className="bg-white dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/10 shadow-xs p-6 space-y-4 h-fit">
+            <div className="flex items-center justify-between pb-3 border-b border-gray-100 dark:border-white/10">
+              <h3 className="text-sm font-bold text-gray-900 dark:text-white">Review Detail</h3>
               <button onClick={() => setSelectedReview(null)}
-                style={{ background: "none", border: "none", cursor: "pointer", color: "#64748b" }}>
+                className="text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-white p-1 rounded-lg cursor-pointer transition-colors">
                 <FiX size={18} />
               </button>
             </div>
 
-            <div style={{ marginBottom: "16px" }}>
-              <div style={{ fontWeight: 700, color: "#0f172a", marginBottom: "4px" }}>{selectedReview.productName}</div>
-              <div style={{ fontSize: "13px", color: "#64748b" }}>{selectedReview.customerName} · {selectedReview.customerEmail}</div>
+            <div>
+              <div className="font-bold text-gray-900 dark:text-white text-sm">{selectedReview.productName || selectedReview.product_name}</div>
+              <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{selectedReview.customerName || selectedReview.customer_name} · {selectedReview.customerEmail || selectedReview.customer_email}</div>
             </div>
 
-            <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "12px" }}>
+            <div className="flex items-center gap-2">
               <StarRating rating={selectedReview.rating} />
-              <span style={{ fontSize: "13px", color: "#64748b" }}>{selectedReview.rating}/5</span>
+              <span className="text-xs text-gray-500 dark:text-gray-400">{selectedReview.rating}/5</span>
             </div>
 
-            <div style={{ fontWeight: 600, color: "#374151", marginBottom: "6px" }}>{selectedReview.title}</div>
-            <div style={{ fontSize: "14px", color: "#64748b", lineHeight: "1.6", marginBottom: "16px" }}>{selectedReview.comment}</div>
+            <div>
+              <div className="font-semibold text-gray-700 dark:text-gray-200 text-sm mb-1">{selectedReview.title}</div>
+              <div className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">{selectedReview.comment}</div>
+            </div>
 
-            <div style={{ display: "flex", gap: "8px", marginBottom: "20px" }}>
+            <div className="flex gap-2 pt-1">
               {selectedReview.status !== "Approved" && (
                 <button onClick={() => updateStatus(selectedReview.id, "Approved")}
-                  style={{ padding: "8px 16px", background: "#10b981", color: "#fff", border: "none", borderRadius: "8px", fontSize: "13px", fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", gap: "6px" }}>
-                  <FiThumbsUp size={14} /> Approve
+                  className="flex items-center gap-1.5 px-3.5 py-2 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold rounded-lg text-xs shadow-xs transition-colors cursor-pointer">
+                  <FiThumbsUp size={13} /> Approve
                 </button>
               )}
               {selectedReview.status !== "Rejected" && (
                 <button onClick={() => updateStatus(selectedReview.id, "Rejected")}
-                  style={{ padding: "8px 16px", background: "#ef4444", color: "#fff", border: "none", borderRadius: "8px", fontSize: "13px", fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", gap: "6px" }}>
-                  <FiThumbsDown size={14} /> Reject
+                  className="flex items-center gap-1.5 px-3.5 py-2 bg-rose-500 hover:bg-rose-600 text-white font-semibold rounded-lg text-xs shadow-xs transition-colors cursor-pointer">
+                  <FiThumbsDown size={13} /> Reject
                 </button>
               )}
             </div>
 
-            <div>
-              <div style={{ fontWeight: 600, color: "#374151", fontSize: "13px", marginBottom: "8px", display: "flex", alignItems: "center", gap: "6px" }}>
-                <FiMessageSquare size={14} /> Reply to Customer
+            <div className="pt-1 space-y-2">
+              <div className="flex items-center gap-1.5 text-xs font-semibold text-gray-600 dark:text-gray-300">
+                <FiMessageSquare size={13} /> Reply to Customer
               </div>
               <textarea
                 rows={3}
                 placeholder="Write a reply..."
                 value={replyText}
                 onChange={(e) => setReplyText(e.target.value)}
-                style={{ width: "100%", padding: "10px", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "14px", outline: "none", resize: "vertical", boxSizing: "border-box", fontFamily: "inherit" }}
+                className="w-full px-3 py-2 bg-[#f5f6f4] dark:bg-white/10 border border-gray-200/50 dark:border-white/10 rounded-lg text-xs outline-none text-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 resize-y"
               />
-              <button style={{ marginTop: "8px", padding: "8px 16px", background: "#6366f1", color: "#fff", border: "none", borderRadius: "8px", fontSize: "13px", fontWeight: 600, cursor: "pointer" }}>
+              <button className="px-3.5 py-2 bg-indigo-500 hover:bg-indigo-600 text-white font-semibold rounded-lg text-xs cursor-pointer transition-colors">
                 Send Reply
               </button>
             </div>
@@ -426,3 +396,4 @@ export default function Reviews() {
     </div>
   );
 }
+

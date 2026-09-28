@@ -321,30 +321,30 @@ export default function AuthenticatorCodes() {
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="text-2xl font-extrabold text-[#1a1a1a]">
+        <h1 className="text-2xl font-extrabold text-[#1a1a1a] dark:text-white">
           Authenticity Codes
         </h1>
-        <p className="text-sm text-gray-500 mt-1">
+        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
           Generate unique verification codes to print on product packaging.
         </p>
       </div>
 
       {/* Generate form (requires authenticator.generate) */}
       {canGenerate ? (
-        <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
-          <h2 className="font-bold text-[#1a1a1a] text-sm mb-4 flex items-center gap-2">
+        <div className="bg-white dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/10 shadow-sm p-5">
+          <h2 className="font-bold text-[#1a1a1a] dark:text-white text-sm mb-4 flex items-center gap-2">
             <FiPlus size={16} /> Generate New Codes
           </h2>
 
           <form onSubmit={handleGenerate} className="grid sm:grid-cols-4 gap-4">
             <div className="sm:col-span-2">
-              <label className="text-xs font-medium text-gray-600 mb-1.5 block">
+              <label className="text-xs font-medium text-gray-600 dark:text-gray-300 mb-1.5 block">
                 Select Product
               </label>
               <select
                 value={form.product_id}
                 onChange={handleProductChange}
-                className="w-full border border-gray-200 rounded-md px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
+                className="w-full border border-gray-200 dark:border-white/10 bg-white dark:bg-white/10 text-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 rounded-md px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
                 required
               >
                 <option value="">-- Select a product --</option>
@@ -357,7 +357,7 @@ export default function AuthenticatorCodes() {
             </div>
 
             <div>
-              <label className="text-xs font-medium text-gray-600 mb-1.5 block">
+              <label className="text-xs font-medium text-gray-600 dark:text-gray-300 mb-1.5 block">
                 Quantity
               </label>
               <input
@@ -366,12 +366,12 @@ export default function AuthenticatorCodes() {
                 max="1000"
                 value={form.quantity}
                 onChange={(e) => setForm({ ...form, quantity: e.target.value })}
-                className="w-full border border-gray-200 rounded-md px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
+                className="w-full border border-gray-200 dark:border-white/10 bg-white dark:bg-white/10 text-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 rounded-md px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
               />
             </div>
 
             <div>
-              <label className="text-xs font-medium text-gray-600 mb-1.5 block">
+              <label className="text-xs font-medium text-gray-600 dark:text-gray-300 mb-1.5 block">
                 Batch Number
               </label>
               <input
@@ -379,7 +379,7 @@ export default function AuthenticatorCodes() {
                 value={form.batch_number}
                 onChange={(e) => setForm({ ...form, batch_number: e.target.value })}
                 placeholder="e.g. B2026-08"
-                className="w-full border border-gray-200 rounded-md px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
+                className="w-full border border-gray-200 dark:border-white/10 bg-white dark:bg-white/10 text-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 rounded-md px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
               />
             </div>
 
@@ -395,9 +395,9 @@ export default function AuthenticatorCodes() {
           </form>
 
           {newCodes.length > 0 && (
-            <div className="mt-5 bg-[#f7f8f6] rounded-md p-4">
+            <div className="mt-5 bg-[#f7f8f6] dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-md p-4">
               <div className="flex items-center justify-between mb-2 flex-wrap gap-2">
-                <p className="text-xs font-semibold text-[#1a1a1a]">
+                <p className="text-xs font-semibold text-[#1a1a1a] dark:text-white">
                   {newCodes.length} new codes generated — copy and print these on your product labels
                 </p>
                 <div className="flex items-center gap-3">
@@ -425,7 +425,7 @@ export default function AuthenticatorCodes() {
                 {newCodes.map((c) => (
                   <span
                     key={c}
-                    className="font-mono text-xs bg-white border border-gray-200 rounded px-2 py-1.5 text-center"
+                    className="font-mono text-xs bg-white dark:bg-white/10 border border-gray-200 dark:border-white/10 text-gray-800 dark:text-gray-200 rounded px-2 py-1.5 text-center"
                   >
                     {c}
                   </span>
@@ -436,14 +436,14 @@ export default function AuthenticatorCodes() {
         </div>
       ) : (
         /* Read-only product selector */
-        <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
-          <label className="text-xs font-medium text-gray-600 mb-1.5 block">
+        <div className="bg-white dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/10 shadow-sm p-5">
+          <label className="text-xs font-medium text-gray-600 dark:text-gray-300 mb-1.5 block">
             Select Product to View Authenticity Codes
           </label>
           <select
             value={form.product_id}
             onChange={handleProductChange}
-            className="w-full max-w-md border border-gray-200 rounded-md px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
+            className="w-full max-w-md border border-gray-200 dark:border-white/10 bg-white dark:bg-white/10 text-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 rounded-md px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
           >
             <option value="">-- Select a product --</option>
             {products.map((p) => (
@@ -457,9 +457,9 @@ export default function AuthenticatorCodes() {
 
       {/* Existing codes for selected product */}
       {form.product_id && (
-        <div className="bg-white rounded-xl border border-gray-100 shadow-sm">
-          <div className="flex items-center justify-between p-4 border-b border-gray-100 flex-wrap gap-2">
-            <h2 className="font-bold text-[#1a1a1a] text-sm">
+        <div className="bg-white dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/10 shadow-sm">
+          <div className="flex items-center justify-between p-4 border-b border-gray-100 dark:border-white/10 flex-wrap gap-2">
+            <h2 className="font-bold text-[#1a1a1a] dark:text-white text-sm">
               All Codes for Selected Product
             </h2>
 
@@ -501,7 +501,7 @@ export default function AuthenticatorCodes() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="text-left text-gray-500 border-b border-gray-100 bg-[#fafbf9]">
+                <tr className="text-left text-gray-500 dark:text-gray-400 border-b border-gray-100 dark:border-white/10 bg-[#fafbf9] dark:bg-white/5">
                   <th className="px-4 py-3 font-medium">Code</th>
                   <th className="px-4 py-3 font-medium">Batch</th>
                   <th className="px-4 py-3 font-medium">Status</th>

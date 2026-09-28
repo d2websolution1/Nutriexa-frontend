@@ -218,8 +218,8 @@ export default function Deals() {
     <div className="space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-2xl font-extrabold text-[#1a1a1a]">Deals & Coupons</h1>
-          <p className="text-sm text-gray-500 mt-1">
+          <h1 className="text-2xl font-extrabold text-[#1a1a1a] dark:text-white">Deals & Coupons</h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
             Manage discount coupons and weekly deals.
           </p>
         </div>
@@ -235,9 +235,9 @@ export default function Deals() {
 
       {/* Create/Edit coupon form (inline card) */}
       {showForm && canManage && (
-        <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
+        <div className="bg-white dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/10 shadow-sm p-5">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="font-bold text-[#1a1a1a] text-sm">
+            <h2 className="font-bold text-[#1a1a1a] dark:text-white text-sm">
               {editingId ? "Edit Coupon" : "New Coupon"}
             </h2>
             <button
@@ -249,7 +249,7 @@ export default function Deals() {
           </div>
           <form onSubmit={submitCoupon} className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div>
-              <label className="text-xs font-medium text-gray-600 mb-1.5 block">
+              <label className="text-xs font-medium text-gray-600 dark:text-gray-300 mb-1.5 block">
                 Coupon Code
               </label>
               <input
@@ -258,25 +258,25 @@ export default function Deals() {
                 onChange={handleChange}
                 placeholder="e.g. SUMMER20"
                 required
-                className="w-full border border-gray-200 rounded-md px-3.5 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37] uppercase"
+                className="w-full border border-gray-200 dark:border-white/10 bg-white dark:bg-white/10 text-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 rounded-md px-3.5 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37] uppercase"
               />
             </div>
             <div>
-              <label className="text-xs font-medium text-gray-600 mb-1.5 block">
+              <label className="text-xs font-medium text-gray-600 dark:text-gray-300 mb-1.5 block">
                 Discount Type
               </label>
               <select
                 name="type"
                 value={form.type}
                 onChange={handleChange}
-                className="w-full border border-gray-200 rounded-md px-3.5 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
+                className="w-full border border-gray-200 dark:border-white/10 bg-white dark:bg-white/10 text-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 rounded-md px-3.5 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
               >
                 <option value="Percentage">Percentage (%)</option>
                 <option value="Fixed">Flat Amount (₹)</option>
               </select>
             </div>
             <div>
-              <label className="text-xs font-medium text-gray-600 mb-1.5 block">
+              <label className="text-xs font-medium text-gray-600 dark:text-gray-300 mb-1.5 block">
                 Discount Value
               </label>
               <input
@@ -287,11 +287,11 @@ export default function Deals() {
                 placeholder={form.type === "Percentage" ? "e.g. 20" : "e.g. 200"}
                 required
                 min="1"
-                className="w-full border border-gray-200 rounded-md px-3.5 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
+                className="w-full border border-gray-200 dark:border-white/10 bg-white dark:bg-white/10 text-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 rounded-md px-3.5 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
               />
             </div>
             <div>
-              <label className="text-xs font-medium text-gray-600 mb-1.5 block">
+              <label className="text-xs font-medium text-gray-600 dark:text-gray-300 mb-1.5 block">
                 Min. Order Amount (₹)
               </label>
               <input
@@ -300,11 +300,11 @@ export default function Deals() {
                 value={form.minOrder}
                 onChange={handleChange}
                 placeholder="e.g. 999"
-                className="w-full border border-gray-200 rounded-md px-3.5 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
+                className="w-full border border-gray-200 dark:border-white/10 bg-white dark:bg-white/10 text-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 rounded-md px-3.5 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
               />
             </div>
             <div>
-              <label className="text-xs font-medium text-gray-600 mb-1.5 block">
+              <label className="text-xs font-medium text-gray-600 dark:text-gray-300 mb-1.5 block">
                 Usage Limit (Optional)
               </label>
               <input
@@ -313,11 +313,11 @@ export default function Deals() {
                 value={form.usageLimit}
                 onChange={handleChange}
                 placeholder="e.g. 100"
-                className="w-full border border-gray-200 rounded-md px-3.5 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
+                className="w-full border border-gray-200 dark:border-white/10 bg-white dark:bg-white/10 text-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 rounded-md px-3.5 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
               />
             </div>
             <div>
-              <label className="text-xs font-medium text-gray-600 mb-1.5 block">
+              <label className="text-xs font-medium text-gray-600 dark:text-gray-300 mb-1.5 block">
                 Expiry Date
               </label>
               <input
@@ -326,7 +326,7 @@ export default function Deals() {
                 value={form.expiryDate}
                 onChange={handleChange}
                 required
-                className="w-full border border-gray-200 rounded-md px-3.5 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
+                className="w-full border border-gray-200 dark:border-white/10 bg-white dark:bg-white/10 text-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 rounded-md px-3.5 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
               />
             </div>
             <div className="sm:col-span-2 lg:col-span-4 flex justify-end gap-3 pt-2">
@@ -352,16 +352,16 @@ export default function Deals() {
       {/* Grid: coupons on left, weekly deals on right */}
       <div className="grid lg:grid-cols-[1fr_360px] gap-6">
         {/* Coupons table */}
-        <div className="bg-white rounded-xl border border-gray-100 shadow-sm">
-          <div className="p-4 border-b border-gray-100">
-            <div className="flex items-center gap-2 bg-[#f5f6f4] rounded-md px-3 py-2 max-w-sm">
+        <div className="bg-white dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/10 shadow-sm">
+          <div className="p-4 border-b border-gray-100 dark:border-white/10">
+            <div className="flex items-center gap-2 bg-[#f5f6f4] dark:bg-white/10 border border-gray-200/50 dark:border-white/10 rounded-md px-3 py-2 max-w-sm">
               <FiSearch className="text-gray-400" size={16} />
               <input
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search coupons..."
-                className="bg-transparent text-sm outline-none w-full placeholder:text-gray-400"
+                className="bg-transparent text-sm outline-none w-full placeholder:text-gray-400 dark:placeholder:text-gray-500 text-gray-800 dark:text-white"
               />
             </div>
           </div>
@@ -369,7 +369,7 @@ export default function Deals() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="text-left text-gray-500 border-b border-gray-100 bg-[#fafbf9]">
+                <tr className="text-left text-gray-500 dark:text-gray-400 border-b border-gray-100 dark:border-white/10 bg-[#fafbf9] dark:bg-white/5">
                   <th className="px-4 py-3 font-medium">Code</th>
                   <th className="px-4 py-3 font-medium">Value</th>
                   <th className="px-4 py-3 font-medium">Min Order</th>
@@ -399,10 +399,10 @@ export default function Deals() {
                   </tr>
                 ) : (
                   coupons.map((c) => (
-                    <tr key={c.id} className="border-b border-gray-50 last:border-0 hover:bg-[#fafbf9]">
+                    <tr key={c.id} className="border-b border-gray-50 dark:border-white/5 last:border-0 hover:bg-[#fafbf9] dark:hover:bg-white/5 transition-colors">
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-2">
-                          <span className="font-mono font-semibold text-[#1a1a1a] bg-[#f3f6f2] px-2 py-1 rounded text-xs">
+                          <span className="font-mono font-semibold text-[#1a1a1a] dark:text-white bg-[#f3f6f2] dark:bg-white/10 px-2 py-1 rounded text-xs">
                             {c.code}
                           </span>
                           <button
@@ -413,11 +413,11 @@ export default function Deals() {
                           </button>
                         </div>
                       </td>
-                      <td className="px-4 py-3 text-gray-600">
+                      <td className="px-4 py-3 text-gray-600 dark:text-gray-300">
                         {c.type === "Percentage" ? `${c.value}%` : `₹${c.value}`}
                       </td>
-                      <td className="px-4 py-3 text-gray-600">₹{c.min_order}</td>
-                      <td className="px-4 py-3 text-gray-600">
+                      <td className="px-4 py-3 text-gray-600 dark:text-gray-300">₹{c.min_order}</td>
+                      <td className="px-4 py-3 text-gray-600 dark:text-gray-300">
                         {c.used_count} / {c.usage_limit || "∞"}
                       </td>
                       <td className="px-4 py-3">
@@ -456,8 +456,8 @@ export default function Deals() {
         </div>
 
         {/* Deals of the week */}
-        <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
-          <h2 className="font-bold text-[#1a1a1a] mb-4 text-sm">Deals of the Week</h2>
+        <div className="bg-white dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/10 shadow-sm p-5">
+          <h2 className="font-bold text-[#1a1a1a] dark:text-white mb-4 text-sm">Deals of the Week</h2>
 
           {dealsLoading ? (
             <p className="text-xs text-gray-400">Loading...</p>
@@ -466,9 +466,9 @@ export default function Deals() {
           ) : (
             <div className="space-y-4">
               {weeklyDeals.map((d) => (
-                <div key={d.id} className="flex items-center justify-between gap-3 pb-4 border-b border-gray-50 last:border-0 last:pb-0">
+                <div key={d.id} className="flex items-center justify-between gap-3 pb-4 border-b border-gray-50 dark:border-white/5 last:border-0 last:pb-0">
                   <div className="min-w-0">
-                    <p className="text-sm font-medium text-[#1a1a1a] truncate">{d.name}</p>
+                    <p className="text-sm font-medium text-[#1a1a1a] dark:text-white truncate">{d.name}</p>
                     <p className="text-xs text-gray-500 mt-0.5">{daysLeft(d.ends_at)}</p>
                   </div>
                   <div className="flex items-center gap-2 shrink-0">
@@ -504,22 +504,22 @@ export default function Deals() {
       {showDealPicker && (
         <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
           <div className="absolute inset-0 bg-black/40" onClick={() => setShowDealPicker(false)} />
-          <div className="relative bg-white rounded-xl w-full max-w-md p-6 z-10">
+          <div className="relative bg-white dark:bg-[#18181b] rounded-xl w-full max-w-md p-6 z-10 border border-gray-100 dark:border-white/10">
             <button
               onClick={() => setShowDealPicker(false)}
               className="absolute top-4 right-4 text-gray-400 hover:text-[#1a1a1a]"
             >
               <FiX size={20} />
             </button>
-            <h2 className="text-lg font-extrabold text-[#1a1a1a] mb-4">Add Product to Deals</h2>
+            <h2 className="text-lg font-extrabold text-[#1a1a1a] dark:text-white mb-4">Add Product to Deals</h2>
 
             <form onSubmit={submitDeal} className="space-y-4">
               <div>
-                <label className="text-xs font-medium text-gray-600 mb-1.5 block">Product</label>
+                <label className="text-xs font-medium text-gray-600 dark:text-gray-300 mb-1.5 block">Product</label>
                 <select
                   value={dealForm.product_id}
                   onChange={(e) => setDealForm({ ...dealForm, product_id: e.target.value })}
-                  className="w-full border border-gray-200 rounded-md px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
+                  className="w-full border border-gray-200 dark:border-white/10 bg-white dark:bg-white/10 text-gray-800 dark:text-white rounded-md px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
                   required
                 >
                   <option value="">Select a product</option>
@@ -529,23 +529,23 @@ export default function Deals() {
                 </select>
               </div>
               <div>
-                <label className="text-xs font-medium text-gray-600 mb-1.5 block">Discount %</label>
+                <label className="text-xs font-medium text-gray-600 dark:text-gray-300 mb-1.5 block">Discount %</label>
                 <input
                   type="number"
                   value={dealForm.discount_percent}
                   onChange={(e) => setDealForm({ ...dealForm, discount_percent: e.target.value })}
                   placeholder="e.g. 20"
-                  className="w-full border border-gray-200 rounded-md px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
+                  className="w-full border border-gray-200 dark:border-white/10 bg-white dark:bg-white/10 text-gray-800 dark:text-white rounded-md px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
                   required
                 />
               </div>
               <div>
-                <label className="text-xs font-medium text-gray-600 mb-1.5 block">Ends On</label>
+                <label className="text-xs font-medium text-gray-600 dark:text-gray-300 mb-1.5 block">Ends On</label>
                 <input
                   type="date"
                   value={dealForm.ends_at}
                   onChange={(e) => setDealForm({ ...dealForm, ends_at: e.target.value })}
-                  className="w-full border border-gray-200 rounded-md px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
+                  className="w-full border border-gray-200 dark:border-white/10 bg-white dark:bg-white/10 text-gray-800 dark:text-white rounded-md px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#4CAF37]"
                   required
                 />
               </div>

@@ -351,21 +351,21 @@ export default function Products() {
       </div>
 
       {/* Table & Search Container */}
-      <div className="bg-white rounded-xl border border-gray-100 shadow-xs overflow-hidden">
-        <div className="p-4 border-b border-gray-100 flex items-center justify-between flex-wrap gap-3">
+      <div className="bg-white dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/10 shadow-xs overflow-hidden">
+        <div className="p-4 border-b border-gray-100 dark:border-white/10 flex items-center justify-between flex-wrap gap-3">
           <div className="flex items-center gap-3 flex-wrap flex-1">
-            <div className="flex items-center gap-2 bg-[#f5f6f4] rounded-lg px-3 py-2 w-full sm:w-80 border border-gray-200/50">
+            <div className="flex items-center gap-2 bg-[#f5f6f4] dark:bg-white/10 rounded-lg px-3 py-2 w-full sm:w-80 border border-gray-200/50 dark:border-white/10">
               <FiSearch className="text-gray-400 shrink-0" size={15} />
               <input
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search by name, SKU, category..."
-                className="bg-transparent text-xs outline-none w-full placeholder:text-gray-400 text-gray-800"
+              className="bg-transparent text-xs outline-none w-full placeholder:text-gray-400 dark:placeholder:text-gray-500 text-gray-800 dark:text-white"
               />
             </div>
 
-            <div className="flex items-center gap-1 bg-[#f5f6f4] p-1 rounded-lg border border-gray-200/50 text-[11px] font-semibold text-gray-600">
+            <div className="flex items-center gap-1 bg-[#f5f6f4] dark:bg-white/10 p-1 rounded-lg border border-gray-200/50 dark:border-white/10 text-[11px] font-semibold text-gray-600 dark:text-gray-300">
               {["All", "Active", "Inactive", "Disabled"].map((st) => (
                 <button
                   key={st}
@@ -373,8 +373,8 @@ export default function Products() {
                   onClick={() => setStatusFilter(st)}
                   className={`px-2.5 py-1 rounded-md transition-all cursor-pointer ${
                     statusFilter === st
-                      ? "bg-white text-[#22c55e] font-bold shadow-2xs"
-                      : "hover:text-gray-900"
+                      ? "bg-white dark:bg-white/20 text-[#22c55e] font-bold shadow-2xs"
+                      : "hover:text-gray-900 dark:hover:text-white"
                   }`}
                 >
                   {st}
@@ -391,7 +391,7 @@ export default function Products() {
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
             <thead>
-              <tr className="text-gray-500 border-b border-gray-100 bg-[#fafbf9]">
+              <tr className="text-gray-500 dark:text-gray-400 border-b border-gray-100 dark:border-white/10 bg-[#fafbf9] dark:bg-white/5">
                 <th className="px-4 py-3 font-semibold">Product</th>
                 <th className="px-4 py-3 font-semibold">SKU</th>
                 <th className="px-4 py-3 font-semibold">Category</th>
@@ -401,7 +401,7 @@ export default function Products() {
                 <th className="px-4 py-3 font-semibold text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-50">
+            <tbody className="divide-y divide-gray-50 dark:divide-white/5">
               {loading ? (
                 <tr>
                   <td colSpan={7} className="text-center py-12 text-gray-400 text-xs">
@@ -422,7 +422,7 @@ export default function Products() {
                 </tr>
               ) : (
                 filtered.map((product) => (
-                  <tr key={product.id} className="hover:bg-[#fafbf9] transition-colors">
+                  <tr key={product.id} className="hover:bg-[#fafbf9] dark:hover:bg-white/5 transition-colors">
                     {/* Product Name & Thumbnail */}
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
@@ -440,7 +440,7 @@ export default function Products() {
                           )}
                         </div>
                         <div className="min-w-0 max-w-xs">
-                          <p className="font-semibold text-gray-900 truncate text-[13px]">{product.name}</p>
+                          <p className="font-semibold text-gray-900 dark:text-white truncate text-[13px]">{product.name}</p>
                           {product.variant && (
                             <p className="text-[11px] text-gray-400 truncate">{product.variant}</p>
                           )}
@@ -450,18 +450,18 @@ export default function Products() {
 
                     {/* SKU Column */}
                     <td className="px-4 py-3 whitespace-nowrap">
-                      <span className="font-mono text-[11px] font-semibold bg-gray-100 text-gray-700 px-2 py-0.5 rounded border border-gray-200">
+                      <span className="font-mono text-[11px] font-semibold bg-gray-100 dark:bg-white/10 text-gray-700 dark:text-gray-300 px-2 py-0.5 rounded border border-gray-200 dark:border-white/10">
                         {product.sku || `NX-PRD-${product.id}`}
                       </span>
                     </td>
 
                     {/* Category */}
-                    <td className="px-4 py-3 text-gray-600 whitespace-nowrap capitalize">
+                    <td className="px-4 py-3 text-gray-600 dark:text-gray-400 whitespace-nowrap capitalize">
                       {product.category?.replace(/-/g, " ") || "-"}
                     </td>
 
                     {/* Price */}
-                    <td className="px-4 py-3 text-gray-900 font-bold whitespace-nowrap">
+                    <td className="px-4 py-3 text-gray-900 dark:text-white font-bold whitespace-nowrap">
                       ₹{Number(product.price).toLocaleString("en-IN")}
                       {product.mrp && Number(product.mrp) > Number(product.price) && (
                         <span className="text-[10px] text-gray-400 line-through ml-1.5 font-normal">
@@ -471,12 +471,12 @@ export default function Products() {
                     </td>
 
                     {/* Stock */}
-                    <td className="px-4 py-3 text-gray-700 whitespace-nowrap font-medium">
+                    <td className="px-4 py-3 text-gray-700 dark:text-gray-300 whitespace-nowrap font-medium">
                       <span
                         className={`${
                           Number(product.stock) <= 5
                             ? "text-red-600 font-bold"
-                            : "text-gray-700"
+                            : "text-gray-700 dark:text-gray-300"
                         }`}
                       >
                         {product.stock} units
@@ -494,10 +494,10 @@ export default function Products() {
                         } ${updatingStatusId === product.id ? "opacity-50 cursor-wait" : ""}`}
                         title="Change Product Status"
                       >
-                        <option value="Active" className="bg-white text-emerald-700 font-semibold">Active</option>
-                        <option value="Inactive" className="bg-white text-amber-700 font-semibold">Inactive</option>
-                        <option value="Disabled" className="bg-white text-rose-700 font-semibold">Disabled</option>
-                        <option value="Draft" className="bg-white text-gray-600 font-semibold">Draft</option>
+                        <option value="Active" className="bg-white dark:bg-zinc-900 text-emerald-700 dark:text-emerald-400 font-semibold">Active</option>
+                        <option value="Inactive" className="bg-white dark:bg-zinc-900 text-amber-700 dark:text-amber-400 font-semibold">Inactive</option>
+                        <option value="Disabled" className="bg-white dark:bg-zinc-900 text-rose-700 dark:text-rose-400 font-semibold">Disabled</option>
+                        <option value="Draft" className="bg-white dark:bg-zinc-900 text-gray-600 dark:text-gray-300 font-semibold">Draft</option>
                         <option value="Out of Stock" className="bg-white text-red-600 font-semibold">Out of Stock</option>
                       </select>
                     </td>
@@ -541,17 +541,17 @@ export default function Products() {
             className="absolute inset-0 bg-black/50 backdrop-blur-xs"
             onClick={() => !importing && setIsImportModalOpen(false)}
           />
-          <div className="relative bg-white rounded-2xl w-full max-w-xl p-6 z-10 shadow-2xl border border-gray-100 space-y-4">
-            <div className="flex items-center justify-between border-b border-gray-100 pb-3">
+          <div className="relative bg-white dark:bg-[#18181b] rounded-2xl w-full max-w-xl p-6 z-10 shadow-2xl border border-gray-100 dark:border-white/10 space-y-4">
+            <div className="flex items-center justify-between border-b border-gray-100 dark:border-white/10 pb-3">
               <div>
-                <h2 className="text-base font-extrabold text-gray-900">Import Products from CSV</h2>
-                <p className="text-xs text-gray-500 mt-0.5">
+                <h2 className="text-base font-extrabold text-gray-900 dark:text-white">Import Products from CSV</h2>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
                   Upload a standard `.csv` file with product names, SKU, categories, and prices.
                 </p>
               </div>
               <button
                 onClick={() => !importing && setIsImportModalOpen(false)}
-                className="text-gray-400 hover:text-gray-700 p-1 rounded-lg hover:bg-gray-100 cursor-pointer"
+                className="text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 cursor-pointer"
               >
                 <FiX size={18} />
               </button>
@@ -575,7 +575,7 @@ export default function Products() {
             {/* File Upload Area */}
             <div
               onClick={() => fileInputRef.current?.click()}
-              className="border-2 border-dashed border-gray-300 hover:border-[#22c55e] rounded-xl p-6 text-center cursor-pointer transition-colors bg-gray-50/50 hover:bg-emerald-50/20"
+              className="border-2 border-dashed border-gray-300 dark:border-white/20 hover:border-[#22c55e] rounded-xl p-6 text-center cursor-pointer transition-colors bg-gray-50/50 dark:bg-white/5 hover:bg-emerald-50/20"
             >
               <input
                 ref={fileInputRef}
@@ -585,7 +585,7 @@ export default function Products() {
                 onChange={handleCSVFileChange}
               />
               <FiUploadCloud size={32} className="mx-auto text-gray-400 mb-2" />
-              <p className="text-xs font-bold text-gray-800">
+              <p className="text-xs font-bold text-gray-800 dark:text-white">
                 {importFile ? importFile.name : "Click to select or drop your .csv file here"}
               </p>
               <p className="text-[11px] text-gray-400 mt-1">Accepts UTF-8 encoded .CSV</p>
@@ -595,21 +595,21 @@ export default function Products() {
             {parsedRows.length > 0 && (
               <div className="space-y-2">
                 <div className="flex items-center justify-between text-xs">
-                  <span className="font-bold text-gray-800">
+                  <span className="font-bold text-gray-800 dark:text-white">
                     Ready to import {parsedRows.length} products
                   </span>
                   <span className="text-gray-400">Previewing first 3 rows</span>
                 </div>
-                <div className="max-h-36 overflow-y-auto border border-gray-100 rounded-lg divide-y divide-gray-50 text-[11px]">
+                <div className="max-h-36 overflow-y-auto border border-gray-100 dark:border-white/10 rounded-lg divide-y divide-gray-50 dark:divide-white/5 text-[11px]">
                   {parsedRows.slice(0, 3).map((r, i) => (
                     <div key={i} className="p-2 flex items-center justify-between">
                       <div>
-                        <p className="font-semibold text-gray-900">{r.name}</p>
+                        <p className="font-semibold text-gray-900 dark:text-white">{r.name}</p>
                         <p className="text-gray-400">
                           SKU: {r.sku || "Auto"} · Category: {r.category}
                         </p>
                       </div>
-                      <span className="font-bold text-gray-800">₹{r.price}</span>
+                      <span className="font-bold text-gray-800 dark:text-white">₹{r.price}</span>
                     </div>
                   ))}
                 </div>
@@ -635,12 +635,12 @@ export default function Products() {
             )}
 
             {/* Actions */}
-            <div className="flex items-center justify-end gap-2 pt-2 border-t border-gray-100">
+            <div className="flex items-center justify-end gap-2 pt-2 border-t border-gray-100 dark:border-white/10">
               <button
                 type="button"
                 onClick={() => setIsImportModalOpen(false)}
                 disabled={importing}
-                className="px-4 py-2 text-xs font-semibold text-gray-600 hover:bg-gray-100 rounded-lg cursor-pointer"
+                className="px-4 py-2 text-xs font-semibold text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg cursor-pointer"
               >
                 Cancel
               </button>

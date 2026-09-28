@@ -201,8 +201,8 @@ export default function Categories() {
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-2xl font-extrabold text-[#1a1a1a]">Categories</h1>
-          <p className="text-sm text-gray-500 mt-0.5">
+          <h1 className="text-2xl font-extrabold text-[#1a1a1a] dark:text-white">Categories</h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
             Organize and classify products in your store.
           </p>
         </div>
@@ -216,19 +216,19 @@ export default function Categories() {
       </div>
 
       {/* Categories Table Container */}
-      <div className="bg-white rounded-xl border border-gray-100 shadow-xs overflow-hidden">
-        <div className="p-4 border-b border-gray-100 flex items-center justify-between flex-wrap gap-3">
-          <div className="flex items-center gap-2 bg-[#f5f6f4] rounded-lg px-3 py-2 w-full sm:w-72 border border-gray-200/50">
+      <div className="bg-white dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/10 shadow-xs overflow-hidden">
+        <div className="p-4 border-b border-gray-100 dark:border-white/10 flex items-center justify-between flex-wrap gap-3">
+          <div className="flex items-center gap-2 bg-[#f5f6f4] dark:bg-white/10 rounded-lg px-3 py-2 w-full sm:w-72 border border-gray-200/50 dark:border-white/10">
             <FiSearch className="text-gray-400" size={15} />
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search categories..."
-              className="bg-transparent text-xs outline-none w-full placeholder:text-gray-400 text-gray-800"
+              className="bg-transparent text-xs outline-none w-full placeholder:text-gray-400 dark:placeholder:text-gray-500 text-gray-800 dark:text-white"
             />
           </div>
-          <span className="text-xs text-gray-400 font-medium">
+          <span className="text-xs text-gray-400 dark:text-gray-500 font-medium">
             {filtered.length} categories available
           </span>
         </div>
@@ -236,7 +236,7 @@ export default function Categories() {
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
             <thead>
-              <tr className="text-gray-500 border-b border-gray-100 bg-[#fafbf9]">
+              <tr className="text-gray-500 dark:text-gray-400 border-b border-gray-100 dark:border-white/10 bg-[#fafbf9] dark:bg-white/5">
                 <th className="px-4 py-3 font-semibold">Category Name</th>
                 <th className="px-4 py-3 font-semibold">Slug</th>
                 <th className="px-4 py-3 font-semibold">Description</th>
@@ -245,7 +245,7 @@ export default function Categories() {
                 <th className="px-4 py-3 font-semibold text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-50">
+            <tbody className="divide-y divide-gray-50 dark:divide-white/5">
               {loading ? (
                 <tr>
                   <td colSpan={6} className="text-center py-12 text-gray-400 text-xs">
@@ -266,23 +266,23 @@ export default function Categories() {
                 </tr>
               ) : (
                 filtered.map((cat) => (
-                  <tr key={cat.id} className="hover:bg-[#fafbf9] transition-colors">
+                  <tr key={cat.id} className="hover:bg-[#fafbf9] dark:hover:bg-white/5 transition-colors">
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2.5">
                         <div className="w-8 h-8 rounded-lg bg-emerald-50 text-[#16a34a] flex items-center justify-center font-bold shrink-0">
                           <FiLayers size={16} />
                         </div>
-                        <span className="font-bold text-gray-900 text-[13px]">{cat.name}</span>
+                        <span className="font-bold text-gray-900 dark:text-white text-[13px]">{cat.name}</span>
                       </div>
                     </td>
-                    <td className="px-4 py-3 font-mono text-[11.5px] text-gray-500">
+                    <td className="px-4 py-3 font-mono text-[11.5px] text-gray-500 dark:text-gray-400">
                       {cat.slug}
                     </td>
-                    <td className="px-4 py-3 text-gray-600 max-w-xs truncate">
+                    <td className="px-4 py-3 text-gray-600 dark:text-gray-400 max-w-xs truncate">
                       {cat.description || "-"}
                     </td>
                     <td className="px-4 py-3 whitespace-nowrap">
-                      <span className="inline-flex items-center gap-1 font-semibold text-gray-700 bg-gray-100 px-2 py-0.5 rounded-full text-[11px]">
+                      <span className="inline-flex items-center gap-1 font-semibold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-white/10 px-2 py-0.5 rounded-full text-[11px]">
                         <FiBox size={12} className="text-[#22c55e]" />
                         {cat.product_count || 0} products
                       </span>
@@ -310,14 +310,14 @@ export default function Categories() {
                       <div className="flex items-center justify-end gap-1.5">
                         <button
                           onClick={() => openEditModal(cat)}
-                          className="p-1.5 rounded-lg text-gray-500 hover:text-blue-600 hover:bg-blue-50 transition-colors cursor-pointer"
+                          className="p-1.5 rounded-lg text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-white/10 transition-colors cursor-pointer"
                           title="Edit Category"
                         >
                           <FiEdit2 size={15} />
                         </button>
                         <button
                           onClick={() => handleDelete(cat.id)}
-                          className="p-1.5 rounded-lg text-gray-500 hover:text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
+                          className="p-1.5 rounded-lg text-gray-500 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-white/10 transition-colors cursor-pointer"
                           title="Delete Category"
                         >
                           <FiTrash2 size={15} />
@@ -339,19 +339,19 @@ export default function Categories() {
             className="absolute inset-0 bg-black/50 backdrop-blur-xs"
             onClick={() => !modalSubmitting && setIsModalOpen(false)}
           />
-          <div className="relative bg-white rounded-2xl w-full max-w-md p-6 z-10 shadow-2xl border border-gray-100 space-y-4">
-            <div className="flex items-center justify-between border-b border-gray-100 pb-3">
+          <div className="relative bg-white dark:bg-[#18181b] rounded-2xl w-full max-w-md p-6 z-10 shadow-2xl border border-gray-100 dark:border-white/10 space-y-4">
+            <div className="flex items-center justify-between border-b border-gray-100 dark:border-white/10 pb-3">
               <div>
-                <h2 className="text-base font-extrabold text-gray-900">
+                <h2 className="text-base font-extrabold text-gray-900 dark:text-white">
                   {editingCategory ? "Edit Category" : "Add New Category"}
                 </h2>
-                <p className="text-xs text-gray-500 mt-0.5">
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
                   Configure category details and catalog visibility.
                 </p>
               </div>
               <button
                 onClick={() => !modalSubmitting && setIsModalOpen(false)}
-                className="text-gray-400 hover:text-gray-700 p-1 rounded-lg hover:bg-gray-100 cursor-pointer"
+                className="text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 cursor-pointer"
               >
                 <FiX size={18} />
               </button>
@@ -366,7 +366,7 @@ export default function Categories() {
 
             <form onSubmit={handleSubmit} className="space-y-3.5">
               <div>
-                <label className="text-xs font-bold text-gray-700 mb-1 block">
+                <label className="text-xs font-bold text-gray-700 dark:text-gray-300 mb-1 block">
                   Category Name <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -374,13 +374,13 @@ export default function Categories() {
                   value={formData.name}
                   onChange={handleNameChange}
                   placeholder="e.g. Whey Proteins"
-                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-[#22c55e]"
+                  className="w-full border border-gray-200 dark:border-white/10 bg-white dark:bg-white/10 rounded-lg px-3 py-2 text-xs text-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-1 focus:ring-[#22c55e]"
                   required
                 />
               </div>
 
               <div>
-                <label className="text-xs font-bold text-gray-700 mb-1 block">
+                <label className="text-xs font-bold text-gray-700 dark:text-gray-300 mb-1 block">
                   Slug (URL Identifier)
                 </label>
                 <input
@@ -388,12 +388,12 @@ export default function Categories() {
                   value={formData.slug}
                   onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
                   placeholder="e.g. whey-proteins"
-                  className="w-full font-mono border border-gray-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-[#22c55e]"
+                  className="w-full font-mono border border-gray-200 dark:border-white/10 bg-white dark:bg-white/10 rounded-lg px-3 py-2 text-xs text-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-1 focus:ring-[#22c55e]"
                 />
               </div>
 
               <div>
-                <label className="text-xs font-bold text-gray-700 mb-1 block">
+                <label className="text-xs font-bold text-gray-700 dark:text-gray-300 mb-1 block">
                   Description
                 </label>
                 <textarea
@@ -401,12 +401,12 @@ export default function Categories() {
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   placeholder="Brief description of products in this category..."
-                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-[#22c55e] resize-none"
+                  className="w-full border border-gray-200 dark:border-white/10 bg-white dark:bg-white/10 rounded-lg px-3 py-2 text-xs text-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-1 focus:ring-[#22c55e] resize-none"
                 />
               </div>
 
               <div>
-                <label className="text-xs font-bold text-gray-700 mb-1 block">
+                <label className="text-xs font-bold text-gray-700 dark:text-gray-300 mb-1 block">
                   Category Status
                 </label>
                 <select
@@ -418,7 +418,7 @@ export default function Categories() {
                       is_active: e.target.value === "Active",
                     })
                   }
-                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-[#22c55e]"
+                  className="w-full border border-gray-200 dark:border-white/10 bg-white dark:bg-white/10 rounded-lg px-3 py-2 text-xs text-gray-800 dark:text-white focus:outline-none focus:ring-1 focus:ring-[#22c55e]"
                 >
                   <option value="Active">Active (Visible in store)</option>
                   <option value="Inactive">Inactive (Temporarily hidden)</option>
@@ -426,12 +426,12 @@ export default function Categories() {
                 </select>
               </div>
 
-              <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100">
+              <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100 dark:border-white/10">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
                   disabled={modalSubmitting}
-                  className="px-4 py-2 text-xs font-semibold text-gray-600 hover:bg-gray-100 rounded-lg cursor-pointer"
+                  className="px-4 py-2 text-xs font-semibold text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg cursor-pointer"
                 >
                   Cancel
                 </button>

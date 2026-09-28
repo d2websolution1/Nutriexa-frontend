@@ -130,48 +130,51 @@ export default function Payments() {
   };
 
   return (
-    <div style={{ padding: "24px", minHeight: "100vh", background: "#f8fafc" }}>
+    <div className="space-y-6 pb-12">
       {/* Header */}
-      <div style={{ marginBottom: "24px" }}>
-        <h1 style={{ fontSize: "22px", fontWeight: 700, color: "#0f172a", margin: 0 }}>Payments</h1>
-        <p style={{ color: "#64748b", fontSize: "14px", marginTop: "4px" }}>
+      <div>
+        <h1 className="text-2xl font-extrabold text-[#1a1a1a] dark:text-white tracking-tight">Payments</h1>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
           Transaction logs, refunds, and payment gateway activity.
         </p>
       </div>
 
       {/* Stats */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "16px", marginBottom: "24px" }}>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5">
         {[
-          { label: "Total Revenue", value: `₹${stats.totalRevenue.toLocaleString()}`, icon: <FiTrendingUp size={20} />, color: "#10b981", bg: "#ecfdf5" },
-          { label: "Total Refunds", value: `₹${stats.totalRefunds.toLocaleString()}`, icon: <FiTrendingDown size={20} />, color: "#6366f1", bg: "#eef2ff" },
-          { label: "Pending COD", value: stats.pending, icon: <FiClock size={20} />, color: "#f59e0b", bg: "#fffbeb" },
-          { label: "Failed Payments", value: stats.failed, icon: <FiXCircle size={20} />, color: "#ef4444", bg: "#fef2f2" },
+          { label: "Total Revenue", value: `₹${stats.totalRevenue.toLocaleString()}`, icon: <FiTrendingUp size={20} />, colorClass: "text-emerald-500", bgClass: "bg-emerald-50" },
+          { label: "Total Refunds", value: `₹${stats.totalRefunds.toLocaleString()}`, icon: <FiTrendingDown size={20} />, colorClass: "text-indigo-500", bgClass: "bg-indigo-50" },
+          { label: "Pending COD", value: stats.pending, icon: <FiClock size={20} />, colorClass: "text-amber-500", bgClass: "bg-amber-50" },
+          { label: "Failed Payments", value: stats.failed, icon: <FiXCircle size={20} />, colorClass: "text-rose-500", bgClass: "bg-rose-50" },
         ].map((s) => (
-          <div key={s.label} style={{ background: "#fff", borderRadius: "12px", padding: "20px", border: "1px solid #e2e8f0", display: "flex", gap: "16px", alignItems: "center" }}>
-            <div style={{ width: "44px", height: "44px", background: s.bg, borderRadius: "10px", display: "flex", alignItems: "center", justifyContent: "center", color: s.color, flexShrink: 0 }}>
+          <div key={s.label} className="bg-white dark:bg-white/5 rounded-xl p-4 border border-gray-100 dark:border-white/10 shadow-xs flex gap-4 items-center">
+            <div className={`w-11 h-11 ${s.bgClass} rounded-xl flex items-center justify-center ${s.colorClass} shrink-0`}>
               {s.icon}
             </div>
             <div>
-              <div style={{ fontSize: "22px", fontWeight: 800, color: "#0f172a" }}>{s.value}</div>
-              <div style={{ fontSize: "12px", color: "#64748b" }}>{s.label}</div>
+              <div className="text-xl font-extrabold text-gray-900 dark:text-white">{s.value}</div>
+              <div className="text-xs text-gray-500 dark:text-gray-400">{s.label}</div>
             </div>
           </div>
         ))}
       </div>
 
       {/* Filters */}
-      <div style={{ background: "#fff", borderRadius: "12px", padding: "16px 20px", border: "1px solid #e2e8f0", marginBottom: "20px", display: "flex", gap: "12px", alignItems: "center", flexWrap: "wrap" }}>
-        <div style={{ position: "relative", flex: 1, minWidth: "200px" }}>
-          <FiSearch size={16} style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", color: "#94a3b8" }} />
+      <div className="bg-white dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/10 shadow-xs p-4 flex flex-wrap gap-3 items-center">
+        <div className="relative flex-1 min-w-[200px]">
+          <FiSearch size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
           <input
             placeholder="Search by transaction ID, customer, order..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            style={{ width: "100%", padding: "9px 12px 9px 36px", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "14px", outline: "none", boxSizing: "border-box" }}
+            className="w-full pl-9 pr-3 py-2 bg-[#f5f6f4] dark:bg-white/10 border border-gray-200/50 dark:border-white/10 rounded-lg text-sm outline-none text-gray-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500"
           />
         </div>
-        <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}
-          style={{ padding: "9px 12px", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "14px", outline: "none" }}>
+        <select
+          value={statusFilter}
+          onChange={(e) => setStatusFilter(e.target.value)}
+          className="px-3 py-2 bg-[#f5f6f4] dark:bg-white/10 border border-gray-200/50 dark:border-white/10 rounded-lg text-sm outline-none text-gray-700 dark:text-gray-200 cursor-pointer"
+        >
           <option value="All">All Status</option>
           <option value="Success">Success</option>
           <option value="Collected">COD Collected</option>
@@ -179,59 +182,64 @@ export default function Payments() {
           <option value="Failed">Failed</option>
           <option value="Pending">Pending</option>
         </select>
-        <select value={methodFilter} onChange={(e) => setMethodFilter(e.target.value)}
-          style={{ padding: "9px 12px", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "14px", outline: "none" }}>
+        <select
+          value={methodFilter}
+          onChange={(e) => setMethodFilter(e.target.value)}
+          className="px-3 py-2 bg-[#f5f6f4] dark:bg-white/10 border border-gray-200/50 dark:border-white/10 rounded-lg text-sm outline-none text-gray-700 dark:text-gray-200 cursor-pointer"
+        >
           <option value="All">All Methods</option>
           <option value="Razorpay">Razorpay</option>
           <option value="COD">COD</option>
         </select>
-        <button style={{ padding: "9px 16px", border: "1px solid #e2e8f0", borderRadius: "8px", background: "#fff", fontSize: "14px", cursor: "pointer", color: "#6366f1", fontWeight: 600, display: "flex", alignItems: "center", gap: "6px" }}>
+        <button className="flex items-center gap-1.5 px-3.5 py-2 bg-[#f5f6f4] dark:bg-white/10 border border-gray-200/50 dark:border-white/10 rounded-lg text-sm font-semibold text-indigo-600 dark:text-indigo-400 cursor-pointer hover:bg-gray-100 dark:hover:bg-white/20 transition-colors">
           <FiDownload size={14} /> Export
         </button>
       </div>
 
       {/* Table */}
-      <div style={{ background: "#fff", borderRadius: "12px", border: "1px solid #e2e8f0", overflow: "hidden" }}>
-        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "14px" }}>
-          <thead>
-            <tr style={{ background: "#f8fafc", borderBottom: "1px solid #e2e8f0" }}>
-              {["Transaction ID", "Order", "Customer", "Amount", "Method", "Status", "Type", "Date"].map((h) => (
-                <th key={h} style={{ padding: "12px 16px", textAlign: "left", fontWeight: 600, color: "#374151", fontSize: "13px" }}>{h}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.map((t) => {
-              const style = STATUS_STYLES[t.status] || STATUS_STYLES.Pending;
-              return (
-                <tr key={t.id} style={{ borderBottom: "1px solid #f1f5f9" }}>
-                  <td style={{ padding: "14px 16px" }}>
-                    <div style={{ fontWeight: 600, color: "#0f172a", fontSize: "13px" }}>{t.id}</div>
-                    {t.razorpayId && <div style={{ fontSize: "11px", color: "#94a3b8", marginTop: "2px" }}>{t.razorpayId}</div>}
-                  </td>
-                  <td style={{ padding: "14px 16px", color: "#6366f1", fontWeight: 600 }}>{t.orderId}</td>
-                  <td style={{ padding: "14px 16px", color: "#374151" }}>{t.customer}</td>
-                  <td style={{ padding: "14px 16px", fontWeight: 700, color: "#0f172a" }}>₹{t.amount.toLocaleString()}</td>
-                  <td style={{ padding: "14px 16px" }}>
-                    <span style={{ padding: "3px 10px", borderRadius: "20px", fontSize: "12px", fontWeight: 500, background: t.method === "COD" ? "#f0fdf4" : "#eef2ff", color: t.method === "COD" ? "#16a34a" : "#6366f1" }}>
-                      {t.method}
-                    </span>
-                  </td>
-                  <td style={{ padding: "14px 16px" }}>
-                    <span style={{ padding: "3px 10px", borderRadius: "20px", fontSize: "12px", fontWeight: 500, background: style.bg, color: style.color, border: `1px solid ${style.border}` }}>
-                      {t.status}
-                    </span>
-                  </td>
-                  <td style={{ padding: "14px 16px", color: t.type === "Refund" ? "#6366f1" : "#374151", fontWeight: 500 }}>{t.type}</td>
-                  <td style={{ padding: "14px 16px", color: "#64748b", fontSize: "13px" }}>{formatDate(t.date)}</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-        {filtered.length === 0 && (
-          <div style={{ padding: "40px", textAlign: "center", color: "#94a3b8" }}>No transactions found.</div>
-        )}
+      <div className="bg-white dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/10 shadow-xs overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-xs">
+            <thead>
+              <tr className="text-gray-500 dark:text-gray-400 border-b border-gray-100 dark:border-white/10 bg-[#fafbf9] dark:bg-white/5">
+                {["Transaction ID", "Order", "Customer", "Amount", "Method", "Status", "Type", "Date"].map((h) => (
+                  <th key={h} className="px-4 py-3 font-semibold">{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-50 dark:divide-white/5">
+              {filtered.map((t) => {
+                const style = STATUS_STYLES[t.status] || STATUS_STYLES.Pending;
+                return (
+                  <tr key={t.id} className="hover:bg-[#fafbf9] dark:hover:bg-white/5 transition-colors">
+                    <td className="px-4 py-3.5">
+                      <div className="font-semibold text-gray-900 dark:text-white text-xs">{t.id}</div>
+                      {t.razorpayId && <div className="text-[10px] text-gray-400 mt-0.5">{t.razorpayId}</div>}
+                    </td>
+                    <td className="px-4 py-3.5 text-indigo-600 dark:text-indigo-400 font-semibold">{t.orderId}</td>
+                    <td className="px-4 py-3.5 text-gray-700 dark:text-gray-300">{t.customer}</td>
+                    <td className="px-4 py-3.5 font-bold text-gray-900 dark:text-white">₹{t.amount.toLocaleString()}</td>
+                    <td className="px-4 py-3.5">
+                      <span className={`px-2.5 py-1 rounded-full text-[10.5px] font-bold ${t.method === "COD" ? "bg-emerald-50 text-emerald-700 border border-emerald-200" : "bg-indigo-50 text-indigo-700 border border-indigo-200"}`}>
+                        {t.method}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3.5">
+                      <span style={{ padding: "3px 10px", borderRadius: "20px", fontSize: "11px", fontWeight: 600, background: style.bg, color: style.color, border: `1px solid ${style.border}` }}>
+                        {t.status}
+                      </span>
+                    </td>
+                    <td className={`px-4 py-3.5 font-semibold text-xs ${t.type === "Refund" ? "text-indigo-600 dark:text-indigo-400" : "text-gray-700 dark:text-gray-300"}`}>{t.type}</td>
+                    <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">{formatDate(t.date)}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+          {filtered.length === 0 && (
+            <div className="py-12 text-center text-gray-400 text-xs">No transactions found.</div>
+          )}
+        </div>
       </div>
     </div>
   );
