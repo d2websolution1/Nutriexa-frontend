@@ -1,7 +1,8 @@
-import { useEffect, useState, useCallback } from "react";
-import { FiEye, FiSearch, FiX, FiCalendar, FiFilter, FiDownload, FiRotateCcw } from "react-icons/fi";
+import { useEffect, useState, useCallback, useRef } from "react";
+import { FiEye, FiSearch, FiX, FiCalendar, FiDownload, FiRotateCcw } from "react-icons/fi";
 import { API_URL as API_BASE } from "../../config";
 import { useAuth } from "../../context/AuthContext";
+import { useTheme } from "../../context/ThemeContext";
 
 const STATUS_STYLES = {
   Delivered: "bg-green-100 text-green-700",
@@ -38,6 +39,7 @@ function formatDateOnly(isoString) {
 
 export default function Orders() {
   const { hasPermission } = useAuth();
+  const { isAdminDark } = useTheme();
   const canEditOrders = hasPermission("orders.edit");
 
   const [activeTab, setActiveTab] = useState("All");
@@ -54,7 +56,47 @@ export default function Orders() {
   const [orderDetailLoading, setOrderDetailLoading] = useState(false);
   const [updatingId, setUpdatingId] = useState(null);
 
+  const searchRef = useRef(null);
+  const fromRef = useRef(null);
+  const toRef = useRef(null);
+
   const getToken = () => localStorage.getItem("adminToken");
+
+  // Force input styles with !important (beats global CSS overrides)
+  useEffect(() => {
+    const textColor = isAdminDark ? "#f3f4f6" : "#1f2937";
+    [searchRef.current, fromRef.current, toRef.current].forEach((el) => {
+      if (!el) return;
+      el.style.setProperty("background", "transparent", "important");
+      el.style.setProperty("background-color", "transparent", "important");
+      el.style.setProperty("box-shadow", "none", "important");
+      el.style.setProperty("border", "none", "important");
+      el.style.setProperty("color", textColor, "important");
+      el.style.setProperty("-webkit-text-fill-color", textColor, "important");
+      el.style.setProperty("caret-color", textColor, "important");
+      el.style.setProperty("color-scheme", isAdminDark ? "dark" : "light", "important");
+    });
+  }, [isAdminDark]);
+
+  // Theme-based inline styles (safe against global CSS conflicts)
+  const boxStyle = {
+    backgroundColor: isAdminDark ? "rgba(255,255,255,0.06)" : "#f5f6f4",
+    border: isAdminDark ? "1px solid rgba(255,255,255,0.1)" : "1px solid rgba(229,231,235,0.7)",
+  };
+  const dateBoxStyle = {
+    backgroundColor: isAdminDark ? "rgba(255,255,255,0.06)" : "#f9fafb",
+    border: isAdminDark ? "1px solid rgba(255,255,255,0.1)" : "1px solid #e5e7eb",
+  };
+  const inactiveBtnStyle = {
+    backgroundColor: isAdminDark ? "rgba(255,255,255,0.08)" : "#f5f6f4",
+    color: isAdminDark ? "#d1d5db" : "#4b5563",
+  };
+  const inactivePresetStyle = {
+    backgroundColor: isAdminDark ? "rgba(255,255,255,0.08)" : "#f3f4f6",
+    color: isAdminDark ? "#d1d5db" : "#4b5563",
+  };
+  const mutedText = { color: isAdminDark ? "#9ca3af" : "#6b7280" };
+  const titleColor = { color: isAdminDark ? "#ffffff" : "#1a1a1a" };
 
   const applyPreset = (preset) => {
     setDatePreset(preset);
@@ -230,8 +272,8 @@ export default function Orders() {
     <div className="space-y-5">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-extrabold text-[#1a1a1a]">Orders</h1>
-          <p className="text-sm text-gray-500 mt-0.5">
+          <h1 className="text-2xl font-extrabold" style={titleColor}>Orders</h1>
+          <p className="text-sm mt-0.5" style={mutedText}>
             Track and manage customer purchases, delivery statuses, and dates.
           </p>
         </div>
@@ -249,7 +291,7 @@ export default function Orders() {
       <div className="bg-white rounded-xl border border-gray-100 shadow-xs p-4 space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-gray-100 dark:border-white/10">
           <div className="flex items-center gap-1.5 flex-wrap">
-            <span className="text-xs font-bold text-gray-500 flex items-center gap-1 mr-1">
+            <span className="text-xs font-bold flex items-center gap-1 mr-1" style={mutedText}>
               <FiCalendar size={13} className="text-[#22c55e]" /> Date Filter:
             </span>
             {[
@@ -262,13 +304,9 @@ export default function Orders() {
               <button
                 key={p.key}
                 onClick={() => applyPreset(p.key)}
-                className={`px-3 py-1 rounded-md text-xs font-semibold transition-colors cursor-pointer ${
-                  datePreset === p.key && !startDate
-                    ? "bg-[#22c55e] text-white"
-                    : datePreset === p.key
-                    ? "bg-[#22c55e] text-white"
-                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                }`}
+                className={`px-3 py-1 rounded-md text-xs font-semibold transition-colors cursor-pointer ${datePreset === p.key ? "bg-[#22c55e] text-white" : ""
+                  }`}
+                style={datePreset === p.key ? undefined : inactivePresetStyle}
               >
                 {p.label}
               </button>
@@ -276,28 +314,36 @@ export default function Orders() {
           </div>
 
           <div className="flex items-center gap-2 flex-wrap text-xs">
-            <div className="flex items-center gap-1.5 bg-gray-50 dark:bg-white/10 border border-gray-200 dark:border-white/10 rounded-lg px-2.5 py-1">
-              <span className="text-gray-400 font-medium">From:</span>
+            <div
+              className="flex items-center gap-1.5 rounded-lg px-2.5 py-1"
+              style={dateBoxStyle}
+            >
+              <span className="font-medium" style={mutedText}>From:</span>
               <input
+                ref={fromRef}
                 type="date"
                 value={startDate}
                 onChange={(e) => {
                   setStartDate(e.target.value);
                   setDatePreset("custom");
                 }}
-                className="bg-transparent text-gray-700 dark:text-gray-200 outline-none text-xs cursor-pointer"
+                className="outline-none text-xs cursor-pointer"
               />
             </div>
-            <div className="flex items-center gap-1.5 bg-gray-50 dark:bg-white/10 border border-gray-200 dark:border-white/10 rounded-lg px-2.5 py-1">
-              <span className="text-gray-400 font-medium">To:</span>
+            <div
+              className="flex items-center gap-1.5 rounded-lg px-2.5 py-1"
+              style={dateBoxStyle}
+            >
+              <span className="font-medium" style={mutedText}>To:</span>
               <input
+                ref={toRef}
                 type="date"
                 value={endDate}
                 onChange={(e) => {
                   setEndDate(e.target.value);
                   setDatePreset("custom");
                 }}
-                className="bg-transparent text-gray-700 dark:text-gray-200 outline-none text-xs cursor-pointer"
+                className="outline-none text-xs cursor-pointer"
               />
             </div>
             {(startDate || endDate || activeTab !== "All" || search) && (
@@ -318,25 +364,27 @@ export default function Orders() {
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
-                  activeTab === tab
-                    ? "bg-[#16a34a] text-white shadow-xs"
-                    : "bg-[#f5f6f4] dark:bg-white/10 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/20"
-                }`}
+                className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${activeTab === tab ? "bg-[#16a34a] text-white shadow-xs" : ""
+                  }`}
+                style={activeTab === tab ? undefined : inactiveBtnStyle}
               >
                 {tab}
               </button>
             ))}
           </div>
 
-          <div className="flex items-center gap-2 bg-[#f5f6f4] dark:bg-white/10 rounded-lg px-3 py-1.5 w-full sm:w-64 border border-gray-200/50 dark:border-white/10">
-            <FiSearch className="text-gray-400" size={15} />
+          <div
+            className="flex items-center gap-2 rounded-lg px-3 py-1.5 w-full sm:w-64"
+            style={boxStyle}
+          >
+            <FiSearch size={15} style={{ color: isAdminDark ? "#6b7280" : "#9ca3af" }} />
             <input
+              ref={searchRef}
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search order ID or customer..."
-              className="bg-transparent text-xs outline-none w-full placeholder:text-gray-400 dark:placeholder:text-gray-500 text-gray-800 dark:text-white"
+              className="admin-search-input text-xs outline-none w-full placeholder:text-gray-400 dark:placeholder:text-gray-500"
             />
           </div>
         </div>
@@ -346,7 +394,7 @@ export default function Orders() {
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
             <thead>
-              <tr className="text-gray-500 dark:text-gray-400 border-b border-gray-100 dark:border-white/10 dark:border-white/10 bg-[#fafbf9] dark:bg-white/5">
+              <tr className="text-gray-500 dark:text-gray-400 border-b border-gray-100 dark:border-white/10 bg-[#fafbf9] dark:bg-white/5">
                 <th className="px-4 py-3 font-semibold">Order ID</th>
                 <th className="px-4 py-3 font-semibold">Customer</th>
                 <th className="px-4 py-3 font-semibold">Date &amp; Time</th>
@@ -391,7 +439,7 @@ export default function Orders() {
                           {formatDateOnly(order.created_at)}
                         </span>
                         <span className="text-[10px] text-gray-400">
-                          {new Date(order.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                          {new Date(order.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                         </span>
                       </div>
                     </td>
@@ -409,13 +457,12 @@ export default function Orders() {
                         value={order.status}
                         disabled={!canEditOrders || updatingId === order.id}
                         onChange={(e) => updateStatus(order.id, e.target.value)}
-                        className={`px-2.5 py-1 rounded-full text-xs font-bold border-0 outline-none cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed ${
-                          STATUS_STYLES[order.status] || "bg-gray-100 text-gray-700"
-                        }`}
+                        className={`px-2.5 py-1 rounded-full text-xs font-bold border-0 outline-none cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed ${STATUS_STYLES[order.status] || "bg-gray-100 text-gray-700"
+                          }`}
                         title={!canEditOrders ? "You don't have permission to edit order status" : ""}
                       >
                         {STATUS_OPTIONS.map((s) => (
-                          <option key={s} value={s} className="bg-white text-gray-800 font-normal">
+                          <option key={s} value={s} style={{ backgroundColor: "#ffffff", color: "#1f2937" }}>
                             {s}
                           </option>
                         ))}
@@ -466,9 +513,8 @@ export default function Orders() {
                     </p>
                   </div>
                   <span
-                    className={`px-2.5 py-0.5 rounded-full text-xs font-bold ${
-                      STATUS_STYLES[selectedOrder.status] || "bg-gray-100 text-gray-700"
-                    }`}
+                    className={`px-2.5 py-0.5 rounded-full text-xs font-bold ${STATUS_STYLES[selectedOrder.status] || "bg-gray-100 text-gray-700"
+                      }`}
                   >
                     {selectedOrder.status}
                   </span>

@@ -9,9 +9,6 @@ import {
   FiShoppingBag,
   FiAlertTriangle,
   FiBriefcase,
-  FiCheck,
-  FiCheckCircle,
-  FiX,
 } from "react-icons/fi";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
@@ -37,6 +34,21 @@ export default function AdminTopbar({ onMenuClick }) {
   });
 
   const dropdownRef = useRef(null);
+  const searchRef = useRef(null);
+
+  // Force search input styles with !important (beats global CSS overrides)
+  useEffect(() => {
+    const el = searchRef.current;
+    if (!el) return;
+    const textColor = isAdminDark ? "#f3f4f6" : "#1f2937";
+    el.style.setProperty("background", "transparent", "important");
+    el.style.setProperty("background-color", "transparent", "important");
+    el.style.setProperty("box-shadow", "none", "important");
+    el.style.setProperty("border", "none", "important");
+    el.style.setProperty("color", textColor, "important");
+    el.style.setProperty("-webkit-text-fill-color", textColor, "important");
+    el.style.setProperty("caret-color", textColor, "important");
+  }, [isAdminDark]);
 
   // Fetch real notifications from database
   const fetchNotifications = async () => {
@@ -93,7 +105,7 @@ export default function AdminTopbar({ onMenuClick }) {
     }
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
-    }
+    };
   }, [notifOpen]);
 
   const markAllAsRead = () => {
@@ -146,12 +158,25 @@ export default function AdminTopbar({ onMenuClick }) {
           <FiMenu size={22} />
         </button>
 
-        <div className="flex items-center gap-2.5 bg-gray-50/80 dark:bg-white/5 hover:bg-gray-100/80 dark:hover:bg-white/10 transition-colors border border-gray-100 dark:border-white/10 rounded-xl px-4 py-2 w-full">
-          <FiSearch className="text-gray-400 dark:text-gray-500 shrink-0" size={17} />
+        <div
+          className="flex items-center gap-2.5 transition-colors rounded-xl px-4 py-2 w-full"
+          style={{
+            backgroundColor: isAdminDark ? "rgba(255,255,255,0.06)" : "rgba(249,250,251,0.8)",
+            border: isAdminDark
+              ? "1px solid rgba(255,255,255,0.1)"
+              : "1px solid rgb(243,244,246)",
+          }}
+        >
+          <FiSearch
+            className="shrink-0"
+            size={17}
+            style={{ color: isAdminDark ? "#6b7280" : "#9ca3af" }}
+          />
           <input
+            ref={searchRef}
             type="text"
             placeholder="Search for products, orders, customers..."
-            className="bg-transparent text-sm outline-none w-full placeholder:text-gray-400 dark:placeholder:text-gray-500 text-gray-800 dark:text-gray-100"
+            className="admin-search-input text-sm outline-none w-full placeholder:text-gray-400 dark:placeholder:text-gray-500"
           />
         </div>
       </div>
@@ -224,11 +249,10 @@ export default function AdminTopbar({ onMenuClick }) {
                   <button
                     key={tab.key}
                     onClick={() => setActiveTab(tab.key)}
-                    className={`px-3 py-1.5 text-xs font-semibold rounded-t-lg transition-colors cursor-pointer ${
-                      activeTab === tab.key
+                    className={`px-3 py-1.5 text-xs font-semibold rounded-t-lg transition-colors cursor-pointer ${activeTab === tab.key
                         ? "text-[#22c55e] border-b-2 border-[#22c55e] bg-white dark:bg-[#111722]"
                         : "text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
-                    }`}
+                      }`}
                   >
                     {tab.label}
                   </button>
@@ -254,19 +278,17 @@ export default function AdminTopbar({ onMenuClick }) {
                             navigate(n.link);
                           }
                         }}
-                        className={`p-3.5 flex items-start gap-3 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors cursor-pointer ${
-                          !isRead ? "bg-emerald-50/30 dark:bg-[#22c55e]/5" : ""
-                        }`}
+                        className={`p-3.5 flex items-start gap-3 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors cursor-pointer ${!isRead ? "bg-emerald-50/30 dark:bg-[#22c55e]/5" : ""
+                          }`}
                       >
                         {/* Type Icon */}
                         <div
-                          className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${
-                            n.type === "order"
+                          className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${n.type === "order"
                               ? "bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400"
                               : n.type === "stock"
-                              ? "bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400"
-                              : "bg-emerald-50 dark:bg-emerald-500/10 text-[#22c55e]"
-                          }`}
+                                ? "bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400"
+                                : "bg-emerald-50 dark:bg-emerald-500/10 text-[#22c55e]"
+                            }`}
                         >
                           {n.type === "order" ? (
                             <FiShoppingBag size={15} />
