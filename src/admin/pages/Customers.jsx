@@ -107,10 +107,10 @@ export default function Customers() {
       }
 
       const data = await res.json();
-      setCustomers(data);
+      setCustomers(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error("Failed to fetch customers:", err);
-      setError("Failed to load customers. Please check backend server connection.");
+      setError(err.message || "Failed to load customers. Please check backend server connection.");
     } finally {
       setLoading(false);
     }
