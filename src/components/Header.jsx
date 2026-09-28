@@ -438,12 +438,12 @@ export default function Header() {
                 </button>
 
                 {desktopAccountOpen && (
-                  <div className="absolute right-0 top-full mt-3 w-56 bg-[#f5f5f5] text-[#1a1a1a] rounded-[18px] shadow-[0_18px_35px_rgba(0,0,0,0.14)] border border-gray-200 overflow-hidden z-50 animate-fadeIn">
+                  <div className="absolute right-0 top-full mt-3 w-56 bg-white dark:bg-[#1a2236] text-[#1a1a1a] dark:text-gray-100 rounded-[18px] shadow-[0_18px_35px_rgba(0,0,0,0.14)] border border-gray-200 dark:border-gray-700 overflow-hidden z-50 animate-fadeIn">
                     {user ? (
                       <>
-                        <div className="px-4 py-2 border-b border-gray-100 bg-[#f9fafb] rounded-t-xl">
-                          <p className="text-xs font-bold text-[#1a1a1a] truncate">{user.name || "Customer"}</p>
-                          <p className="text-[10px] text-gray-500 truncate">{user.email}</p>
+                        <div className="px-4 py-2 border-b border-gray-100 dark:border-gray-700 bg-[#f9fafb] dark:bg-[#151d30] rounded-t-xl">
+                          <p className="text-xs font-bold text-[#1a1a1a] dark:text-white truncate">{user.name || "Customer"}</p>
+                          <p className="text-[10px] text-gray-500 dark:text-gray-400 truncate">{user.email}</p>
                           <span className="inline-block mt-1 text-[9px] font-semibold text-[#22c55e] border border-[#22c55e] px-2 py-0.5 rounded-full">
                             Premium Member
                           </span>
@@ -451,85 +451,85 @@ export default function Header() {
                         <Link
                           to="/profile"
                           onClick={() => setDesktopAccountOpen(false)}
-                          className="flex items-center gap-3 px-4 py-2.5 text-xs font-medium text-gray-700 hover:bg-[#22c55e]/10 hover:text-[#22c55e] transition-colors"
+                          className="flex items-center gap-3 px-4 py-2.5 text-xs font-medium text-gray-700 dark:text-gray-200 hover:bg-[#22c55e]/10 hover:text-[#22c55e] transition-colors"
                         >
                           <FiUser size={15} /> My Account
                         </Link>
                         <Link
                           to="/my-orders"
                           onClick={() => setDesktopAccountOpen(false)}
-                          className="flex items-center gap-3 px-4 py-2.5 text-xs font-medium text-gray-700 hover:bg-[#22c55e]/10 hover:text-[#22c55e] transition-colors"
+                          className="flex items-center gap-3 px-4 py-2.5 text-xs font-medium text-gray-700 dark:text-gray-200 hover:bg-[#22c55e]/10 hover:text-[#22c55e] transition-colors"
                         >
                           <TbPackage size={15} /> My Orders
                         </Link>
                         <Link
                           to="/products"
                           onClick={() => setDesktopAccountOpen(false)}
-                          className="flex items-center gap-3 px-4 py-2.5 text-xs font-medium text-gray-700 hover:bg-[#22c55e]/10 hover:text-[#22c55e] transition-colors"
+                          className="flex items-center gap-3 px-4 py-2.5 text-xs font-medium text-gray-700 dark:text-gray-200 hover:bg-[#22c55e]/10 hover:text-[#22c55e] transition-colors"
                         >
                           <FiHeart size={15} /> My Wishlist
                         </Link>
                         <Link
                           to="/deals"
                           onClick={() => setDesktopAccountOpen(false)}
-                          className="flex items-center gap-3 px-4 py-2.5 text-xs font-medium text-gray-700 hover:bg-[#22c55e]/10 hover:text-[#22c55e] transition-colors"
+                          className="flex items-center gap-3 px-4 py-2.5 text-xs font-medium text-gray-700 dark:text-gray-200 hover:bg-[#22c55e]/10 hover:text-[#22c55e] transition-colors"
                         >
                           <TbTicket size={15} /> Coupons
                         </Link>
                         <Link
                           to="/profile?tab=security"
                           onClick={() => setDesktopAccountOpen(false)}
-                          className="flex items-center gap-3 px-4 py-2.5 text-xs font-medium text-gray-700 hover:bg-[#22c55e]/10 hover:text-[#22c55e] transition-colors"
+                          className="flex items-center gap-3 px-4 py-2.5 text-xs font-medium text-gray-700 dark:text-gray-200 hover:bg-[#22c55e]/10 hover:text-[#22c55e] transition-colors"
                         >
                           <FiSettings size={15} /> Settings
                         </Link>
-                        <div className="border-t border-gray-100 my-1" />
+                        <div className="border-t border-gray-100 dark:border-gray-700 my-1" />
                         <button
                           onClick={() => {
                             setDesktopAccountOpen(false);
                             logout();
                           }}
-                          className="w-full flex items-center gap-3 px-4 py-2 text-xs font-semibold text-red-600 hover:bg-red-50 transition-colors text-left cursor-pointer"
+                          className="w-full flex items-center gap-3 px-4 py-2 text-xs font-semibold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 transition-colors text-left cursor-pointer"
                         >
                           <FiLogOut size={15} /> Logout
                         </button>
                       </>
                     ) : admin ? (
                       <>
-                        <div className="px-4 py-2 border-b border-gray-100 bg-[#f9fafb]">
-                          <p className="text-xs font-bold text-[#1a1a1a] truncate">{admin.name || "Admin"}</p>
+                        <div className="px-4 py-2 border-b border-gray-100 dark:border-gray-700 bg-[#f9fafb] dark:bg-[#151d30]">
+                          <p className="text-xs font-bold text-[#1a1a1a] dark:text-white truncate">{admin.name || "Admin"}</p>
                           <p className="text-[10px] text-emerald-700 font-bold uppercase">{admin.role || "Admin Panel"}</p>
                         </div>
                         <Link
                           to="/admin"
                           onClick={() => setDesktopAccountOpen(false)}
-                          className="flex items-center gap-2.5 px-4 py-2.5 text-xs font-medium text-gray-700 hover:bg-[#22c55e]/10 hover:text-[#22c55e] transition-colors"
+                          className="flex items-center gap-2.5 px-4 py-2.5 text-xs font-medium text-gray-700 dark:text-gray-200 hover:bg-[#22c55e]/10 hover:text-[#22c55e] transition-colors"
                         >
                           🛠️ Admin Dashboard
                         </Link>
-                        <div className="border-t border-gray-100 my-1" />
+                        <div className="border-t border-gray-100 dark:border-gray-700 my-1" />
                         <button
                           onClick={() => {
                             setDesktopAccountOpen(false);
                             logoutAdmin();
                           }}
-                          className="w-full flex items-center gap-2.5 px-4 py-2 text-xs font-semibold text-red-600 hover:bg-red-50 transition-colors text-left cursor-pointer"
+                          className="w-full flex items-center gap-2.5 px-4 py-2 text-xs font-semibold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 transition-colors text-left cursor-pointer"
                         >
                           <FiLogOut size={15} /> Logout Admin
                         </button>
                       </>
                     ) : (
                       <>
-                        <div className="px-4 py-3 border-b border-[#1f1f1f] bg-[#111111]">
-                          <p className="text-xs font-bold text-white">Welcome to Nutriexa</p>
-                          <p className="text-[10px] text-gray-300">Access orders, wishlist & more</p>
+                        <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700 bg-[#f9fafb] dark:bg-[#151d30]">
+                          <p className="text-xs font-bold text-[#1a1a1a] dark:text-white">Welcome to Nutriexa</p>
+                          <p className="text-[10px] text-gray-500 dark:text-gray-400">Access orders, wishlist & more</p>
                         </div>
                         <Link
                           to="/login"
                           onClick={() => setDesktopAccountOpen(false)}
-                          className="flex items-center gap-3 px-4 py-2.5 text-xs font-semibold text-[#1a1a1a] hover:bg-[#22c55e]/10 transition-colors"
+                          className="flex items-center gap-3 px-4 py-2.5 text-xs font-semibold text-[#1a1a1a] dark:text-gray-100 hover:bg-[#22c55e]/10 transition-colors"
                         >
-                          <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#111111] text-white">
+                          <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#111111] dark:bg-gray-700 text-white">
                             <FiLogIn size={12} />
                           </span>
                           Login / Sign In
@@ -537,7 +537,7 @@ export default function Header() {
                         <Link
                           to="/signup"
                           onClick={() => setDesktopAccountOpen(false)}
-                          className="flex items-center gap-3 px-4 py-2.5 text-xs font-medium text-[#1a1a1a] hover:bg-gray-50 transition-colors"
+                          className="flex items-center gap-3 px-4 py-2.5 text-xs font-medium text-[#1a1a1a] dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-[#22c55e]/10 transition-colors"
                         >
                           <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#4CAF37] text-white">
                             <FiUser size={12} />
@@ -582,13 +582,13 @@ export default function Header() {
                 <div className="relative">
                   <FiShoppingCart size={22} className="text-white group-hover:text-[#22c55e] transition-colors" />
                   <span className="absolute -top-2.5 -right-2.5 bg-[#22c55e] text-white rounded-full text-[10px] font-bold w-5 h-5 flex items-center justify-center border-2 border-[#0b0e14]">
-                    {cartCount ?? 3}
+                    {cartCount || 0}
                   </span>
                 </div>
                 <div className="flex flex-col leading-tight">
                   <span className="text-[11px] font-semibold text-white">Cart</span>
                   <span className="text-[10px] text-gray-300 font-medium">
-                    ₹ {cartTotal ? Number(cartTotal).toLocaleString("en-IN") : "4,497"}
+                    ₹ {Number(cartTotal || 0).toLocaleString("en-IN")}
                   </span>
                 </div>
               </Link>
@@ -784,7 +784,7 @@ export default function Header() {
               <Link to="/cart" className="relative p-1.5 cursor-pointer shrink-0">
                 <FiShoppingCart size={22} className="text-white" />
                 <span className="absolute -top-1 -right-1 bg-[#22c55e] text-white rounded-full text-[10px] font-bold w-4 h-4 flex items-center justify-center">
-                  {cartCount ?? 3}
+                  {cartCount || 0}
                 </span>
               </Link>
             </div>
@@ -944,7 +944,7 @@ export default function Header() {
                 <Link to="/cart" className="relative p-1 cursor-pointer">
                   <FiShoppingCart size={22} className="text-white" />
                   <span className="absolute -top-1 -right-1.5 bg-[#22c55e] text-white rounded-full text-[10px] font-bold w-4 h-4 flex items-center justify-center">
-                    {cartCount ?? 3}
+                    {cartCount || 0}
                   </span>
                 </Link>
               </div>

@@ -37,7 +37,10 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState(null);
-  const [timeRange, setTimeRange] = useState("This Week"); // "This Week" | "This Month" | "This Year"
+  const [datePreset, setDatePreset] = useState("week"); // "today" | "yesterday" | "week" | "month" | "year" | "all" | "custom"
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [calendarOpen, setCalendarOpen] = useState(false);
   const [paymentFilter, setPaymentFilter] = useState("all"); // "all" | "paid" | "pending" | "cod"
   const [hoveredPointIndex, setHoveredPointIndex] = useState(null);
 
@@ -48,15 +51,18 @@ export default function Dashboard() {
 
     try {
       const token = localStorage.getItem("adminToken");
-      const rangeParam = timeRange === "This Month" ? "month" : timeRange === "This Year" ? "year" : "week";
-      const res = await fetch(
-        `${API_BASE}/api/admin/dashboard?range=${rangeParam}&paymentStatus=${paymentFilter}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      let url = `${API_BASE}/api/admin/dashboard?paymentStatus=${paymentFilter}`;
+      if (datePreset === "custom" && startDate && endDate) {
+        url += `&range=custom&startDate=${startDate}&endDate=${endDate}`;
+      } else {
+        url += `&range=${datePreset}`;
+      }
+
+      const res = await fetch(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       if (!res.ok) {
         const errJson = await res.json().catch(() => ({}));
@@ -76,7 +82,7 @@ export default function Dashboard() {
       setLoading(false);
       setRefreshing(false);
     }
-  }, [timeRange, paymentFilter]);
+  }, [datePreset, startDate, endDate, paymentFilter]);
 
   useEffect(() => {
     fetchDashboard();
@@ -238,11 +244,17 @@ export default function Dashboard() {
       : points[points.length - 1] || null;
 
   const periodLabel =
-    timeRange === "This Week"
+    datePreset === "today"
+      ? "yesterday"
+      : datePreset === "yesterday"
+      ? "previous day"
+      : datePreset === "week"
       ? "last 7 days"
-      : timeRange === "This Month"
+      : datePreset === "month"
       ? "last month"
-      : "last year";
+      : datePreset === "year"
+      ? "last year"
+      : "previous period";
 
   if (loading && !data) {
     return (
@@ -272,7 +284,7 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-6 pb-8">
-      {/* Top Header & Breadcrumbs with Dynamic Date Range */}
+      {/* Top Header & Breadcrumbs with Interactive Calendar Date Range */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
           <div className="flex items-center gap-2.5">
@@ -289,12 +301,121 @@ export default function Dashboard() {
           </p>
         </div>
 
-        {/* Dynamic Date range display & Refresh */}
-        <div className="flex items-center gap-2.5 self-start sm:self-auto">
-          <div className="flex items-center gap-2 bg-white border border-gray-200 text-gray-700 px-3.5 py-2 rounded-xl text-xs font-semibold shadow-2xs">
-            <FiCalendar size={14} className="text-gray-500" />
-            <span>{data?.dateRangeLabel || "Live Analytics"}</span>
+        {/* Dynamic Date range picker popover & Refresh */}
+        <div className="flex items-center gap-2.5 self-start sm:self-auto relative">
+          <div className="relative">
+            <button
+              onClick={() => setCalendarOpen((prev) => !prev)}
+              className="flex items-center gap-2 bg-white border border-gray-200 text-gray-700 px-3.5 py-2 rounded-xl text-xs font-semibold shadow-2xs hover:border-[#22c55e] transition-colors cursor-pointer"
+            >
+              <FiCalendar size={14} className="text-[#22c55e]" />
+              <span>{data?.dateRangeLabel || "Select Date Range"}</span>
+              <FiChevronDown size={14} className={`text-gray-400 transition-transform ${calendarOpen ? "rotate-180" : ""}`} />
+            </button>
+
+            {calendarOpen && (
+              <div className="absolute right-0 top-full mt-2 w-80 sm:w-96 bg-white rounded-2xl shadow-2xl border border-gray-200 p-4 z-50 animate-fadeIn">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <h3 className="text-xs font-bold text-gray-900 flex items-center gap-2">
+                    <FiCalendar size={14} className="text-[#22c55e]" /> Select Date Range
+                  </h3>
+                  <button
+                    onClick={() => setCalendarOpen(false)}
+                    className="text-gray-400 hover:text-gray-700 p-1 rounded-md text-xs cursor-pointer"
+                  >
+                    ✕
+                  </button>
+                </div>
+
+                {/* Quick Presets */}
+                <div className="my-3">
+                  <p className="text-[11px] font-semibold text-gray-400 mb-2 uppercase tracking-wider">Quick Presets</p>
+                  <div className="grid grid-cols-3 gap-1.5">
+                    {[
+                      { key: "today", label: "Today" },
+                      { key: "yesterday", label: "Yesterday" },
+                      { key: "week", label: "Last 7 Days" },
+                      { key: "month", label: "This Month" },
+                      { key: "year", label: "This Year" },
+                      { key: "all", label: "All Time" },
+                    ].map((p) => (
+                      <button
+                        key={p.key}
+                        onClick={() => {
+                          setDatePreset(p.key);
+                          setStartDate("");
+                          setEndDate("");
+                          setCalendarOpen(false);
+                        }}
+                        className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold text-center transition-all cursor-pointer ${
+                          datePreset === p.key && !startDate
+                            ? "bg-[#22c55e] text-white shadow-xs"
+                            : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                        }`}
+                      >
+                        {p.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Custom Date Range */}
+                <div className="pt-3 border-t border-gray-100 space-y-2.5">
+                  <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">Custom Calendar Range</p>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div>
+                      <label className="block text-[10px] font-medium text-gray-500 mb-1">Start Date</label>
+                      <input
+                        type="date"
+                        value={startDate}
+                        onChange={(e) => setStartDate(e.target.value)}
+                        className="w-full bg-gray-50 border border-gray-200 rounded-lg px-2.5 py-1.5 text-xs text-gray-800 outline-none focus:border-[#22c55e]"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-medium text-gray-500 mb-1">End Date</label>
+                      <input
+                        type="date"
+                        value={endDate}
+                        onChange={(e) => setEndDate(e.target.value)}
+                        className="w-full bg-gray-50 border border-gray-200 rounded-lg px-2.5 py-1.5 text-xs text-gray-800 outline-none focus:border-[#22c55e]"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 pt-1">
+                    <button
+                      onClick={() => {
+                        if (startDate && endDate) {
+                          setDatePreset("custom");
+                          setCalendarOpen(false);
+                        } else {
+                          alert("Please select both Start Date and End Date.");
+                        }
+                      }}
+                      className="flex-1 py-2 bg-[#22c55e] hover:bg-[#16a34a] text-white font-bold text-xs rounded-xl shadow-xs transition-colors cursor-pointer text-center"
+                    >
+                      Apply Custom Range
+                    </button>
+                    {datePreset === "custom" && (
+                      <button
+                        onClick={() => {
+                          setDatePreset("week");
+                          setStartDate("");
+                          setEndDate("");
+                          setCalendarOpen(false);
+                        }}
+                        className="px-3 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold rounded-xl transition-colors cursor-pointer"
+                      >
+                        Reset
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
+
           <button
             onClick={() => fetchDashboard(true)}
             disabled={refreshing}
@@ -506,13 +627,23 @@ export default function Dashboard() {
               {/* Time Range Selector */}
               <div className="relative">
                 <select
-                  value={timeRange}
-                  onChange={(e) => setTimeRange(e.target.value)}
+                  value={datePreset}
+                  onChange={(e) => {
+                    setDatePreset(e.target.value);
+                    if (e.target.value !== "custom") {
+                      setStartDate("");
+                      setEndDate("");
+                    }
+                  }}
                   className="text-xs font-semibold text-gray-700 bg-gray-50 border border-gray-200 rounded-lg px-2.5 py-1.5 pr-6 appearance-none focus:outline-none focus:ring-1 focus:ring-emerald-500 cursor-pointer"
                 >
-                  <option value="This Week">This Week</option>
-                  <option value="This Month">This Month</option>
-                  <option value="This Year">This Year</option>
+                  <option value="today">Today</option>
+                  <option value="yesterday">Yesterday</option>
+                  <option value="week">This Week</option>
+                  <option value="month">This Month</option>
+                  <option value="year">This Year</option>
+                  <option value="all">All Time</option>
+                  {datePreset === "custom" && <option value="custom">Custom Range</option>}
                 </select>
                 <FiChevronDown size={12} className="absolute right-2 top-2.5 pointer-events-none text-gray-400" />
               </div>

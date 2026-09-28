@@ -49,6 +49,7 @@ export default function FloatingActionDock() {
   });
   const [distSubmitting, setDistSubmitting] = useState(false);
   const [distSuccess, setDistSuccess] = useState(false);
+  const [distWaUrl, setDistWaUrl] = useState("");
 
   // Feedback modal state
   const [feedbackForm, setFeedbackForm] = useState({
@@ -108,11 +109,25 @@ export default function FloatingActionDock() {
     }, 600);
   };
 
-  // Submit Distributor Inquiry
+  // Submit Distributor Inquiry & Route to WhatsApp
   const handleDistributorSubmit = async (e) => {
     e.preventDefault();
     if (!distForm.name || !distForm.phone) return;
     setDistSubmitting(true);
+
+    // Format WhatsApp message with all details
+    const textMsg =
+      `*New Distributor Inquiry - Nutriexa*\n\n` +
+      `👤 *Full Name:* ${distForm.name}\n` +
+      `📱 *Phone:* ${distForm.phone}\n` +
+      `📧 *Email:* ${distForm.email || "Not specified"}\n` +
+      `📍 *City / State:* ${distForm.city || "Not specified"}\n` +
+      `🏢 *Company / Store:* ${distForm.company_name || "Not specified"}\n` +
+      `💬 *Message:* ${distForm.message || "I am interested in becoming a Nutriexa distributor."}`;
+
+    const waLink = `https://wa.me/919717323824?text=${encodeURIComponent(textMsg)}`;
+    setDistWaUrl(waLink);
+
     try {
       await fetch(`${API_BASE}/api/distributor/inquiry`, {
         method: "POST",
@@ -124,11 +139,12 @@ export default function FloatingActionDock() {
     } finally {
       setDistSubmitting(false);
       setDistSuccess(true);
-      setTimeout(() => {
-        setDistSuccess(false);
-        setDistributorOpen(false);
-        setDistForm({ name: "", phone: "", email: "", city: "", company_name: "", message: "" });
-      }, 2500);
+      // Immediately open WhatsApp in new tab
+      try {
+        window.open(waLink, "_blank", "noopener,noreferrer");
+      } catch (e) {
+        console.error("Popup blocked:", e);
+      }
     }
   };
 
@@ -372,14 +388,38 @@ export default function FloatingActionDock() {
             </div>
 
             {distSuccess ? (
-              <div className="text-center py-8">
+              <div className="text-center py-6">
                 <div className="w-16 h-16 rounded-full bg-[#22c55e]/20 text-[#22c55e] flex items-center justify-center mx-auto mb-3">
-                  <FiCheckCircle size={36} />
+                  <FaWhatsapp size={36} />
                 </div>
                 <h4 className="text-lg font-bold text-white">Inquiry Submitted Successfully!</h4>
                 <p className="text-xs text-gray-300 mt-2 max-w-sm mx-auto">
-                  Thank you for your interest! Our head of dealership & wholesale will reach out to you within 24 hours.
+                  Your dealership details have been submitted and sent to our official WhatsApp (+91 9717323824).
                 </p>
+                {distWaUrl && (
+                  <div className="mt-5 space-y-2">
+                    <a
+                      href={distWaUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center justify-center gap-2 w-full py-3 bg-[#22c55e] hover:bg-[#16a34a] text-white font-bold rounded-xl text-xs shadow-lg transition-colors cursor-pointer"
+                    >
+                      <FaWhatsapp size={18} />
+                      <span>Chat on WhatsApp Directly</span>
+                    </a>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setDistSuccess(false);
+                        setDistributorOpen(false);
+                        setDistForm({ name: "", phone: "", email: "", city: "", company_name: "", message: "" });
+                      }}
+                      className="text-xs text-gray-400 hover:text-white py-1 block w-full text-center transition-colors cursor-pointer"
+                    >
+                      Close Window
+                    </button>
+                  </div>
+                )}
               </div>
             ) : (
               <form onSubmit={handleDistributorSubmit} className="space-y-4">
@@ -457,9 +497,10 @@ export default function FloatingActionDock() {
                   <button
                     type="submit"
                     disabled={distSubmitting}
-                    className="w-full py-3 bg-[#22c55e] text-white font-bold text-xs uppercase tracking-wider rounded-xl hover:bg-[#1ea850] transition-colors cursor-pointer shadow-lg disabled:opacity-60"
+                    className="w-full py-3 bg-[#22c55e] text-white font-bold text-xs uppercase tracking-wider rounded-xl hover:bg-[#1ea850] transition-colors cursor-pointer shadow-lg disabled:opacity-60 flex items-center justify-center gap-2"
                   >
-                    {distSubmitting ? "Submitting Inquiry..." : "Submit Dealership Inquiry"}
+                    <FaWhatsapp size={16} />
+                    <span>{distSubmitting ? "Submitting Inquiry..." : "Submit & Send to WhatsApp"}</span>
                   </button>
                 </div>
               </form>
