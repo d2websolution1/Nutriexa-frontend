@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import {
   FiArchive,
   FiSearch,
@@ -9,6 +9,7 @@ import {
   FiSliders,
 } from "react-icons/fi";
 import { API_URL as BASE_URL } from "../../config";
+import { useTheme } from "../../context/ThemeContext";
 
 const STATUS_BADGES = {
   Active: "bg-emerald-50 text-emerald-700 border-emerald-200",
@@ -18,6 +19,7 @@ const STATUS_BADGES = {
 };
 
 export default function Inventory() {
+  const { isAdminDark } = useTheme();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -25,6 +27,35 @@ export default function Inventory() {
   const [updatingId, setUpdatingId] = useState(null);
   const [updatingStatusId, setUpdatingStatusId] = useState(null);
   const [editStockMap, setEditStockMap] = useState({});
+
+  const searchRef = useRef(null);
+
+  // Force input styles with !important (beats global CSS overrides)
+  useEffect(() => {
+    const textColor = isAdminDark ? "#f3f4f6" : "#1f2937";
+    if (searchRef.current) {
+      const el = searchRef.current;
+      el.style.setProperty("background", "transparent", "important");
+      el.style.setProperty("background-color", "transparent", "important");
+      el.style.setProperty("box-shadow", "none", "important");
+      el.style.setProperty("border", "none", "important");
+      el.style.setProperty("color", textColor, "important");
+      el.style.setProperty("-webkit-text-fill-color", textColor, "important");
+      el.style.setProperty("caret-color", textColor, "important");
+      el.style.setProperty("color-scheme", isAdminDark ? "dark" : "light", "important");
+    }
+  }, [isAdminDark]);
+
+  const boxStyle = {
+    backgroundColor: isAdminDark ? "rgba(255,255,255,0.06)" : "#f5f6f4",
+    border: isAdminDark ? "1px solid rgba(255,255,255,0.1)" : "1px solid rgba(229,231,235,0.7)",
+  };
+  const inactiveBtnStyle = {
+    backgroundColor: isAdminDark ? "rgba(255,255,255,0.08)" : "#f5f6f4",
+    color: isAdminDark ? "#d1d5db" : "#4b5563",
+  };
+  const mutedText = { color: isAdminDark ? "#9ca3af" : "#6b7280" };
+  const titleColor = { color: isAdminDark ? "#ffffff" : "#1a1a1a" };
 
   const fetchInventory = async () => {
     setLoading(true);
@@ -237,7 +268,7 @@ export default function Inventory() {
         <div className="flex flex-wrap items-center justify-between gap-3">
           {/* Status Filter Tabs */}
           <div className="flex items-center gap-1.5 flex-wrap">
-            <span className="text-xs font-bold text-gray-500 dark:text-gray-400 flex items-center gap-1 mr-1">
+            <span className="text-xs font-bold flex items-center gap-1 mr-1" style={mutedText}>
               <FiFilter size={13} className="text-[#22c55e]" /> Status:
             </span>
             {[
@@ -254,8 +285,9 @@ export default function Inventory() {
                 className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                   statusFilter === tab.key
                     ? "bg-[#22c55e] text-white shadow-xs font-bold"
-                    : "bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/20"
+                    : ""
                 }`}
+                style={statusFilter === tab.key ? undefined : inactiveBtnStyle}
               >
                 {tab.label}
               </button>
@@ -263,14 +295,18 @@ export default function Inventory() {
           </div>
 
           {/* Search Box */}
-          <div className="flex items-center gap-2 bg-[#f5f6f4] dark:bg-white/10 rounded-lg px-3 py-2 w-full sm:w-72 border border-gray-200/50 dark:border-white/10">
-            <FiSearch className="text-gray-400" size={15} />
+          <div
+            className="flex items-center gap-2 rounded-lg px-3 py-1.5 w-full sm:w-72"
+            style={boxStyle}
+          >
+            <FiSearch size={15} style={{ color: isAdminDark ? "#6b7280" : "#9ca3af" }} />
             <input
+              ref={searchRef}
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search product, category or SKU..."
-              className="bg-transparent text-xs outline-none w-full placeholder:text-gray-400 dark:placeholder:text-gray-500 text-gray-800 dark:text-white"
+              className="admin-search-input text-xs outline-none w-full placeholder:text-gray-400 dark:placeholder:text-gray-500"
             />
           </div>
         </div>

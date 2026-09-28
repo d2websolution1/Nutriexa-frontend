@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import {
   FiPlus,
   FiEdit2,
@@ -12,13 +12,40 @@ import {
 } from "react-icons/fi";
 import { API_URL as BASE_URL } from "../../config";
 import { useAuth } from "../../context/AuthContext";
+import { useTheme } from "../../context/ThemeContext";
 
 export default function Categories() {
   const { hasPermission } = useAuth();
+  const { isAdminDark } = useTheme();
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [error, setError] = useState("");
+
+  const searchRef = useRef(null);
+
+  // Force input styles with !important (beats global CSS overrides)
+  useEffect(() => {
+    const textColor = isAdminDark ? "#f3f4f6" : "#1f2937";
+    if (searchRef.current) {
+      const el = searchRef.current;
+      el.style.setProperty("background", "transparent", "important");
+      el.style.setProperty("background-color", "transparent", "important");
+      el.style.setProperty("box-shadow", "none", "important");
+      el.style.setProperty("border", "none", "important");
+      el.style.setProperty("color", textColor, "important");
+      el.style.setProperty("-webkit-text-fill-color", textColor, "important");
+      el.style.setProperty("caret-color", textColor, "important");
+      el.style.setProperty("color-scheme", isAdminDark ? "dark" : "light", "important");
+    }
+  }, [isAdminDark]);
+
+  const boxStyle = {
+    backgroundColor: isAdminDark ? "rgba(255,255,255,0.06)" : "#f5f6f4",
+    border: isAdminDark ? "1px solid rgba(255,255,255,0.1)" : "1px solid rgba(229,231,235,0.7)",
+  };
+  const mutedText = { color: isAdminDark ? "#9ca3af" : "#6b7280" };
+  const titleColor = { color: isAdminDark ? "#ffffff" : "#1a1a1a" };
 
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -201,8 +228,8 @@ export default function Categories() {
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-2xl font-extrabold text-[#1a1a1a] dark:text-white">Categories</h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+          <h1 className="text-2xl font-extrabold" style={titleColor}>Categories</h1>
+          <p className="text-sm mt-0.5" style={mutedText}>
             Organize and classify products in your store.
           </p>
         </div>
@@ -218,17 +245,21 @@ export default function Categories() {
       {/* Categories Table Container */}
       <div className="bg-white dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/10 shadow-xs overflow-hidden">
         <div className="p-4 border-b border-gray-100 dark:border-white/10 flex items-center justify-between flex-wrap gap-3">
-          <div className="flex items-center gap-2 bg-[#f5f6f4] dark:bg-white/10 rounded-lg px-3 py-2 w-full sm:w-72 border border-gray-200/50 dark:border-white/10">
-            <FiSearch className="text-gray-400" size={15} />
+          <div
+            className="flex items-center gap-2 rounded-lg px-3 py-1.5 w-full sm:w-72"
+            style={boxStyle}
+          >
+            <FiSearch size={15} style={{ color: isAdminDark ? "#6b7280" : "#9ca3af" }} />
             <input
+              ref={searchRef}
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search categories..."
-              className="bg-transparent text-xs outline-none w-full placeholder:text-gray-400 dark:placeholder:text-gray-500 text-gray-800 dark:text-white"
+              className="admin-search-input text-xs outline-none w-full placeholder:text-gray-400 dark:placeholder:text-gray-500"
             />
           </div>
-          <span className="text-xs text-gray-400 dark:text-gray-500 font-medium">
+          <span className="text-xs font-medium" style={mutedText}>
             {filtered.length} categories available
           </span>
         </div>

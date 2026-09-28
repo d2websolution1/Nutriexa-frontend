@@ -1,7 +1,8 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { FiPlus, FiEdit2, FiTrash2, FiCopy, FiSearch, FiX } from "react-icons/fi";
 import { API_URL as API_BASE } from "../../config";
 import { useAuth } from "../../context/AuthContext";
+import { useTheme } from "../../context/ThemeContext";
 
 const STATUS_STYLES = {
   Active: "bg-green-100 text-green-700",
@@ -20,12 +21,38 @@ const emptyForm = {
 
 export default function Deals() {
   const { hasPermission } = useAuth();
+  const { isAdminDark } = useTheme();
   const canManage = hasPermission("deals.manage");
 
   const [search, setSearch] = useState("");
   const [coupons, setCoupons] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const searchRef = useRef(null);
+
+  // Force input styles with !important (beats global CSS overrides)
+  useEffect(() => {
+    const textColor = isAdminDark ? "#f3f4f6" : "#1f2937";
+    if (searchRef.current) {
+      const el = searchRef.current;
+      el.style.setProperty("background", "transparent", "important");
+      el.style.setProperty("background-color", "transparent", "important");
+      el.style.setProperty("box-shadow", "none", "important");
+      el.style.setProperty("border", "none", "important");
+      el.style.setProperty("color", textColor, "important");
+      el.style.setProperty("-webkit-text-fill-color", textColor, "important");
+      el.style.setProperty("caret-color", textColor, "important");
+      el.style.setProperty("color-scheme", isAdminDark ? "dark" : "light", "important");
+    }
+  }, [isAdminDark]);
+
+  const boxStyle = {
+    backgroundColor: isAdminDark ? "rgba(255,255,255,0.06)" : "#f5f6f4",
+    border: isAdminDark ? "1px solid rgba(255,255,255,0.1)" : "1px solid rgba(229,231,235,0.7)",
+  };
+  const mutedText = { color: isAdminDark ? "#9ca3af" : "#6b7280" };
+  const titleColor = { color: isAdminDark ? "#ffffff" : "#1a1a1a" };
 
 
   const [showForm, setShowForm] = useState(false);
@@ -354,14 +381,18 @@ export default function Deals() {
         {/* Coupons table */}
         <div className="bg-white dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/10 shadow-sm">
           <div className="p-4 border-b border-gray-100 dark:border-white/10">
-            <div className="flex items-center gap-2 bg-[#f5f6f4] dark:bg-white/10 border border-gray-200/50 dark:border-white/10 rounded-md px-3 py-2 max-w-sm">
-              <FiSearch className="text-gray-400" size={16} />
+            <div
+              className="flex items-center gap-2 rounded-lg px-3 py-1.5 max-w-sm"
+              style={boxStyle}
+            >
+              <FiSearch size={15} style={{ color: isAdminDark ? "#6b7280" : "#9ca3af" }} />
               <input
+                ref={searchRef}
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search coupons..."
-                className="bg-transparent text-sm outline-none w-full placeholder:text-gray-400 dark:placeholder:text-gray-500 text-gray-800 dark:text-white"
+                className="admin-search-input text-xs outline-none w-full placeholder:text-gray-400 dark:placeholder:text-gray-500"
               />
             </div>
           </div>

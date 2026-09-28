@@ -164,13 +164,37 @@ html.dark [class*="bg-white/"]:not([class*="bg-white/5"]):not([class*="bg-white/
   color: #ffffff !important;
 }
 
-/* Forms, Inputs & Selects in Dark Mode */
-html.dark input:not([type="range"]):not([type="checkbox"]),
+/* Forms, Inputs & Selects in Dark Mode (Search inputs with transparent styling excluded) */
+html.dark input:not([type="range"]):not([type="checkbox"]):not(.admin-search-input):not(.bg-transparent):not([style*="transparent"]),
 html.dark select,
 html.dark textarea {
   background-color: #0d121c !important;
   color: #ffffff !important;
   border-color: #263347 !important;
+}
+
+/* Admin Search Inputs in Dark & Light Mode — Pure Transparent with No Inner Dark Pill */
+input.admin-search-input,
+html.dark input.admin-search-input,
+input.bg-transparent,
+html.dark input.bg-transparent,
+input[style*="transparent"],
+html.dark input[style*="transparent"] {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
+  -webkit-appearance: none !important;
+  appearance: none !important;
+}
+
+html.dark input.admin-search-input,
+html.dark input.bg-transparent,
+html.dark input[style*="transparent"] {
+  color: #f3f4f6 !important;
+  -webkit-text-fill-color: #f3f4f6 !important;
 }
 
 html.dark option {
