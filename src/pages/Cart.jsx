@@ -13,6 +13,7 @@ import {
 } from "react-icons/fi";
 import { TbTicket, TbDiscount, TbTruckDelivery } from "react-icons/tb";
 import { useCart } from "../context/CartContext";
+import { API_URL } from "../config";
 
 const AVAILABLE_OFFERS = [
   {
@@ -62,6 +63,19 @@ export default function Cart() {
   const navigate = useNavigate();
 
   const [inputCoupon, setInputCoupon] = useState("");
+  const [shippingSettings, setShippingSettings] = useState({
+    freeShippingThreshold: 999,
+    defaultStandardRate: 49,
+  });
+
+  useEffect(() => {
+    fetch(`${API_URL}/api/shipping/settings`)
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data) setShippingSettings(data);
+      })
+      .catch(() => {});
+  }, []);
   const [appliedCoupon, setAppliedCoupon] = useState(null);
   const [discountAmount, setDiscountAmount] = useState(0);
   const [couponMessage, setCouponMessage] = useState({ type: "", text: "" });
@@ -191,7 +205,9 @@ export default function Cart() {
     );
   }
 
-  const baseShipping = cartTotal >= 1999 ? 0 : 99;
+  const freeThreshold = shippingSettings.freeShippingThreshold ?? 999;
+  const standardFee = shippingSettings.defaultStandardRate ?? 49;
+  const baseShipping = cartTotal >= freeThreshold ? 0 : standardFee;
   const shippingFee = appliedCoupon?.type === "Shipping" ? 0 : baseShipping;
   const finalTotal = Math.max(0, cartTotal - discountAmount + shippingFee);
 

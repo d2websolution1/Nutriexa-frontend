@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import {
   FiShield,
@@ -44,6 +44,112 @@ function loadRazorpayScript() {
   });
 }
 
+// ── Indian cities with state mapping ──────────────────────────────────────────
+const INDIAN_CITY_STATE = [
+  { city: "Mumbai", state: "Maharashtra" },
+  { city: "Delhi", state: "Delhi" },
+  { city: "New Delhi", state: "Delhi" },
+  { city: "Bengaluru", state: "Karnataka" },
+  { city: "Bangalore", state: "Karnataka" },
+  { city: "Hyderabad", state: "Telangana" },
+  { city: "Ahmedabad", state: "Gujarat" },
+  { city: "Chennai", state: "Tamil Nadu" },
+  { city: "Kolkata", state: "West Bengal" },
+  { city: "Pune", state: "Maharashtra" },
+  { city: "Jaipur", state: "Rajasthan" },
+  { city: "Surat", state: "Gujarat" },
+  { city: "Lucknow", state: "Uttar Pradesh" },
+  { city: "Kanpur", state: "Uttar Pradesh" },
+  { city: "Nagpur", state: "Maharashtra" },
+  { city: "Indore", state: "Madhya Pradesh" },
+  { city: "Thane", state: "Maharashtra" },
+  { city: "Bhopal", state: "Madhya Pradesh" },
+  { city: "Visakhapatnam", state: "Andhra Pradesh" },
+  { city: "Pimpri-Chinchwad", state: "Maharashtra" },
+  { city: "Patna", state: "Bihar" },
+  { city: "Vadodara", state: "Gujarat" },
+  { city: "Ghaziabad", state: "Uttar Pradesh" },
+  { city: "Ludhiana", state: "Punjab" },
+  { city: "Agra", state: "Uttar Pradesh" },
+  { city: "Nashik", state: "Maharashtra" },
+  { city: "Faridabad", state: "Haryana" },
+  { city: "Meerut", state: "Uttar Pradesh" },
+  { city: "Rajkot", state: "Gujarat" },
+  { city: "Varanasi", state: "Uttar Pradesh" },
+  { city: "Srinagar", state: "Jammu & Kashmir" },
+  { city: "Aurangabad", state: "Maharashtra" },
+  { city: "Dhanbad", state: "Jharkhand" },
+  { city: "Amritsar", state: "Punjab" },
+  { city: "Allahabad", state: "Uttar Pradesh" },
+  { city: "Ranchi", state: "Jharkhand" },
+  { city: "Howrah", state: "West Bengal" },
+  { city: "Coimbatore", state: "Tamil Nadu" },
+  { city: "Jabalpur", state: "Madhya Pradesh" },
+  { city: "Gwalior", state: "Madhya Pradesh" },
+  { city: "Vijayawada", state: "Andhra Pradesh" },
+  { city: "Jodhpur", state: "Rajasthan" },
+  { city: "Madurai", state: "Tamil Nadu" },
+  { city: "Raipur", state: "Chhattisgarh" },
+  { city: "Kota", state: "Rajasthan" },
+  { city: "Chandigarh", state: "Chandigarh" },
+  { city: "Guwahati", state: "Assam" },
+  { city: "Solapur", state: "Maharashtra" },
+  { city: "Hubli", state: "Karnataka" },
+  { city: "Dharwad", state: "Karnataka" },
+  { city: "Bareilly", state: "Uttar Pradesh" },
+  { city: "Moradabad", state: "Uttar Pradesh" },
+  { city: "Mysore", state: "Karnataka" },
+  { city: "Mysuru", state: "Karnataka" },
+  { city: "Gurgaon", state: "Haryana" },
+  { city: "Gurugram", state: "Haryana" },
+  { city: "Noida", state: "Uttar Pradesh" },
+  { city: "Aligarh", state: "Uttar Pradesh" },
+  { city: "Jalandhar", state: "Punjab" },
+  { city: "Tiruchirappalli", state: "Tamil Nadu" },
+  { city: "Bhubaneswar", state: "Odisha" },
+  { city: "Salem", state: "Tamil Nadu" },
+  { city: "Mira-Bhayandar", state: "Maharashtra" },
+  { city: "Thiruvananthapuram", state: "Kerala" },
+  { city: "Bhiwandi", state: "Maharashtra" },
+  { city: "Saharanpur", state: "Uttar Pradesh" },
+  { city: "Gorakhpur", state: "Uttar Pradesh" },
+  { city: "Guntur", state: "Andhra Pradesh" },
+  { city: "Amravati", state: "Maharashtra" },
+  { city: "Bikaner", state: "Rajasthan" },
+  { city: "Noida", state: "Uttar Pradesh" },
+  { city: "Dehradun", state: "Uttarakhand" },
+  { city: "Kochi", state: "Kerala" },
+  { city: "Udaipur", state: "Rajasthan" },
+  { city: "Kozhikode", state: "Kerala" },
+  { city: "Nanded", state: "Maharashtra" },
+  { city: "Warangal", state: "Telangana" },
+  { city: "Mangalore", state: "Karnataka" },
+  { city: "Tiruppur", state: "Tamil Nadu" },
+  { city: "Kolhapur", state: "Maharashtra" },
+  { city: "Ajmer", state: "Rajasthan" },
+  { city: "Akola", state: "Maharashtra" },
+  { city: "Gulbarga", state: "Karnataka" },
+  { city: "Jamshedpur", state: "Jharkhand" },
+  { city: "Bokaro", state: "Jharkhand" },
+  { city: "Siliguri", state: "West Bengal" },
+  { city: "Vellore", state: "Tamil Nadu" },
+  { city: "Shimla", state: "Himachal Pradesh" },
+  { city: "Jammu", state: "Jammu & Kashmir" },
+  { city: "Erode", state: "Tamil Nadu" },
+  { city: "Prayagraj", state: "Uttar Pradesh" },
+];
+
+const INDIAN_STATES = [
+  "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh",
+  "Chandigarh", "Delhi", "Goa", "Gujarat", "Haryana", "Himachal Pradesh",
+  "Jammu & Kashmir", "Jharkhand", "Karnataka", "Kerala", "Ladakh",
+  "Madhya Pradesh", "Maharashtra", "Manipur", "Meghalaya", "Mizoram",
+  "Nagaland", "Odisha", "Puducherry", "Punjab", "Rajasthan", "Sikkim",
+  "Tamil Nadu", "Telangana", "Tripura", "Uttar Pradesh", "Uttarakhand",
+  "West Bengal",
+];
+// ─────────────────────────────────────────────────────────────────────────────
+
 export default function Checkout() {
   const { cartItems, cartTotal, clearCart } = useCart();
   const { user } = useAuth();
@@ -72,9 +178,24 @@ export default function Checkout() {
   // Razorpay Demo Modal for dummy mode testing
   const [showDemoModal, setShowDemoModal] = useState(false);
   const [demoOrderData, setDemoOrderData] = useState(null);
+  const [shippingSettings, setShippingSettings] = useState({
+    freeShippingThreshold: 999,
+    defaultStandardRate: 49,
+  });
 
-  // Calculate pricing
-  const shipping = cartTotal >= 1999 || cartTotal === 0 ? 0 : 99;
+  useEffect(() => {
+    fetch(`${API_URL}/api/shipping/settings`)
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data) setShippingSettings(data);
+      })
+      .catch(() => {});
+  }, []);
+
+  // Calculate pricing based on live shipping configuration
+  const freeThreshold = shippingSettings.freeShippingThreshold ?? 999;
+  const standardFee = shippingSettings.defaultStandardRate ?? 49;
+  const shipping = cartTotal >= freeThreshold || cartTotal === 0 ? 0 : standardFee;
   const subtotalAfterDiscount = Math.max(0, cartTotal - discountAmount);
   const total = subtotalAfterDiscount + (cartTotal > 0 ? shipping : 0);
 
@@ -116,9 +237,51 @@ export default function Checkout() {
     }
   }, [cartTotal]);
 
+  const cityRef = useRef(null);
+  const stateRef = useRef(null);
+  const [citySuggestions, setCitySuggestions] = useState([]);
+  const [stateSuggestions, setStateSuggestions] = useState([]);
+  const [showCitySug, setShowCitySug] = useState(false);
+  const [showStateSug, setShowStateSug] = useState(false);
+
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setForm({ ...form, [name]: value });
     setError(null);
+
+    if (name === "city") {
+      if (value.trim().length > 0) {
+        const filtered = INDIAN_CITY_STATE.filter((c) =>
+          c.city.toLowerCase().startsWith(value.toLowerCase())
+        ).slice(0, 6);
+        setCitySuggestions(filtered);
+        setShowCitySug(true);
+      } else {
+        setShowCitySug(false);
+      }
+    }
+
+    if (name === "state") {
+      if (value.trim().length > 0) {
+        const filtered = INDIAN_STATES.filter((s) =>
+          s.toLowerCase().startsWith(value.toLowerCase())
+        ).slice(0, 6);
+        setStateSuggestions(filtered);
+        setShowStateSug(true);
+      } else {
+        setShowStateSug(false);
+      }
+    }
+  };
+
+  const selectCity = (item) => {
+    setForm((prev) => ({ ...prev, city: item.city, state: item.state }));
+    setShowCitySug(false);
+  };
+
+  const selectState = (state) => {
+    setForm((prev) => ({ ...prev, state }));
+    setShowStateSug(false);
   };
 
   const validate = () => {
@@ -490,28 +653,65 @@ export default function Checkout() {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4">
-              <div>
+              <div className="relative" ref={cityRef}>
                 <label className="text-xs font-semibold text-gray-700 mb-1 block">City *</label>
                 <input
                   type="text"
                   name="city"
                   value={form.city}
                   onChange={handleChange}
-                  placeholder="City"
+                  onFocus={() => {
+                    if (form.city.trim().length > 0) setShowCitySug(true);
+                  }}
+                  onBlur={() => setTimeout(() => setShowCitySug(false), 150)}
+                  autoComplete="off"
+                  placeholder="Type city name..."
                   className="w-full border border-gray-200 rounded-lg px-3.5 py-2.5 text-sm outline-none focus:border-[#4CAF37] focus:ring-1 focus:ring-[#4CAF37]"
                 />
+                {showCitySug && citySuggestions.length > 0 && (
+                  <ul className="absolute z-50 left-0 right-0 top-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
+                    {citySuggestions.map((item) => (
+                      <li
+                        key={item.city}
+                        onMouseDown={() => selectCity(item)}
+                        className="px-3.5 py-2 text-sm cursor-pointer hover:bg-[#4CAF37]/10 flex items-center justify-between"
+                      >
+                        <span className="font-medium text-gray-800">{item.city}</span>
+                        <span className="text-xs text-gray-400">{item.state}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
 
-              <div>
+              <div className="relative" ref={stateRef}>
                 <label className="text-xs font-semibold text-gray-700 mb-1 block">State *</label>
                 <input
                   type="text"
                   name="state"
                   value={form.state}
                   onChange={handleChange}
-                  placeholder="State"
+                  onFocus={() => {
+                    if (form.state.trim().length > 0) setShowStateSug(true);
+                  }}
+                  onBlur={() => setTimeout(() => setShowStateSug(false), 150)}
+                  autoComplete="off"
+                  placeholder="Type state name..."
                   className="w-full border border-gray-200 rounded-lg px-3.5 py-2.5 text-sm outline-none focus:border-[#4CAF37] focus:ring-1 focus:ring-[#4CAF37]"
                 />
+                {showStateSug && stateSuggestions.length > 0 && (
+                  <ul className="absolute z-50 left-0 right-0 top-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
+                    {stateSuggestions.map((state) => (
+                      <li
+                        key={state}
+                        onMouseDown={() => selectState(state)}
+                        className="px-3.5 py-2 text-sm cursor-pointer hover:bg-[#4CAF37]/10 text-gray-800 font-medium"
+                      >
+                        {state}
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
 
               <div>

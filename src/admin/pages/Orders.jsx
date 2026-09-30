@@ -15,6 +15,14 @@ const STATUS_STYLES = {
 const TABS = ["All", "Pending", "Processing", "Shipped", "Delivered", "Cancelled"];
 const STATUS_OPTIONS = ["Pending", "Processing", "Shipped", "Delivered", "Cancelled"];
 
+const STATUS_DOT = {
+  Delivered: "#22c55e",
+  Shipped: "#3b82f6",
+  Processing: "#f59e0b",
+  Pending: "#f97316",
+  Cancelled: "#ef4444",
+};
+
 function formatDateTime(isoString) {
   if (!isoString) return "-";
   const date = new Date(isoString);
@@ -360,17 +368,33 @@ export default function Orders() {
 
         <div className="flex items-center justify-between flex-wrap gap-3">
           <div className="flex gap-1.5 flex-wrap">
-            {TABS.map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${activeTab === tab ? "bg-[#16a34a] text-white shadow-xs" : ""
-                  }`}
-                style={activeTab === tab ? undefined : inactiveBtnStyle}
-              >
-                {tab}
-              </button>
-            ))}
+            {TABS.map((tab) => {
+              const tabCount = tab === "All"
+                ? orders.length
+                : orders.filter((o) => o.status === tab).length;
+              return (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer flex items-center gap-1.5 ${activeTab === tab ? "bg-[#16a34a] text-white shadow-xs" : ""
+                    }`}
+                  style={activeTab === tab ? undefined : inactiveBtnStyle}
+                >
+                  {tab}
+                  {!loading && (
+                    <span
+                      className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${
+                        activeTab === tab
+                          ? "bg-white/25 text-white"
+                          : "bg-black/8 text-gray-600 dark:text-gray-300"
+                      }`}
+                    >
+                      {tabCount}
+                    </span>
+                  )}
+                </button>
+              );
+            })}
           </div>
 
           <div
@@ -388,6 +412,32 @@ export default function Orders() {
             />
           </div>
         </div>
+
+        {/* Summary Bar */}
+        {!loading && orders.length > 0 && (
+          <div
+            className="flex flex-wrap items-center gap-3 pt-3 border-t border-gray-100 dark:border-white/10"
+          >
+            <span className="text-[11px] font-bold" style={mutedText}>Summary:</span>
+            {["Pending", "Processing", "Shipped", "Delivered", "Cancelled"].map((s) => {
+              const count = orders.filter((o) => o.status === s).length;
+              const amt = orders.filter((o) => o.status === s).reduce((sum, o) => sum + Number(o.total_amount || 0), 0);
+              if (count === 0) return null;
+              return (
+                <span key={s} className="flex items-center gap-1.5 text-[11px] font-semibold">
+                  <span className="w-2 h-2 rounded-full inline-block" style={{ backgroundColor: STATUS_DOT[s] }} />
+                  <span style={mutedText}>{s}:</span>
+                  <span style={titleColor}>{count} orders</span>
+                  <span style={{ color: isAdminDark ? "#6b7280" : "#9ca3af" }}>·</span>
+                  <span style={{ color: "#16a34a", fontWeight: 700 }}>₹{amt.toLocaleString("en-IN")}</span>
+                </span>
+              );
+            })}
+            <span className="ml-auto text-[11px] font-bold" style={titleColor}>
+              Total: ₹{orders.reduce((sum, o) => sum + Number(o.total_amount || 0), 0).toLocaleString("en-IN")}
+            </span>
+          </div>
+        )}
       </div>
 
       <div className="bg-white dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/10 shadow-xs overflow-hidden">
@@ -481,6 +531,23 @@ export default function Orders() {
                 ))
               )}
             </tbody>
+            {/* Table Footer: Total Amount Sum */}
+            {!loading && !error && orders.length > 0 && (
+              <tfoot>
+                <tr
+                  className="border-t-2 border-gray-200 dark:border-white/15"
+                  style={{ backgroundColor: isAdminDark ? "rgba(255,255,255,0.04)" : "#f9fafb" }}
+                >
+                  <td colSpan={5} className="px-4 py-3 text-xs font-bold" style={mutedText}>
+                    {activeTab === "All" ? "All Orders" : activeTab} · {orders.length} order{orders.length !== 1 ? "s" : ""}
+                  </td>
+                  <td className="px-4 py-3 text-sm font-extrabold" style={{ color: "#16a34a" }}>
+                    ₹{orders.reduce((sum, o) => sum + Number(o.total_amount || 0), 0).toLocaleString("en-IN")}
+                  </td>
+                  <td colSpan={2} className="px-4 py-3" />
+                </tr>
+              </tfoot>
+            )}
           </table>
         </div>
       </div>

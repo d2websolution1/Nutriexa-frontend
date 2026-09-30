@@ -239,23 +239,29 @@ export default function Hero() {
                 <div className="w-56 h-56 sm:w-72 sm:h-72 md:w-80 md:h-80 rounded-full bg-emerald-500/20 blur-3xl" />
               </div>
 
-              {/* Product Image */}
-              <motion.div
-                initial={{ scale: 0.88, opacity: 0, rotate: -2 }}
-                animate={{ scale: 1, opacity: 1, rotate: 0 }}
-                transition={{ duration: 0.6, ease: "easeOut" }}
-                className="relative z-10 max-w-[280px] sm:max-w-[340px] md:max-w-[400px] flex items-center justify-center"
-              >
-                <img
-                  src={currentBanner.image || heroProductImage}
-                  alt={currentBanner.title}
-                  className="w-full h-auto max-h-[380px] object-contain drop-shadow-[0_20px_40px_rgba(0,0,0,0.7)]"
-                  onError={(e) => {
-                    // Fallback to default product image if custom image URL fails
-                    e.target.onerror = null;
-                    e.target.src = heroProductImage;
-                  }}
-                />
+                {/* Product Image */}
+                <motion.div
+                  initial={{ scale: 0.88, opacity: 0, rotate: -2 }}
+                  animate={{ scale: 1, opacity: 1, rotate: 0 }}
+                  transition={{ duration: 0.6, ease: "easeOut" }}
+                  className="relative z-10 max-w-[280px] sm:max-w-[340px] md:max-w-[400px] flex items-center justify-center"
+                >
+                  <img
+                    src={
+                      currentBanner.image && currentBanner.image.trim()
+                        ? currentBanner.image.startsWith("http") || currentBanner.image.startsWith("data:")
+                          ? currentBanner.image
+                          : `${API_URL}${currentBanner.image.startsWith("/") ? "" : "/"}${currentBanner.image}`
+                        : heroProductImage
+                    }
+                    alt={currentBanner.title}
+                    className="w-full h-auto max-h-[380px] object-contain drop-shadow-[0_20px_40px_rgba(0,0,0,0.7)]"
+                    onError={(e) => {
+                      // Fallback to default product image if custom image URL fails
+                      e.target.onerror = null;
+                      e.target.src = heroProductImage;
+                    }}
+                  />
 
                 {/* Rotating Authenticity Badge */}
                 <div className="absolute -top-3 -right-2 sm:right-2 bg-black/70 backdrop-blur-md border border-emerald-400/40 text-emerald-400 rounded-full w-20 h-20 sm:w-22 sm:h-22 p-2 flex flex-col items-center justify-center text-center shadow-xl shadow-black/50 rotate-6 pointer-events-none">

@@ -325,9 +325,8 @@ export default function Header() {
   return (
     <>
       <header
-        className={`w-full sticky top-0 z-50 transition-transform duration-300 ${
-          isVisible ? "translate-y-0" : "-translate-y-full"
-        }`}
+        className={`w-full sticky top-0 z-50 transition-transform duration-300 ${isVisible ? "translate-y-0" : "-translate-y-full"
+          }`}
       >
         {/* ===================================================================
             DESKTOP HEADER (IMAGE 3) - Full View
@@ -424,9 +423,8 @@ export default function Header() {
                   <span className="font-medium whitespace-nowrap">Account</span>
                   <FiChevronDown
                     size={14}
-                    className={`text-gray-400 transition-transform ${
-                      desktopAccountOpen ? "rotate-180 text-[#22c55e]" : ""
-                    }`}
+                    className={`text-gray-400 transition-transform ${desktopAccountOpen ? "rotate-180 text-[#22c55e]" : ""
+                      }`}
                   />
                 </button>
 
@@ -605,9 +603,8 @@ export default function Header() {
                 <span className="uppercase tracking-wide font-extrabold text-sm">Shop by Category</span>
                 <FiChevronDown
                   size={14}
-                  className={`text-gray-500 ml-1 transition-transform ${
-                    categoryDropdownOpen ? "rotate-180 text-[#22c55e]" : ""
-                  }`}
+                  className={`text-gray-500 ml-1 transition-transform ${categoryDropdownOpen ? "rotate-180 text-[#22c55e]" : ""
+                    }`}
                 />
               </button>
 
@@ -665,9 +662,8 @@ export default function Header() {
                     >
                       <button
                         onClick={() => setAuthenticatorDropdownOpen((v) => !v)}
-                        className={`relative py-3 transition-colors uppercase tracking-wide text-xs ${
-                          isActive ? "text-[#22c55e] font-extrabold" : "text-[#1a1a1a] hover:text-[#22c55e]"
-                        }`}
+                        className={`relative py-3 transition-colors uppercase tracking-wide text-xs ${isActive ? "text-[#22c55e] font-extrabold" : "text-[#1a1a1a] hover:text-[#22c55e]"
+                          }`}
                       >
                         {link.label}
                       </button>
@@ -701,11 +697,10 @@ export default function Header() {
                   <Link
                     key={link.label}
                     to={link.path}
-                    className={`relative py-3 transition-colors uppercase tracking-wide text-xs ${
-                      isActive
+                    className={`relative py-3 transition-colors uppercase tracking-wide text-xs ${isActive
                         ? "text-[#22c55e] font-extrabold after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-[2.5px] after:bg-[#22c55e]"
                         : "text-[#1a1a1a] hover:text-[#22c55e]"
-                    }`}
+                      }`}
                   >
                     {link.label}
                   </Link>
@@ -945,17 +940,15 @@ export default function Header() {
          =================================================================== */}
       {/* Backdrop */}
       <div
-        className={`fixed inset-0 z-[998] bg-black/70 backdrop-blur-sm transition-opacity duration-300 md:hidden ${
-          drawerOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
-        }`}
+        className={`fixed inset-0 z-[998] bg-black/70 backdrop-blur-sm transition-opacity duration-300 md:hidden ${drawerOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+          }`}
         onClick={() => setDrawerOpen(false)}
       />
 
       {/* Drawer Panel — Slides in from Left */}
       <aside
-        className={`fixed top-0 left-0 h-full w-[85vw] max-w-[340px] bg-[#0b0e14] text-white z-[999] flex flex-col shadow-2xl transition-transform duration-300 ease-in-out md:hidden ${
-          drawerOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
+        className={`fixed top-0 left-0 h-full w-[85vw] max-w-[340px] bg-[#0b0e14] text-white z-[999] flex flex-col shadow-2xl transition-transform duration-300 ease-in-out md:hidden ${drawerOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
       >
         {/* Drawer Header: Logo on left, Close icon on right */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-gray-800/80">
@@ -1047,11 +1040,10 @@ export default function Header() {
           <Link
             to="/"
             onClick={() => setDrawerOpen(false)}
-            className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-colors ${
-              location.pathname === "/"
+            className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-colors ${location.pathname === "/"
                 ? "text-[#22c55e]"
                 : "text-gray-200 hover:text-[#22c55e] hover:bg-white/5"
-            }`}
+              }`}
           >
             <div className="flex items-center gap-3.5">
               <FiHome size={18} className="text-[#22c55e]" />
@@ -1071,9 +1063,8 @@ export default function Header() {
               </div>
               <FiChevronRight
                 size={16}
-                className={`text-gray-500 transition-transform ${
-                  drawerCategoriesOpen ? "rotate-90 text-[#22c55e]" : ""
-                }`}
+                className={`text-gray-500 transition-transform ${drawerCategoriesOpen ? "rotate-90 text-[#22c55e]" : ""
+                  }`}
               />
             </button>
 

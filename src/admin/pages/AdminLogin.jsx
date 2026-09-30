@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { FiMail, FiLock, FiEye, FiEyeOff, FiShield } from "react-icons/fi";
 import { API_URL } from "../../config";
 import { useAuth } from "../../context/AuthContext";
+import nutriexaLogo from "../../assets/nutriexa-logo.png";
 
 export default function AdminLogin() {
   const navigate = useNavigate();
@@ -61,26 +62,15 @@ export default function AdminLogin() {
 
       <div className="relative z-10 w-full max-w-md">
         {/* Logo */}
-        <div className="flex flex-col items-center gap-3 mb-8">
-          <svg width="56" height="56" viewBox="0 0 56 56" className="shrink-0">
-            <circle
-              cx="28" cy="28" r="25.5" fill="none" stroke="#fff"
-              strokeWidth="1.4" strokeDasharray="130 30" strokeLinecap="round"
-              transform="rotate(-20 28 28)"
-            />
-            <text x="28" y="37" textAnchor="middle" fontFamily="Arial" fontWeight="800" fontSize="24">
-              <tspan fill="#8a8a8a">N</tspan>
-              <tspan fill="#4CAF37">X</tspan>
-            </text>
-          </svg>
-          <div className="text-center">
-            <h1 className="text-xl font-extrabold text-white tracking-tight">
-              NUTRI<span className="text-[#4CAF37]">EXA</span>
-            </h1>
-            <p className="text-[10px] tracking-[0.2em] text-gray-400 mt-1">
-              ADMIN PANEL
-            </p>
-          </div>
+        <div className="flex flex-col items-center gap-2 mb-8 select-none">
+          <img
+            src={nutriexaLogo}
+            alt="Nutriexa Logo"
+            className="h-14 sm:h-16 w-auto object-contain drop-shadow-[0_8px_16px_rgba(0,0,0,0.5)]"
+          />
+          <p className="text-[11px] font-bold tracking-[0.22em] text-[#4CAF37] uppercase">
+            ADMIN PANEL
+          </p>
         </div>
 
         {/* Login card */}
