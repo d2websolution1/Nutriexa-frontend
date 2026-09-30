@@ -403,7 +403,7 @@ export default function Checkout() {
           name: "Nutriexa Nutrition",
           description: "Purchase Order Checkout",
           order_id: orderData.order_id,
-          image: "/images/logo.png",
+          image: "/nutriexa-logo.png",
           prefill: {
             name: form.name,
             email: form.email || "",
