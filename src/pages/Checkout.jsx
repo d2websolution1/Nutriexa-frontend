@@ -15,7 +15,7 @@ import {
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 
-import { API_URL as API_BASE } from "../config";
+import { API_URL, API_BASE } from "../config";
 
 
 function RazorpayLogo({ className = "w-5 h-5" }) {
@@ -184,7 +184,7 @@ export default function Checkout() {
   });
 
   useEffect(() => {
-    fetch(`${API_URL}/api/shipping/settings`)
+    fetch(`${API_BASE}/api/shipping/settings`)
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
         if (data) setShippingSettings(data);
