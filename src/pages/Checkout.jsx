@@ -183,6 +183,15 @@ export default function Checkout() {
     defaultStandardRate: 49,
   });
 
+  // Redirect unauthenticated users to login
+  useEffect(() => {
+    if (!user) {
+      sessionStorage.setItem("nutriexa_redirect_after_login", "/checkout");
+      sessionStorage.setItem("nutriexa_login_prompt", "Please log in to proceed with checkout.");
+      navigate("/login", { replace: true });
+    }
+  }, [user, navigate]);
+
   useEffect(() => {
     fetch(`${API_BASE}/api/shipping/settings`)
       .then((res) => (res.ok ? res.json() : null))

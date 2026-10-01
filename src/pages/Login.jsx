@@ -1,17 +1,33 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FiMail, FiLock, FiEye, FiEyeOff, FiArrowRight, FiShield } from "react-icons/fi";
+import { FiMail, FiLock, FiEye, FiEyeOff, FiArrowRight, FiShield, FiInfo } from "react-icons/fi";
 import { useAuth } from "../context/AuthContext";
 
 import { API_URL as API_BASE } from "../config";
 
 export default function Login() {
   const navigate = useNavigate();
-  const { loginUser } = useAuth();
+  const { loginUser, user } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [loginPrompt, setLoginPrompt] = useState("");
+
+  // Read any prompt message set by protected pages
+  useEffect(() => {
+    const prompt = sessionStorage.getItem("nutriexa_login_prompt");
+    if (prompt) {
+      setLoginPrompt(prompt);
+      sessionStorage.removeItem("nutriexa_login_prompt");
+    }
+    // If already logged in, redirect away
+    if (user) {
+      const redirect = sessionStorage.getItem("nutriexa_redirect_after_login") || "/profile";
+      sessionStorage.removeItem("nutriexa_redirect_after_login");
+      navigate(redirect, { replace: true });
+    }
+  }, [user, navigate]);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -61,7 +77,10 @@ export default function Login() {
       }
 
       loginUser(data.user, data.token);
-      navigate("/profile");
+      // Redirect back to the protected page, or profile by default
+      const redirect = sessionStorage.getItem("nutriexa_redirect_after_login") || "/profile";
+      sessionStorage.removeItem("nutriexa_redirect_after_login");
+      navigate(redirect, { replace: true });
     } catch (err) {
       setError("Unable to connect to server. Please ensure backend is running.");
     } finally {
@@ -81,6 +100,13 @@ export default function Login() {
             Login with your registered email address
           </p>
         </div>
+
+        {loginPrompt && (
+          <div className="bg-amber-50 border border-amber-200 text-amber-700 text-xs font-medium rounded-lg px-3.5 py-2.5 mb-4 flex items-start gap-2">
+            <FiInfo size={14} className="shrink-0 mt-0.5" />
+            {loginPrompt}
+          </div>
+        )}
 
         {error && (
           <div className="bg-red-50 border border-red-100 text-red-600 text-xs font-medium rounded-lg px-3.5 py-2.5 mb-4">

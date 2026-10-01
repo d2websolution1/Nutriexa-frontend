@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import { useAuth } from "./AuthContext";
 
 const CartContext = createContext();
 
@@ -16,7 +17,17 @@ export function CartProvider({ children }) {
     localStorage.setItem("nutriexa_cart", JSON.stringify(cartItems));
   }, [cartItems]);
 
+  const { user } = useAuth();
+
   const addToCart = (product, qty = 1) => {
+    // Require login before adding to cart
+    if (!user) {
+      // Store intended destination so we can redirect back after login
+      sessionStorage.setItem("nutriexa_redirect_after_login", window.location.pathname);
+      sessionStorage.setItem("nutriexa_login_prompt", "Please log in to add items to your cart.");
+      window.location.href = "/login";
+      return;
+    }
     setCartItems((prev) => {
       const existing = prev.find((item) => item.id === product.id);
       if (existing) {
