@@ -1,4 +1,5 @@
-import { NavLink, useNavigate } from "react-router-dom";
+import { useRef, useEffect } from "react";
+import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import {
   FiGrid,
   FiShoppingBag,
@@ -25,7 +26,9 @@ import nutriexaLogo from "../../assets/nutriexa-logo.png";
 
 export default function AdminSidebar({ open, onClose }) {
   const navigate = useNavigate();
+  const location = useLocation();
   const { logoutAdmin } = useAuth();
+  const activeLinkRef = useRef(null);
 
   const menuItems = [
     { label: "Dashboard", path: "/admin", icon: <FiGrid size={18} />, end: true },
@@ -46,6 +49,13 @@ export default function AdminSidebar({ open, onClose }) {
     { label: "Settings", path: "/admin/settings", icon: <FiSettings size={18} /> },
     { label: "Audit Logs", path: "/admin/audit-logs", icon: <FiActivity size={18} /> },
   ];
+
+  // Auto-scroll active menu item into view when navigating
+  useEffect(() => {
+    if (activeLinkRef.current) {
+      activeLinkRef.current.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+  }, [location.pathname]);
 
   const handleLogout = () => {
     logoutAdmin();
@@ -68,12 +78,11 @@ export default function AdminSidebar({ open, onClose }) {
         } lg:translate-x-0`}
       >
         {/* Brand Header */}
-         {/* Brand Header */}
-        <div className="px-6 py-5 border-b border-white/5 flex items-center gap-3">
+        <div className="px-6 py-5 border-b border-white/5 flex items-center gap-3 shrink-0">
           <img
             src={nutriexaLogo}
             alt="Nutriexa Logo"
-            className="w-9 h-9 object-contain shrink-0 rounded-lg"
+            className="w-11 h-11 object-contain shrink-0 rounded-lg drop-shadow-sm"
           />
           <div>
             <h1 className="font-extrabold text-base tracking-wider text-white">NUTRIEXA</h1>
@@ -82,39 +91,66 @@ export default function AdminSidebar({ open, onClose }) {
             </p>
           </div>
         </div>
-        {/* Navigation items list */}
-        <nav className="flex-1 px-3 py-3 space-y-0.5 overflow-y-auto scrollbar-thin scrollbar-thumb-white/10">
-          {menuItems.map((item) => (
-            <NavLink
-              key={item.label}
-              to={item.path}
-              end={item.end}
-              onClick={onClose}
-              className={({ isActive }) =>
-                `flex items-center justify-between px-3.5 py-2.5 rounded-lg text-[13.5px] font-medium transition-all group ${
-                  isActive
-                    ? "bg-[#2e7d32] text-white font-semibold shadow-md shadow-green-900/30"
-                    : "text-gray-400 hover:text-white hover:bg-white/[0.06]"
-                }`
-              }
-            >
-              <div className="flex items-center gap-3">
-                <span className="shrink-0 transition-transform group-hover:scale-110">
-                  {item.icon}
-                </span>
-                <span>{item.label}</span>
-              </div>
-              {item.badge && (
-                <span className="bg-[#22c55e] text-[#0c121e] font-bold text-[11px] px-2 py-0.5 rounded-full leading-none shadow-xs">
-                  {item.badge}
-                </span>
-              )}
-            </NavLink>
-          ))}
+
+        {/* Navigation items list with smooth scrolling & clear active indicator */}
+        <nav className="flex-1 px-3 py-3 space-y-1 overflow-y-auto scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
+          {menuItems.map((item) => {
+            const isCurrentlyActive =
+              item.end
+                ? location.pathname === item.path
+                : location.pathname.startsWith(item.path);
+
+            return (
+              <NavLink
+                key={item.label}
+                to={item.path}
+                end={item.end}
+                onClick={onClose}
+                ref={isCurrentlyActive ? activeLinkRef : null}
+                className={({ isActive }) =>
+                  `relative flex items-center justify-between px-3.5 py-2.5 rounded-xl text-[13.5px] font-semibold transition-all duration-200 group ${
+                    isActive
+                      ? "bg-gradient-to-r from-[#2e7d32] to-[#1f5c23] text-white shadow-md shadow-emerald-950/40 ring-1 ring-emerald-500/30 font-bold"
+                      : "text-gray-400 hover:text-white hover:bg-white/[0.08] hover:translate-x-1"
+                  }`
+                }
+              >
+                {/* Active left glowing pill bar */}
+                {isCurrentlyActive && (
+                  <span className="absolute -left-1 top-2 bottom-2 w-1.5 bg-[#4ade80] rounded-r-full shadow-md shadow-emerald-400" />
+                )}
+
+                <div className="flex items-center gap-3">
+                  <span
+                    className={`shrink-0 transition-all duration-200 ${
+                      isCurrentlyActive
+                        ? "text-emerald-300 scale-110"
+                        : "group-hover:scale-110 group-hover:text-emerald-400"
+                    }`}
+                  >
+                    {item.icon}
+                  </span>
+                  <span>{item.label}</span>
+                </div>
+
+                {item.badge && (
+                  <span
+                    className={`font-bold text-[11px] px-2 py-0.5 rounded-full leading-none shadow-xs transition-colors ${
+                      isCurrentlyActive
+                        ? "bg-white text-emerald-900"
+                        : "bg-[#22c55e] text-[#0c121e]"
+                    }`}
+                  >
+                    {item.badge}
+                  </span>
+                )}
+              </NavLink>
+            );
+          })}
         </nav>
 
         {/* Need Help Support Card */}
-        <div className="p-3 border-t border-white/5">
+        <div className="p-3 border-t border-white/5 shrink-0">
           <div className="bg-[#131c2d] border border-white/5 rounded-xl p-3.5 text-left">
             <div className="flex items-center gap-2.5 mb-2">
               <div className="w-8 h-8 rounded-lg bg-[#22c55e]/15 text-[#22c55e] flex items-center justify-center">

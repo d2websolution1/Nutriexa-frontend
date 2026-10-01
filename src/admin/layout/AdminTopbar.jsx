@@ -146,6 +146,20 @@ export default function AdminTopbar({ onMenuClick }) {
     }
   };
 
+  const notifHoverTimeout = useRef(null);
+
+  const handleNotifMouseEnter = () => {
+    if (notifHoverTimeout.current) clearTimeout(notifHoverTimeout.current);
+    setNotifOpen(true);
+    fetchNotifications();
+  };
+
+  const handleNotifMouseLeave = () => {
+    notifHoverTimeout.current = setTimeout(() => {
+      setNotifOpen(false);
+    }, 280);
+  };
+
   return (
     <header className="sticky top-0 z-30 bg-white/95 dark:bg-[#0c121e]/95 backdrop-blur-md border-b border-gray-100 dark:border-white/10 px-4 md:px-8 py-3 flex items-center justify-between gap-4 transition-colors">
       {/* Left Search */}
@@ -198,15 +212,19 @@ export default function AdminTopbar({ onMenuClick }) {
         </button>
 
         {/* Notification Bell Dropdown */}
-        <div className="relative" ref={dropdownRef}>
+        <div
+          className="relative"
+          ref={dropdownRef}
+          onMouseEnter={handleNotifMouseEnter}
+          onMouseLeave={handleNotifMouseLeave}
+        >
           <button
             onClick={() => {
               setNotifOpen((prev) => !prev);
               if (!notifOpen) fetchNotifications();
             }}
             className="relative p-2 text-gray-600 dark:text-gray-300 hover:text-[#2e7d32] dark:hover:text-[#4ade80] hover:bg-gray-100 dark:hover:bg-white/10 rounded-xl transition-colors cursor-pointer"
-            title="Notifications"
-            aria-label="Toggle Notifications"
+            aria-label="Notifications"
           >
             <FiBell size={20} />
             {unreadCount > 0 && (

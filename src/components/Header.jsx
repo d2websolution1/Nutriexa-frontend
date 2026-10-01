@@ -29,6 +29,7 @@ import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
 import { API_URL as API_BASE } from "../config";
 import nutriexaLogo from "../assets/nutriexa-logo.png";
+import AnnouncementBar from "./AnnouncementBar";
 
 const CATEGORY_ITEMS = [
   { slug: "whey-proteins", label: "Whey Proteins" },
@@ -328,6 +329,9 @@ export default function Header() {
         className={`w-full sticky top-0 z-50 transition-transform duration-300 ${isVisible ? "translate-y-0" : "-translate-y-full"
           }`}
       >
+        {/* Top Announcement Bar from CMS */}
+        <AnnouncementBar />
+
         {/* ===================================================================
             DESKTOP HEADER (IMAGE 3) - Full View
             Height: 80px for top dark bar | Sticky on scroll
@@ -340,7 +344,7 @@ export default function Header() {
               <img
                 src={nutriexaLogo}
                 alt="Nutriexa"
-                className="h-10 lg:h-12 w-auto object-contain group-hover:opacity-90 transition-opacity"
+                className="h-12 sm:h-14 lg:h-16 w-auto object-contain group-hover:opacity-90 transition-opacity drop-shadow-sm"
               />
             </Link>
 
@@ -793,7 +797,7 @@ export default function Header() {
                 <img
                   src={nutriexaLogo}
                   alt="Nutriexa"
-                  className="h-8 w-auto object-contain"
+                  className="h-10 sm:h-11 w-auto object-contain"
                 />
               </Link>
 

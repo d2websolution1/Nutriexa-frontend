@@ -57,8 +57,8 @@ export default function Inventory() {
   const mutedText = { color: isAdminDark ? "#9ca3af" : "#6b7280" };
   const titleColor = { color: isAdminDark ? "#ffffff" : "#1a1a1a" };
 
-  const fetchInventory = async () => {
-    setLoading(true);
+  const fetchInventory = async (silent = false) => {
+    if (!silent) setLoading(true);
     try {
       const res = await fetch(`${BASE_URL}/api/products`);
       if (res.ok) {
@@ -73,12 +73,17 @@ export default function Inventory() {
     } catch (err) {
       console.error(err);
     } finally {
-      setLoading(false);
+      if (!silent) setLoading(false);
     }
   };
 
   useEffect(() => {
     fetchInventory();
+    // Real-time live inventory refresh every 8 seconds
+    const interval = setInterval(() => {
+      fetchInventory(true);
+    }, 8000);
+    return () => clearInterval(interval);
   }, []);
 
   // Sync status changes directly with Products API
@@ -196,9 +201,15 @@ export default function Inventory() {
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-2xl font-extrabold text-[#1a1a1a]">Inventory &amp; Stock Management</h1>
+          <div className="flex items-center gap-2.5">
+            <h1 className="text-2xl font-extrabold text-[#1a1a1a]">Inventory &amp; Stock Management</h1>
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              Live Sync
+            </span>
+          </div>
           <p className="text-sm text-gray-500 mt-0.5">
-            Monitor real-time warehouse inventory, status synchronization with Products page, and quick stock updates.
+            Real-time warehouse stock automatically syncs on every customer order and purchase.
           </p>
         </div>
         <button

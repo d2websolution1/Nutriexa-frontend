@@ -5,22 +5,22 @@ import ShopByCategory from "../components/ShopByCategory";
 import FeatureBanner from "../components/FeatureBanner";
 import AboutSection from "../components/AboutSection";
 import DealsOfWeek from "../components/DealsOfWeek";
+import FeaturedSection from "../components/FeaturedSection";
 import Testimonials from "../components/Testimonials";
 import NewsletterCTA from "../components/NewsletterCTA";
-
 
 export default function Home() {
   return (
     <main>
-      {/* <HeroBanner/> */}
-      <Hero/>
+      <Hero />
       <TrustStrip />
       <ShopByCategory />
-     <DealsOfWeek/>
+      <FeaturedSection />
+      <DealsOfWeek />
       <FeatureBanner />
       <AboutSection />
-      <Testimonials/>
-      <NewsletterCTA/>
+      <Testimonials />
+      <NewsletterCTA />
     </main>
   );
 }

@@ -97,8 +97,18 @@ export default function Hero() {
     return () => clearInterval(timerRef.current);
   }, [activeBanners.length, isPaused, currentIndex]);
 
-  const currentBanner = activeBanners[currentIndex] || activeBanners[0];
-  const bgClasses = GRADIENT_MAP[currentBanner.bgGradient] || "from-slate-900 via-gray-900 to-neutral-900";
+  const currentBanner = activeBanners[currentIndex] || DEFAULT_BANNER;
+
+  const isCustomBg =
+    currentBanner?.bgGradient &&
+    (currentBanner.bgGradient.startsWith("linear-gradient") ||
+      currentBanner.bgGradient.startsWith("radial-gradient") ||
+      currentBanner.bgGradient.startsWith("#") ||
+      currentBanner.bgGradient.startsWith("rgb"));
+
+  const bgClasses = !isCustomBg
+    ? GRADIENT_MAP[currentBanner.bgGradient] || "from-slate-900 via-gray-900 to-neutral-900"
+    : "";
   const accent = ACCENT_COLOR_MAP[currentBanner.bgGradient] || {
     bg: "bg-[#4CAF37]",
     text: "text-[#4CAF37]",
@@ -128,7 +138,10 @@ export default function Hero() {
     >
       {/* Background dynamic gradient mesh */}
       <div
-        className={`absolute inset-0 bg-gradient-to-br ${bgClasses} opacity-95 transition-all duration-1000`}
+        className={`absolute inset-0 opacity-95 transition-all duration-1000 ${
+          !isCustomBg ? `bg-gradient-to-br ${bgClasses}` : ""
+        }`}
+        style={isCustomBg ? { background: currentBanner.bgGradient } : undefined}
       />
 
       {/* Decorative ambient glowing orbs */}

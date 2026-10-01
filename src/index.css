@@ -159,9 +159,21 @@ html.dark .border-gray-300 {
 }
 
 /* Semi-transparent white containers in Dark Mode (e.g. bg-white/95, bg-white/90) */
-html.dark [class*="bg-white/"]:not([class*="bg-white/5"]):not([class*="bg-white/10"]):not([class*="bg-white/[0."]) {
+html.dark [class*="bg-white/"]:not([class*="bg-white/5"]):not([class*="bg-white/10"]):not([class*="bg-white/[0."]):not([class*="bg-white/20"]) {
   background-color: #111722 !important;
   color: #ffffff !important;
+}
+
+/* Inline white and light backgrounds in Dark Mode (prevents white-on-white text) */
+html.dark [style*="background: #fff"]:not([style*="linear-gradient"]),
+html.dark [style*="background:#fff"]:not([style*="linear-gradient"]),
+html.dark [style*="background: rgb(255, 255, 255)"],
+html.dark [style*="background-color: #fff"],
+html.dark [style*="background-color:#fff"],
+html.dark [style*="background: #f8fafc"],
+html.dark [style*="background: #f1f5f9"] {
+  background-color: #111722 !important;
+  border-color: #1f2a3c !important;
 }
 
 /* Forms, Inputs & Selects in Dark Mode (Search inputs with transparent styling excluded) */
