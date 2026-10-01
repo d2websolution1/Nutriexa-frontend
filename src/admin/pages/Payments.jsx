@@ -12,6 +12,10 @@ import {
   FiTrendingUp,
   FiTrendingDown,
   FiCheck,
+  FiEdit2,
+  FiTrash2,
+  FiX,
+  FiSave,
 } from "react-icons/fi";
 import { API_URL as API_BASE } from "../../config";
 
@@ -125,60 +129,231 @@ export default function Payments() {
   const [methodFilter, setMethodFilter] = useState("All");
   const [loading, setLoading] = useState(false);
 
+  // Edit modal & toast feedback states
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [editingTxn, setEditingTxn] = useState(null);
+  const [savingEdit, setSavingEdit] = useState(false);
+  const [toast, setToast] = useState(null);
+
+  const showToast = (message, type = "success") => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 3000);
+  };
+
   // Fetch real orders from database if available to enrich payments
-  useEffect(() => {
-    async function loadOrders() {
-      try {
-        setLoading(true);
-        const token = localStorage.getItem("adminToken");
-        const res = await fetch(`${API_BASE}/api/orders`, {
-          headers: token ? { Authorization: `Bearer ${token}` } : {},
-        });
-        if (res.ok) {
-          const orders = await res.json();
-          if (Array.isArray(orders) && orders.length > 0) {
-            const mappedOrders = orders.map((o) => {
-              const method = o.payment_method?.toLowerCase() === "cod" ? "COD" : "Razorpay";
-              let status = "Success";
-              if (o.status === "Cancelled") status = "Refunded";
-              else if (o.status === "Payment Failed") status = "Failed";
-              else if (o.status === "Pending" && method === "COD") status = "Pending";
-              else if (o.status === "Delivered" && method === "COD") status = "Collected";
+  const loadOrders = async () => {
+    try {
+      setLoading(true);
+      const token = localStorage.getItem("adminToken");
+      const res = await fetch(`${API_BASE}/api/orders`, {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      });
+      if (res.ok) {
+        const orders = await res.json();
+        if (Array.isArray(orders) && orders.length > 0) {
+          const mappedOrders = orders.map((o) => {
+            const method = o.payment_method?.toLowerCase() === "cod" ? "COD" : "Razorpay";
+            let status = "Success";
+            if (o.status === "Cancelled") status = "Refunded";
+            else if (o.status === "Payment Failed") status = "Failed";
+            else if (o.status === "Pending" && method === "COD") status = "Pending";
+            else if (o.status === "Delivered" && method === "COD") status = "Collected";
 
-              return {
-                id: `TXN-${o.id || o.order_number}`,
-                orderId: o.order_number || `#ORD-${o.id}`,
-                customer: o.customer_name || "Customer",
-                amount: Number(o.total_amount || 0),
-                method: method,
-                status: status,
-                type: status === "Refunded" ? "Refund" : "Payment",
-                date: o.created_at || new Date().toISOString(),
-                razorpayId: o.razorpay_payment_id || null,
-              };
-            });
+            return {
+              dbId: o.id, // Store underlying DB order ID
+              id: `TXN-${o.id}`,
+              orderId: o.order_number || `#ORD-${o.id}`,
+              customer: o.customer_name || "Customer",
+              amount: Number(o.total_amount || 0),
+              method: method,
+              status: status,
+              type: status === "Refunded" ? "Refund" : "Payment",
+              date: o.created_at || new Date().toISOString(),
+              razorpayId: o.razorpay_payment_id || null,
+            };
+          });
 
-            // Combine with unique mock transactions
-            setTransactions((prev) => {
-              const combined = [...mappedOrders];
-              for (const m of MOCK_TRANSACTIONS) {
-                if (!combined.some((c) => c.orderId === m.orderId)) {
-                  combined.push(m);
-                }
+          // Combine with unique mock transactions
+          setTransactions((prev) => {
+            const combined = [...mappedOrders];
+            for (const m of MOCK_TRANSACTIONS) {
+              if (!combined.some((c) => c.orderId === m.orderId)) {
+                combined.push(m);
               }
-              return combined;
-            });
-          }
+            }
+            return combined;
+          });
         }
-      } catch (err) {
-        console.warn("Could not load backend orders for payments:", err);
-      } finally {
-        setLoading(false);
       }
+    } catch (err) {
+      console.warn("Could not load backend orders for payments:", err);
+    } finally {
+      setLoading(false);
     }
+  };
 
+  useEffect(() => {
     loadOrders();
   }, []);
+
+  // DIRECT STATUS CHANGE HANDLER
+  const handleStatusChange = async (txn, newStatus) => {
+    const prevStatus = txn.status;
+    if (prevStatus === newStatus) return;
+
+    // Optimistically update local state
+    setTransactions((prev) =>
+      prev.map((t) =>
+        t.id === txn.id
+          ? {
+              ...t,
+              status: newStatus,
+              type: newStatus === "Refunded" ? "Refund" : "Payment",
+            }
+          : t
+      )
+    );
+
+    // If backed by real DB order, update in database
+    if (txn.dbId) {
+      try {
+        const token = localStorage.getItem("adminToken");
+        let orderStatus = "Processing";
+        if (newStatus === "Refunded") orderStatus = "Cancelled";
+        else if (newStatus === "Collected" || newStatus === "Success") orderStatus = "Delivered";
+        else if (newStatus === "Pending") orderStatus = "Pending";
+        else if (newStatus === "Failed") orderStatus = "Cancelled";
+
+        const res = await fetch(`${API_BASE}/api/orders/${txn.dbId}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            status: orderStatus,
+            payment_status: newStatus === "Success" || newStatus === "Collected" ? "Paid" : newStatus,
+          }),
+        });
+
+        if (res.ok) {
+          showToast(`Status updated to "${newStatus}"!`);
+        } else {
+          showToast("Failed to update status on server.", "error");
+        }
+      } catch (err) {
+        console.error("Status update error:", err);
+        showToast("Error updating status.", "error");
+      }
+    } else {
+      showToast(`Status updated to "${newStatus}"!`);
+    }
+  };
+
+  // OPEN EDIT MODAL
+  const handleOpenEdit = (txn) => {
+    setEditingTxn({
+      ...txn,
+      customer: txn.customer,
+      amount: txn.amount,
+      method: txn.method,
+      status: txn.status,
+    });
+    setEditModalOpen(true);
+  };
+
+  // SAVE EDITED TRANSACTION
+  const handleSaveEdit = async () => {
+    if (!editingTxn) return;
+    setSavingEdit(true);
+
+    try {
+      // If backed by DB order, save to API
+      if (editingTxn.dbId) {
+        const token = localStorage.getItem("adminToken");
+        let orderStatus = "Processing";
+        if (editingTxn.status === "Refunded") orderStatus = "Cancelled";
+        else if (editingTxn.status === "Collected" || editingTxn.status === "Success") orderStatus = "Delivered";
+        else if (editingTxn.status === "Pending") orderStatus = "Pending";
+
+        await fetch(`${API_BASE}/api/orders/${editingTxn.dbId}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            customer_name: editingTxn.customer,
+            total_amount: Number(editingTxn.amount),
+            payment_method: editingTxn.method,
+            status: orderStatus,
+            payment_status: editingTxn.status === "Success" || editingTxn.status === "Collected" ? "Paid" : editingTxn.status,
+          }),
+        });
+      }
+
+      // Update local state
+      setTransactions((prev) =>
+        prev.map((t) =>
+          t.id === editingTxn.id
+            ? {
+                ...t,
+                customer: editingTxn.customer,
+                amount: Number(editingTxn.amount),
+                method: editingTxn.method,
+                status: editingTxn.status,
+                type: editingTxn.status === "Refunded" ? "Refund" : "Payment",
+              }
+            : t
+        )
+      );
+
+      setEditModalOpen(false);
+      setEditingTxn(null);
+      showToast("Payment details updated successfully!");
+    } catch (err) {
+      console.error("Save edit error:", err);
+      showToast("Failed to save payment changes.", "error");
+    } finally {
+      setSavingEdit(false);
+    }
+  };
+
+  // DELETE TRANSACTION
+  const handleDelete = async (txn) => {
+    const ok = window.confirm(
+      `Are you sure you want to delete transaction ${txn.id} (${txn.orderId}) for ₹${txn.amount}?`
+    );
+    if (!ok) return;
+
+    // Optimistically remove from state
+    setTransactions((prev) => prev.filter((t) => t.id !== txn.id));
+
+    // If backed by real DB order, delete from backend
+    if (txn.dbId) {
+      try {
+        const token = localStorage.getItem("adminToken");
+        const res = await fetch(`${API_BASE}/api/orders/${txn.dbId}`, {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (res.ok) {
+          showToast(`Transaction ${txn.id} deleted successfully!`);
+        } else {
+          showToast("Failed to delete order from server.", "error");
+          loadOrders(); // restore
+        }
+      } catch (err) {
+        console.error("Delete order error:", err);
+        showToast("Error deleting order.", "error");
+        loadOrders();
+      }
+    } else {
+      showToast(`Transaction ${txn.id} removed!`);
+    }
+  };
 
   const filtered = transactions.filter((t) => {
     const q = search.toLowerCase();
@@ -266,7 +441,21 @@ export default function Payments() {
   };
 
   return (
-    <div className="space-y-6 pb-12">
+    <div className="space-y-6 pb-12 relative">
+      {/* Toast Feedback */}
+      {toast && (
+        <div
+          className={`fixed top-4 right-4 z-50 px-4 py-2.5 rounded-xl text-xs font-bold shadow-xl border flex items-center gap-2 animate-in fade-in slide-in-from-top-3 ${
+            toast.type === "error"
+              ? "bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-950 dark:text-rose-300 dark:border-rose-800"
+              : "bg-emerald-50 text-emerald-800 border-emerald-200 dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-800"
+          }`}
+        >
+          {toast.type === "error" ? <FiXCircle size={15} /> : <FiCheckCircle size={15} />}
+          <span>{toast.message}</span>
+        </div>
+      )}
+
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
@@ -279,7 +468,7 @@ export default function Payments() {
             )}
           </h1>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
-            Transaction logs, refunds, and real-time revenue subtotals by category.
+            Manage transactions, edit amounts, update payment status in real-time, and delete records.
           </p>
         </div>
 
@@ -476,15 +665,23 @@ export default function Payments() {
         >
           <FiDownload size={14} /> Export CSV
         </button>
+
+        <button
+          onClick={loadOrders}
+          className="p-2 border border-gray-200/80 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-600 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+          title="Refresh Payments"
+        >
+          <FiRefreshCw size={14} className={loading ? "animate-spin" : ""} />
+        </button>
       </div>
 
-      {/* Transactions Table */}
+      {/* Transactions Table with Edit, Delete & Status Change */}
       <div className="bg-white dark:bg-[#111722] rounded-xl border border-gray-100 dark:border-white/10 shadow-xs overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
             <thead>
               <tr className="text-gray-500 dark:text-gray-400 border-b border-gray-100 dark:border-white/10 bg-gray-50/70 dark:bg-white/5">
-                {["Transaction ID", "Order", "Customer", "Amount", "Method", "Status", "Type", "Date"].map((h) => (
+                {["Transaction ID", "Order", "Customer", "Amount", "Method", "Status", "Type", "Date", "Actions"].map((h) => (
                   <th key={h} className="px-4 py-3 font-bold uppercase tracking-wider text-[10.5px]">
                     {h}
                   </th>
@@ -497,27 +694,36 @@ export default function Payments() {
                 return (
                   <tr
                     key={t.id}
-                    className="hover:bg-gray-50/80 dark:hover:bg-white/5 transition-colors"
+                    className="hover:bg-gray-50/80 dark:hover:bg-white/5 transition-colors group"
                   >
+                    {/* Transaction ID */}
                     <td className="px-4 py-3.5">
                       <div className="font-bold text-gray-900 dark:text-white text-xs">
                         {t.id}
                       </div>
                       {t.razorpayId && (
-                        <div className="text-[10px] text-gray-400 font-mono mt-0.5">
+                        <div className="text-[10px] text-gray-400 font-mono mt-0.5 truncate max-w-[140px]" title={t.razorpayId}>
                           {t.razorpayId}
                         </div>
                       )}
                     </td>
+
+                    {/* Order ID */}
                     <td className="px-4 py-3.5 text-emerald-600 dark:text-emerald-400 font-bold">
                       {t.orderId}
                     </td>
+
+                    {/* Customer */}
                     <td className="px-4 py-3.5 text-gray-700 dark:text-gray-300 font-medium">
                       {t.customer}
                     </td>
+
+                    {/* Amount */}
                     <td className="px-4 py-3.5 font-black text-gray-900 dark:text-white">
                       ₹{t.amount.toLocaleString("en-IN")}
                     </td>
+
+                    {/* Method */}
                     <td className="px-4 py-3.5">
                       <span
                         className={`px-2.5 py-1 rounded-full text-[10.5px] font-bold ${
@@ -529,13 +735,36 @@ export default function Payments() {
                         {t.method}
                       </span>
                     </td>
+
+                    {/* Status with Direct Interactive Change Dropdown */}
                     <td className="px-4 py-3.5">
-                      <span
-                        className={`inline-block px-2.5 py-0.5 rounded-full text-[11px] font-bold border ${style.bg} ${style.text} ${style.border}`}
-                      >
-                        {t.status}
-                      </span>
+                      <div className="relative inline-block">
+                        <select
+                          value={t.status}
+                          onChange={(e) => handleStatusChange(t, e.target.value)}
+                          className={`text-[11px] font-bold px-2.5 py-1 rounded-full border cursor-pointer outline-none transition-all ${style.bg} ${style.text} ${style.border} hover:opacity-85`}
+                          title="Click to change payment status"
+                        >
+                          <option value="Success" className="bg-white dark:bg-[#111722] text-emerald-700 dark:text-emerald-300">
+                            Success
+                          </option>
+                          <option value="Collected" className="bg-white dark:bg-[#111722] text-teal-700 dark:text-teal-300">
+                            Collected
+                          </option>
+                          <option value="Pending" className="bg-white dark:bg-[#111722] text-amber-700 dark:text-amber-300">
+                            Pending
+                          </option>
+                          <option value="Refunded" className="bg-white dark:bg-[#111722] text-indigo-700 dark:text-indigo-300">
+                            Refunded
+                          </option>
+                          <option value="Failed" className="bg-white dark:bg-[#111722] text-rose-700 dark:text-rose-300">
+                            Failed
+                          </option>
+                        </select>
+                      </div>
                     </td>
+
+                    {/* Type */}
                     <td
                       className={`px-4 py-3.5 font-semibold text-xs ${
                         t.type === "Refund"
@@ -545,8 +774,31 @@ export default function Payments() {
                     >
                       {t.type}
                     </td>
-                    <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">
+
+                    {/* Date */}
+                    <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs whitespace-nowrap">
                       {formatDate(t.date)}
+                    </td>
+
+                    {/* Actions: Edit & Delete */}
+                    <td className="px-4 py-3.5 text-right whitespace-nowrap">
+                      <div className="flex items-center gap-1.5">
+                        <button
+                          onClick={() => handleOpenEdit(t)}
+                          className="p-1.5 rounded-lg text-gray-500 dark:text-gray-400 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 transition-colors cursor-pointer"
+                          title="Edit Payment Record"
+                        >
+                          <FiEdit2 size={14} />
+                        </button>
+
+                        <button
+                          onClick={() => handleDelete(t)}
+                          className="p-1.5 rounded-lg text-gray-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors cursor-pointer"
+                          title="Delete Payment Record"
+                        >
+                          <FiTrash2 size={14} />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 );
@@ -582,6 +834,142 @@ export default function Payments() {
           )}
         </div>
       </div>
+
+      {/* EDIT PAYMENT MODAL */}
+      {editModalOpen && editingTxn && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-[#111722] rounded-2xl w-full max-w-md shadow-2xl border border-gray-100 dark:border-white/10 overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+            {/* Modal Header */}
+            <div className="px-6 py-4 border-b border-gray-100 dark:border-white/10 flex items-center justify-between">
+              <div>
+                <h3 className="text-base font-extrabold text-gray-900 dark:text-white flex items-center gap-2">
+                  <span>Edit Payment Record</span>
+                  <span className="text-xs px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 font-bold">
+                    {editingTxn.id}
+                  </span>
+                </h3>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                  Order Reference: {editingTxn.orderId}
+                </p>
+              </div>
+              <button
+                onClick={() => {
+                  setEditModalOpen(false);
+                  setEditingTxn(null);
+                }}
+                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 cursor-pointer p-1"
+              >
+                <FiX size={18} />
+              </button>
+            </div>
+
+            {/* Modal Form */}
+            <div className="p-6 space-y-4 text-xs">
+              <div>
+                <label className="block font-bold text-gray-700 dark:text-gray-300 mb-1">
+                  Customer Name
+                </label>
+                <input
+                  type="text"
+                  value={editingTxn.customer || ""}
+                  onChange={(e) =>
+                    setEditingTxn((p) => ({ ...p, customer: e.target.value }))
+                  }
+                  className="w-full px-3.5 py-2 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-800 dark:text-white outline-none focus:border-emerald-500"
+                />
+              </div>
+
+              <div>
+                <label className="block font-bold text-gray-700 dark:text-gray-300 mb-1">
+                  Payment Amount (₹ INR)
+                </label>
+                <input
+                  type="number"
+                  min="0"
+                  step="1"
+                  value={editingTxn.amount || ""}
+                  onChange={(e) =>
+                    setEditingTxn((p) => ({ ...p, amount: Number(e.target.value) }))
+                  }
+                  className="w-full px-3.5 py-2 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-800 dark:text-white outline-none focus:border-emerald-500 font-bold"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-bold text-gray-700 dark:text-gray-300 mb-1">
+                    Payment Method
+                  </label>
+                  <select
+                    value={editingTxn.method || "Razorpay"}
+                    onChange={(e) =>
+                      setEditingTxn((p) => ({ ...p, method: e.target.value }))
+                    }
+                    className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-800 dark:text-white outline-none cursor-pointer focus:border-emerald-500"
+                  >
+                    <option value="Razorpay">Razorpay</option>
+                    <option value="COD">COD</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block font-bold text-gray-700 dark:text-gray-300 mb-1">
+                    Payment Status
+                  </label>
+                  <select
+                    value={editingTxn.status || "Success"}
+                    onChange={(e) =>
+                      setEditingTxn((p) => ({ ...p, status: e.target.value }))
+                    }
+                    className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-800 dark:text-white outline-none cursor-pointer focus:border-emerald-500 font-bold"
+                  >
+                    <option value="Success">Success</option>
+                    <option value="Collected">Collected</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Refunded">Refunded</option>
+                    <option value="Failed">Failed</option>
+                  </select>
+                </div>
+              </div>
+
+              {editingTxn.razorpayId && (
+                <div className="p-3 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/10">
+                  <span className="text-[10px] text-gray-400 font-semibold block uppercase tracking-wider">
+                    Razorpay Payment ID
+                  </span>
+                  <span className="font-mono text-xs text-gray-700 dark:text-gray-300">
+                    {editingTxn.razorpayId}
+                  </span>
+                </div>
+              )}
+            </div>
+
+            {/* Modal Actions */}
+            <div className="px-6 py-3.5 border-t border-gray-100 dark:border-white/10 flex items-center justify-end gap-2.5 bg-gray-50/50 dark:bg-white/[0.02]">
+              <button
+                type="button"
+                onClick={() => {
+                  setEditModalOpen(false);
+                  setEditingTxn(null);
+                }}
+                className="px-4 py-2 text-xs font-bold text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg cursor-pointer"
+              >
+                Cancel
+              </button>
+
+              <button
+                type="button"
+                onClick={handleSaveEdit}
+                disabled={savingEdit}
+                className="px-5 py-2 bg-[#4CAF37] hover:bg-[#3e8e2e] text-white rounded-lg text-xs font-bold shadow-xs hover:shadow cursor-pointer transition-all flex items-center gap-1.5"
+              >
+                <FiSave size={14} />
+                {savingEdit ? "Saving..." : "Save Changes"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
