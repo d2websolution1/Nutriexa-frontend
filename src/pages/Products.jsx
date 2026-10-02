@@ -105,13 +105,9 @@ export default function Products() {
 
   useEffect(() => {
     const cat = searchParams.get("category");
-    if (cat) {
-      setSelectedCategories([cat]);
-    }
+    setSelectedCategories(cat ? [cat] : []);
     const g = searchParams.get("goal");
-    if (g) {
-      setSelectedGoals([g]);
-    }
+    setSelectedGoals(g ? [g] : []);
   }, [searchParams]);
 
   useEffect(() => {
@@ -160,21 +156,42 @@ export default function Products() {
     [allProducts]
   );
 
-  const toggleCategory = (slug) =>
-    setSelectedCategories((prev) =>
-      prev.includes(slug) ? prev.filter((c) => c !== slug) : [...prev, slug]
-    );
+  const toggleCategory = (slug) => {
+    const next = new URLSearchParams(searchParams);
+    const updated = selectedCategories.includes(slug)
+      ? selectedCategories.filter((c) => c !== slug)
+      : [...selectedCategories, slug];
+    if (updated.length === 1) {
+      next.set("category", updated[0]);
+    } else {
+      next.delete("category");
+    }
+    setSearchParams(next, { replace: true });
+  };
 
-  const toggleGoal = (goal) =>
-    setSelectedGoals((prev) =>
-      prev.includes(goal) ? prev.filter((g) => g !== goal) : [...prev, goal]
-    );
+  const toggleGoal = (goal) => {
+    const next = new URLSearchParams(searchParams);
+    const updated = selectedGoals.includes(goal)
+      ? selectedGoals.filter((g) => g !== goal)
+      : [...selectedGoals, goal];
+    if (updated.length === 1) {
+      next.set("goal", updated[0]);
+    } else {
+      next.delete("goal");
+    }
+    setSearchParams(next, { replace: true });
+  };
 
   const clearAll = () => {
     setSelectedCategories([]);
     setSelectedGoals([]);
     setSelectedDiscount(null);
     setPriceRange({ min: 0, max: 10000 });
+    // Also clear category/goal from URL so refresh doesn't re-apply them
+    const next = new URLSearchParams(searchParams);
+    next.delete("category");
+    next.delete("goal");
+    setSearchParams(next, { replace: true });
   };
 
   const handleSortChange = (e) => {
