@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback, useRef } from "react";
-import { FiEye, FiSearch, FiX, FiCalendar, FiDownload, FiRotateCcw } from "react-icons/fi";
+import { FiEye, FiSearch, FiX, FiCalendar, FiDownload, FiRotateCcw, FiTrash2 } from "react-icons/fi";
 import { API_URL as API_BASE } from "../../config";
 import { useAuth } from "../../context/AuthContext";
 import { useTheme } from "../../context/ThemeContext";
@@ -221,6 +221,42 @@ export default function Orders() {
       alert(err.message);
     } finally {
       setUpdatingId(null);
+    }
+  };
+
+  const deleteOrder = async (id, orderNumber) => {
+    if (!window.confirm(`Are you sure you want to delete order ${orderNumber}? This action cannot be undone.`)) return;
+    try {
+      const res = await fetch(`${API_BASE}/api/orders/${id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${getToken()}` },
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.message || "Failed to delete order.");
+      }
+      setOrders((prev) => prev.filter((o) => o.id !== id));
+      if (selectedOrder?.id === id) setSelectedOrder(null);
+    } catch (err) {
+      alert(err.message);
+    }
+  };
+
+  const updateEstimatedDelivery = async (id, date) => {
+    try {
+      const res = await fetch(`${API_BASE}/api/orders/${id}/status`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${getToken()}`,
+        },
+        body: JSON.stringify({ status: orders.find((o) => o.id === id)?.status || selectedOrder?.status, estimated_delivery: date }),
+      });
+      if (!res.ok) throw new Error("Failed to update delivery date.");
+      setOrders((prev) => prev.map((o) => o.id === id ? { ...o, estimated_delivery: date } : o));
+      if (selectedOrder?.id === id) setSelectedOrder((prev) => ({ ...prev, estimated_delivery: date }));
+    } catch (err) {
+      alert(err.message);
     }
   };
 
@@ -519,13 +555,22 @@ export default function Orders() {
                       </select>
                     </td>
                     <td className="px-4 py-3 text-right whitespace-nowrap">
-                      <button
-                        onClick={() => viewOrder(order.id)}
-                        className="p-1.5 rounded-lg text-gray-500 hover:text-[#22c55e] hover:bg-[#22c55e]/10 transition-colors cursor-pointer"
-                        title="View Details"
-                      >
-                        <FiEye size={16} />
-                      </button>
+                      <div className="flex items-center justify-end gap-1">
+                        <button
+                          onClick={() => viewOrder(order.id)}
+                          className="p-1.5 rounded-lg text-gray-500 hover:text-[#22c55e] hover:bg-[#22c55e]/10 transition-colors cursor-pointer"
+                          title="View Details"
+                        >
+                          <FiEye size={16} />
+                        </button>
+                        <button
+                          onClick={() => deleteOrder(order.id, order.order_number)}
+                          className="p-1.5 rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors cursor-pointer"
+                          title="Delete Order"
+                        >
+                          <FiTrash2 size={15} />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))
@@ -596,6 +641,23 @@ export default function Orders() {
                     <p className="text-gray-400 text-[10.5px]">Payment Method</p>
                     <p className="font-semibold text-gray-800 dark:text-gray-200">{selectedOrder.payment_method || "Online"}</p>
                   </div>
+                </div>
+
+                {/* Estimated Delivery Date — admin can set / update */}
+                <div className="py-3 border-b border-gray-100 dark:border-white/10">
+                  <div className="flex items-center justify-between mb-1">
+                    <p className="text-[10.5px] text-gray-400 font-semibold uppercase tracking-wide flex items-center gap-1">
+                      <FiCalendar size={11} className="text-[#22c55e]" /> Estimated Delivery Date
+                    </p>
+                  </div>
+                  <input
+                    type="date"
+                    defaultValue={selectedOrder.estimated_delivery ? selectedOrder.estimated_delivery.split("T")[0] : ""}
+                    onChange={(e) => updateEstimatedDelivery(selectedOrder.id, e.target.value)}
+                    className="w-full border border-gray-200 dark:border-white/10 rounded-lg px-3 py-2 text-xs outline-none focus:border-[#22c55e] bg-white dark:bg-white/5 text-gray-800 dark:text-gray-200 cursor-pointer"
+                    title="Set estimated delivery date visible to the customer"
+                  />
+                  <p className="text-[10px] text-gray-400 mt-1">This date will be shown to the customer on the Track Order page.</p>
                 </div>
 
                 <div className="my-4 max-h-56 overflow-y-auto space-y-2.5 pr-1">

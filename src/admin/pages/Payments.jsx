@@ -153,11 +153,23 @@ export default function Payments() {
         if (Array.isArray(orders) && orders.length > 0) {
           const mappedOrders = orders.map((o) => {
             const method = o.payment_method?.toLowerCase() === "cod" ? "COD" : "Razorpay";
-            let status = "Success";
-            if (o.status === "Cancelled") status = "Refunded";
-            else if (o.status === "Payment Failed") status = "Failed";
-            else if (o.status === "Pending" && method === "COD") status = "Pending";
-            else if (o.status === "Delivered" && method === "COD") status = "Collected";
+            let status;
+            if (o.status === "Cancelled") {
+              status = "Refunded";
+            } else if (o.status === "Payment Failed") {
+              status = "Failed";
+            } else if (method === "COD") {
+              // For COD: use actual payment_status from DB
+              if (o.payment_status === "Paid" || o.status === "Delivered") {
+                status = "Collected";
+              } else {
+                // Pending until cash is actually collected
+                status = "Pending";
+              }
+            } else {
+              // Razorpay / Prepaid
+              status = o.payment_status === "Paid" ? "Success" : "Pending";
+            }
 
             return {
               dbId: o.id, // Store underlying DB order ID

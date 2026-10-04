@@ -174,6 +174,7 @@ export default function Checkout() {
 
   const [placing, setPlacing] = useState(false);
   const [error, setError] = useState(null);
+  const [orderPlaced, setOrderPlaced] = useState(null); // { orderNumber, trackingId }
 
   // Razorpay Demo Modal for dummy mode testing
   const [showDemoModal, setShowDemoModal] = useState(false);
@@ -497,7 +498,10 @@ export default function Checkout() {
 
       clearCart();
       const trackingNumber = data.order?.order_number || data.order?.id;
-      navigate(`/track-order?order=${encodeURIComponent(String(trackingNumber).replace("#", ""))}`);
+      setOrderPlaced({ orderNumber: data.order?.order_number, trackingId: String(trackingNumber).replace("#", "") });
+      setTimeout(() => {
+        navigate(`/track-order?order=${encodeURIComponent(String(trackingNumber).replace("#", ""))}`);
+      }, 3000);
     } catch (err) {
       setError(err.message || "Failed to verify and save order.");
     } finally {
@@ -546,13 +550,56 @@ export default function Checkout() {
 
       clearCart();
       const trackingNumber = data.order_number || data.id;
-      navigate(`/track-order?order=${encodeURIComponent(String(trackingNumber).replace("#", ""))}`);
+      setOrderPlaced({ orderNumber: data.order_number, trackingId: String(trackingNumber).replace("#", "") });
+      setTimeout(() => {
+        navigate(`/track-order?order=${encodeURIComponent(String(trackingNumber).replace("#", ""))}`);
+      }, 3000);
     } catch (err) {
       setError(err.message || "Failed to place order.");
     } finally {
       setPlacing(false);
     }
   };
+
+  // --- Order Placed Success Screen ---
+  if (orderPlaced) {
+    return (
+      <main className="max-w-lg mx-auto px-4 py-24 text-center">
+        <div className="bg-white rounded-3xl shadow-xl border border-gray-100 p-10">
+          {/* Animated checkmark */}
+          <div
+            className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6"
+            style={{ background: "linear-gradient(135deg, #4CAF37, #22c55e)" }}
+          >
+            <FiCheckCircle size={40} color="#fff" />
+          </div>
+          <h1 className="text-2xl font-extrabold text-[#1a1a1a] mb-2">Order Placed! 🎉</h1>
+          <p className="text-gray-500 text-sm mb-4">
+            Your order <span className="font-bold text-[#4CAF37]">{orderPlaced.orderNumber}</span> has been placed successfully.
+          </p>
+          <p className="text-gray-400 text-xs mb-6">Redirecting to order tracking page...</p>
+          <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
+            <div
+              className="h-full bg-[#4CAF37] rounded-full"
+              style={{ animation: "progressBar 3s linear forwards" }}
+            />
+          </div>
+          <style>{`
+            @keyframes progressBar {
+              from { width: 0%; }
+              to { width: 100%; }
+            }
+          `}</style>
+          <button
+            onClick={() => navigate(`/track-order?order=${encodeURIComponent(orderPlaced.trackingId)}`)}
+            className="mt-6 bg-[#4CAF37] text-white font-semibold px-6 py-3 rounded-xl hover:opacity-90 transition-opacity text-sm"
+          >
+            Track Order Now →
+          </button>
+        </div>
+      </main>
+    );
+  }
 
   if (cartItems.length === 0) {
     return (
