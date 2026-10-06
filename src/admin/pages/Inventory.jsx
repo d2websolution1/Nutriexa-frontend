@@ -223,53 +223,53 @@ export default function Inventory() {
 
       {/* Overview Stat Cards with Connected Statuses */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5">
-        <div className="bg-white rounded-xl p-4 border border-gray-100 shadow-xs flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold shrink-0">
+        <div className="bg-white dark:bg-[#111722] rounded-xl p-4 border border-gray-100 dark:border-white/5 shadow-xs flex items-center gap-3">
+          <div className="w-10 h-10 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold shrink-0">
             <FiArchive size={20} />
           </div>
           <div className="min-w-0">
-            <p className="text-[11px] text-gray-500 font-medium truncate">Total Tracked Items</p>
-            <p className="text-xl font-bold text-gray-900">{products.length}</p>
+            <p className="text-[11px] text-gray-500 dark:text-gray-400 font-medium truncate">Total Tracked Items</p>
+            <p className="text-xl font-bold text-gray-900 dark:text-white">{products.length}</p>
           </div>
         </div>
 
-        <div className="bg-white rounded-xl p-4 border border-gray-100 shadow-xs flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-green-50 text-green-600 flex items-center justify-center font-bold shrink-0">
+        <div className="bg-white dark:bg-[#111722] rounded-xl p-4 border border-gray-100 dark:border-white/5 shadow-xs flex items-center gap-3">
+          <div className="w-10 h-10 rounded-lg bg-green-50 dark:bg-emerald-950/40 text-green-600 dark:text-emerald-400 flex items-center justify-center font-bold shrink-0">
             <FiCheckCircle size={20} />
           </div>
           <div className="min-w-0">
-            <p className="text-[11px] text-gray-500 font-medium truncate">Active Products</p>
-            <p className="text-xl font-bold text-green-600">{activeCount}</p>
+            <p className="text-[11px] text-gray-500 dark:text-gray-400 font-medium truncate">Active Products</p>
+            <p className="text-xl font-bold text-green-600 dark:text-emerald-400">{activeCount}</p>
           </div>
         </div>
 
-        <div className="bg-white rounded-xl p-4 border border-gray-100 shadow-xs flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center font-bold shrink-0">
+        <div className="bg-white dark:bg-[#111722] rounded-xl p-4 border border-gray-100 dark:border-white/5 shadow-xs flex items-center gap-3">
+          <div className="w-10 h-10 rounded-lg bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 flex items-center justify-center font-bold shrink-0">
             <FiAlertTriangle size={20} />
           </div>
           <div className="min-w-0">
-            <p className="text-[11px] text-gray-500 font-medium truncate">Inactive / Disabled</p>
-            <p className="text-xl font-bold text-amber-600">{inactiveCount + disabledCount}</p>
+            <p className="text-[11px] text-gray-500 dark:text-gray-400 font-medium truncate">Inactive / Disabled</p>
+            <p className="text-xl font-bold text-amber-600 dark:text-amber-400">{inactiveCount + disabledCount}</p>
           </div>
         </div>
 
-        <div className="bg-white rounded-xl p-4 border border-gray-100 shadow-xs flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-yellow-50 text-yellow-600 flex items-center justify-center font-bold shrink-0">
+        <div className="bg-white dark:bg-[#111722] rounded-xl p-4 border border-gray-100 dark:border-white/5 shadow-xs flex items-center gap-3">
+          <div className="w-10 h-10 rounded-lg bg-yellow-50 dark:bg-yellow-950/40 text-yellow-600 dark:text-yellow-400 flex items-center justify-center font-bold shrink-0">
             <FiSliders size={20} />
           </div>
           <div className="min-w-0">
-            <p className="text-[11px] text-gray-500 font-medium truncate">Low Stock (≤5)</p>
-            <p className="text-xl font-bold text-yellow-600">{lowStockCount}</p>
+            <p className="text-[11px] text-gray-500 dark:text-gray-400 font-medium truncate">Low Stock (≤5)</p>
+            <p className="text-xl font-bold text-yellow-600 dark:text-yellow-400">{lowStockCount}</p>
           </div>
         </div>
 
-        <div className="bg-white rounded-xl p-4 border border-gray-100 shadow-xs flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center font-bold shrink-0">
+        <div className="bg-white dark:bg-[#111722] rounded-xl p-4 border border-gray-100 dark:border-white/5 shadow-xs flex items-center gap-3">
+          <div className="w-10 h-10 rounded-lg bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 flex items-center justify-center font-bold shrink-0">
             <FiAlertTriangle size={20} />
           </div>
           <div className="min-w-0">
-            <p className="text-[11px] text-gray-500 font-medium truncate">Out of Stock</p>
-            <p className="text-xl font-bold text-rose-600">{outOfStockCount}</p>
+            <p className="text-[11px] text-gray-500 dark:text-gray-400 font-medium truncate">Out of Stock</p>
+            <p className="text-xl font-bold text-rose-600 dark:text-rose-400">{outOfStockCount}</p>
           </div>
         </div>
       </div>
@@ -365,13 +365,13 @@ export default function Inventory() {
                   return (
                     <tr key={prod.id} className="hover:bg-[#fafbf9] dark:hover:bg-white/5 transition-colors">
                       <td className="px-4 py-3">
-                        <p className="font-semibold text-gray-900">{prod.name}</p>
-                        <p className="text-[11px] text-gray-400">{prod.variant || "-"}</p>
+                        <p className="font-semibold text-gray-900 dark:text-white">{prod.name}</p>
+                        <p className="text-[11px] text-gray-400 dark:text-gray-500">{prod.variant || "-"}</p>
                       </td>
-                      <td className="px-4 py-3 font-mono text-[11px] text-gray-600">
+                      <td className="px-4 py-3 font-mono text-[11px] text-gray-600 dark:text-gray-300">
                         {prod.sku || `NX-PRD-${prod.id}`}
                       </td>
-                      <td className="px-4 py-3 text-gray-600 capitalize">
+                      <td className="px-4 py-3 text-gray-600 dark:text-gray-300 capitalize">
                         {prod.category?.replace(/-/g, " ")}
                       </td>
                       <td className="px-4 py-3 whitespace-nowrap">

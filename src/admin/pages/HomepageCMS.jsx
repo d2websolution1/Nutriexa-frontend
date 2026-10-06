@@ -464,7 +464,7 @@ export default function HomepageCMS() {
   };
 
   return (
-    <div style={{ padding: "24px", minHeight: "100vh", background: "#f8fafc" }}>
+    <div className="space-y-6 pb-8">
       {/* Hidden file input for quick direct change */}
       <input
         type="file"
@@ -484,25 +484,25 @@ export default function HomepageCMS() {
       />
 
       {/* Header */}
-      <div style={{ marginBottom: "24px", display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "12px" }}>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h1 style={{ fontSize: "22px", fontWeight: 700, color: "#0f172a", margin: 0, display: "flex", alignItems: "center", gap: "10px" }}>
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2.5 tracking-tight">
             <FiLayout className="text-[#4CAF37]" /> Homepage CMS
           </h1>
-          <p style={{ color: "#64748b", fontSize: "14px", marginTop: "4px" }}>
+          <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1">
             Manage hero banners, announcement bar, and change slider images in real-time.
           </p>
         </div>
-        <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+        <div className="flex items-center gap-2.5 self-start sm:self-auto">
           {saved && (
-            <div style={{ padding: "8px 16px", background: "#ecfdf5", color: "#10b981", border: "1px solid #d1fae5", borderRadius: "8px", fontWeight: 600, fontSize: "13px", display: "flex", alignItems: "center", gap: "6px" }}>
+            <div className="px-3.5 py-2 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60 rounded-xl font-semibold text-xs sm:text-sm flex items-center gap-1.5 shadow-xs">
               <FiCheck /> Changes saved successfully!
             </div>
           )}
           <button
             onClick={fetchBanners}
             title="Refresh"
-            style={{ padding: "10px 14px", border: "1px solid #e2e8f0", background: "#fff", borderRadius: "8px", cursor: "pointer", color: "#64748b" }}
+            className="p-2 sm:px-3 sm:py-2 border border-gray-200 dark:border-white/10 bg-white dark:bg-[#111722] hover:bg-gray-50 dark:hover:bg-white/5 rounded-xl cursor-pointer text-gray-600 dark:text-gray-300 transition shadow-xs"
           >
             <FiRefreshCw size={15} className={loading ? "animate-spin" : ""} />
           </button>
@@ -510,44 +510,46 @@ export default function HomepageCMS() {
       </div>
 
       {/* MODERN INTERACTIVE TABS */}
-      <div className="flex gap-2 p-1.5 bg-gray-100 dark:bg-white/10 rounded-xl mb-6 w-fit border border-gray-200/50 dark:border-white/10 shadow-xs">
-        {[
-          { id: "banners", label: "Hero Banners", count: banners.length, icon: "🖼️" },
-          { id: "announcements", label: "Announcement Bar", count: announcements.length, icon: "📢" },
-          { id: "featured", label: "Featured Section", count: featuredSections.length, icon: "⚡" },
-        ].map((t) => {
-          const isActive = activeTab === t.id;
-          return (
-            <button
-              key={t.id}
-              onClick={() => setActiveTab(t.id)}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-xs sm:text-sm font-bold transition-all duration-200 cursor-pointer ${
-                isActive
-                  ? "bg-white dark:bg-emerald-600 text-emerald-700 dark:text-white shadow-md scale-102"
-                  : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-white/5"
-              }`}
-            >
-              <span>{t.icon}</span>
-              <span>{t.label}</span>
-              <span
-                className={`text-[10.5px] px-2 py-0.5 rounded-full font-bold ${
+      <div className="overflow-x-auto pb-1 max-w-full -mx-1 px-1">
+        <div className="inline-flex gap-1.5 p-1.5 bg-gray-100 dark:bg-white/10 rounded-2xl border border-gray-200/50 dark:border-white/10 shadow-xs whitespace-nowrap min-w-max">
+          {[
+            { id: "banners", label: "Hero Banners", count: banners.length, icon: "🖼️" },
+            { id: "announcements", label: "Announcement Bar", count: announcements.length, icon: "📢" },
+            { id: "featured", label: "Featured Section", count: featuredSections.length, icon: "⚡" },
+          ].map((t) => {
+            const isActive = activeTab === t.id;
+            return (
+              <button
+                key={t.id}
+                onClick={() => setActiveTab(t.id)}
+                className={`flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 cursor-pointer ${
                   isActive
-                    ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-200"
-                    : "bg-gray-200 dark:bg-white/10 text-gray-600 dark:text-gray-400"
+                    ? "bg-white dark:bg-emerald-600 text-emerald-700 dark:text-white shadow-sm"
+                    : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-white/5"
                 }`}
               >
-                {t.count}
-              </span>
-            </button>
-          );
-        })}
+                <span>{t.icon}</span>
+                <span>{t.label}</span>
+                <span
+                  className={`text-[10.5px] px-2 py-0.5 rounded-full font-bold ${
+                    isActive
+                      ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-200"
+                      : "bg-gray-200 dark:bg-white/10 text-gray-600 dark:text-gray-400"
+                  }`}
+                >
+                  {t.count}
+                </span>
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {/* HERO BANNERS TAB */}
       {activeTab === "banners" && (
-        <div>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", flexWrap: "wrap", gap: "10px" }}>
-            <span style={{ fontSize: "13px", color: "#64748b", fontWeight: 500 }}>
+        <div className="space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-2">
+            <span className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 font-medium">
               Showing {banners.length} banners. You can add unique images or change images for each banner slide.
             </span>
             <button
@@ -555,72 +557,34 @@ export default function HomepageCMS() {
                 setEditBanner(newBannerTemplate);
                 setIsAddingBanner(true);
               }}
-              style={{
-                padding: "10px 20px",
-                background: "#4CAF37",
-                color: "#fff",
-                border: "none",
-                borderRadius: "8px",
-                fontWeight: 600,
-                fontSize: "14px",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
-                boxShadow: "0 2px 4px rgba(76, 175, 55, 0.25)",
-              }}
+              className="inline-flex items-center gap-2 px-4 py-2.5 bg-[#4CAF37] hover:bg-[#3e8e2e] text-white rounded-xl text-xs sm:text-sm font-semibold shadow-sm transition cursor-pointer self-start sm:self-auto"
             >
               <FiPlus size={16} /> Add New Banner
             </button>
           </div>
 
-          <div style={{ display: "grid", gap: "16px" }}>
+          <div className="grid gap-4">
             {banners.map((banner) => (
               <div
                 key={banner.id}
-                style={{
-                  background: "#fff",
-                  borderRadius: "14px",
-                  border: "1px solid #e2e8f0",
-                  overflow: "hidden",
-                  boxShadow: "0 2px 6px rgba(0,0,0,0.04)",
-                }}
+                className="bg-white dark:bg-[#111722] border border-gray-200/80 dark:border-white/5 rounded-2xl overflow-hidden shadow-xs"
               >
                 {/* Banner Live Slide Preview Card */}
                 <div
-                  style={{
-                    minHeight: "140px",
-                    background: getGradientCss(banner.bgGradient),
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    padding: "20px 28px",
-                    position: "relative",
-                    overflow: "hidden",
-                  }}
+                  className="relative overflow-hidden p-4 sm:p-6 min-h-[140px] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+                  style={{ background: getGradientCss(banner.bgGradient) }}
                 >
                   {/* Left: Text & CTA */}
-                  <div style={{ zIndex: 2, maxWidth: "60%" }}>
-                    <div style={{ color: "#fff", fontWeight: 800, fontSize: "20px", letterSpacing: "0.2px" }}>
+                  <div className="z-10 w-full sm:max-w-[62%] pr-14 sm:pr-0">
+                    <div className="text-white font-extrabold text-base sm:text-xl tracking-tight leading-snug">
                       {banner.title || "Untitled Banner"}
                     </div>
-                    <div style={{ color: "rgba(255,255,255,0.88)", fontSize: "14px", marginTop: "4px", lineHeight: "1.4" }}>
+                    <div className="text-white/85 text-xs sm:text-sm mt-1 leading-relaxed">
                       {banner.subtitle}
                     </div>
                     {banner.cta && (
-                      <div style={{ marginTop: "12px" }}>
-                        <span
-                          style={{
-                            display: "inline-block",
-                            padding: "6px 16px",
-                            background: "#fff",
-                            color: "#1e293b",
-                            borderRadius: "6px",
-                            fontSize: "12px",
-                            fontWeight: 700,
-                            boxShadow: "0 2px 5px rgba(0,0,0,0.15)",
-                          }}
-                        >
+                      <div className="mt-3">
+                        <span className="inline-block px-3.5 py-1.5 bg-white text-gray-900 rounded-lg text-xs font-bold shadow-xs">
                           {banner.cta} →
                         </span>
                       </div>
@@ -628,164 +592,82 @@ export default function HomepageCMS() {
                   </div>
 
                   {/* Right: Actual Product/Banner Image */}
-                  <div
-                    style={{
-                      zIndex: 2,
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      gap: "6px",
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: "110px",
-                        height: "100px",
-                        borderRadius: "10px",
-                        background: "rgba(255, 255, 255, 0.12)",
-                        backdropFilter: "blur(6px)",
-                        border: "1px solid rgba(255, 255, 255, 0.2)",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        padding: "6px",
-                        overflow: "hidden",
-                        position: "relative",
-                      }}
-                    >
+                  <div className="z-10 flex sm:flex-col items-center justify-center gap-2 self-center sm:self-auto">
+                    <div className="w-24 sm:w-28 h-20 sm:h-24 rounded-xl bg-white/15 backdrop-blur-md border border-white/20 flex items-center justify-center p-2 overflow-hidden">
                       <img
                         src={resolveImageUrl(banner.image)}
                         alt={banner.title}
-                        style={{
-                          maxWidth: "100%",
-                          maxHeight: "100%",
-                          objectFit: "contain",
-                          filter: "drop-shadow(0 4px 8px rgba(0,0,0,0.3))",
-                        }}
+                        className="max-w-full max-h-full object-contain drop-shadow-md"
                       />
                     </div>
-                    <span
-                      style={{
-                        fontSize: "10px",
-                        fontWeight: 700,
-                        color: banner.image ? "#a7f3d0" : "rgba(255,255,255,0.75)",
-                        background: "rgba(0,0,0,0.35)",
-                        padding: "2px 8px",
-                        borderRadius: "12px",
-                      }}
-                    >
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-black/40 text-emerald-200">
                       {banner.image ? "✓ Custom Image" : "• Default Mockup"}
                     </span>
                   </div>
 
                   {/* Top-right Status badge */}
-                  <div style={{ position: "absolute", top: "12px", right: "14px", zIndex: 3 }}>
-                    <span
-                      style={{
-                        padding: "4px 12px",
-                        borderRadius: "20px",
-                        fontSize: "11px",
-                        fontWeight: 700,
-                        background: banner.isActive ? "#ecfdf5" : "#f1f5f9",
-                        color: banner.isActive ? "#059669" : "#64748b",
-                        border: banner.isActive ? "1px solid #a7f3d0" : "1px solid #e2e8f0",
-                      }}
-                    >
+                  <div className="absolute top-3 right-3 z-20">
+                    <span className={`px-2.5 py-1 rounded-full text-[11px] font-bold ${
+                      banner.isActive
+                        ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                        : "bg-gray-100 text-gray-600 border border-gray-200"
+                    }`}>
                       {banner.isActive ? "● Active" : "○ Inactive"}
                     </span>
                   </div>
                 </div>
 
                 {/* Bottom Actions Bar */}
-                <div style={{ padding: "12px 20px", display: "flex", gap: "8px", alignItems: "center", flexWrap: "wrap", background: "#fff" }}>
-                  <span style={{ flex: 1, fontSize: "12.5px", color: "#64748b" }}>
+                <div className="p-3 sm:p-4 flex flex-wrap items-center justify-between gap-2.5 bg-white dark:bg-[#111722] border-t border-gray-100 dark:border-white/5">
+                  <span className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 font-medium">
                     Order #{banner.order} · Link:{" "}
-                    <code style={{ background: "#f1f5f9", padding: "2px 6px", borderRadius: "4px", color: "#334155" }}>
+                    <code className="bg-gray-100 dark:bg-white/10 text-gray-700 dark:text-gray-300 px-2 py-0.5 rounded text-xs">
                       {banner.ctaLink}
                     </code>
                   </span>
 
-                  {/* Instant "Change Image" button */}
-                  <button
-                    onClick={() => {
-                      setQuickImageBanner(banner);
-                      quickFileInputRef.current?.click();
-                    }}
-                    title="Change banner image directly"
-                    style={{
-                      padding: "6px 14px",
-                      border: "1px solid #d1fae5",
-                      borderRadius: "7px",
-                      background: "#f0fdf4",
-                      cursor: "pointer",
-                      fontSize: "12.5px",
-                      fontWeight: 600,
-                      color: "#16a34a",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "6px",
-                    }}
-                  >
-                    <FiImage size={14} /> {banner.image ? "Change Image" : "Add Image"}
-                  </button>
+                  <div className="flex flex-wrap items-center gap-2">
+                    {/* Instant "Change Image" button */}
+                    <button
+                      onClick={() => {
+                        setQuickImageBanner(banner);
+                        quickFileInputRef.current?.click();
+                      }}
+                      title="Change banner image directly"
+                      className="px-3 py-1.5 border border-emerald-200 dark:border-emerald-800/60 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 text-xs font-semibold flex items-center gap-1.5 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 cursor-pointer transition"
+                    >
+                      <FiImage size={13} /> {banner.image ? "Change Image" : "Add Image"}
+                    </button>
 
-                  <button
-                    onClick={() => toggleBanner(banner.id)}
-                    style={{
-                      padding: "6px 14px",
-                      border: "1px solid #e2e8f0",
-                      borderRadius: "7px",
-                      background: "#fff",
-                      cursor: "pointer",
-                      fontSize: "12.5px",
-                      fontWeight: 600,
-                      color: banner.isActive ? "#ef4444" : "#10b981",
-                    }}
-                  >
-                    {banner.isActive ? "Deactivate" : "Activate"}
-                  </button>
+                    <button
+                      onClick={() => toggleBanner(banner.id)}
+                      className={`px-3 py-1.5 border rounded-lg text-xs font-semibold cursor-pointer transition ${
+                        banner.isActive
+                          ? "border-rose-200 dark:border-rose-900/50 bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 hover:bg-rose-100"
+                          : "border-emerald-200 dark:border-emerald-800/60 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-100"
+                      }`}
+                    >
+                      {banner.isActive ? "Deactivate" : "Activate"}
+                    </button>
 
-                  <button
-                    onClick={() => {
-                      setEditBanner({ ...banner });
-                      setIsAddingBanner(false);
-                    }}
-                    style={{
-                      padding: "6px 14px",
-                      border: "1px solid #e2e8f0",
-                      borderRadius: "7px",
-                      background: "#fff",
-                      cursor: "pointer",
-                      fontSize: "12.5px",
-                      fontWeight: 600,
-                      color: "#4CAF37",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "6px",
-                    }}
-                  >
-                    <FiEdit2 size={13} /> Edit All
-                  </button>
+                    <button
+                      onClick={() => {
+                        setEditBanner({ ...banner });
+                        setIsAddingBanner(false);
+                      }}
+                      className="px-3 py-1.5 border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 hover:bg-gray-50 dark:hover:bg-white/10 text-emerald-600 dark:text-emerald-400 rounded-lg text-xs font-semibold flex items-center gap-1.5 cursor-pointer transition"
+                    >
+                      <FiEdit2 size={13} /> Edit All
+                    </button>
 
-                  <button
-                    onClick={() => deleteBanner(banner.id)}
-                    style={{
-                      padding: "6px 12px",
-                      border: "1px solid #fee2e2",
-                      borderRadius: "7px",
-                      background: "#fef2f2",
-                      cursor: "pointer",
-                      fontSize: "12.5px",
-                      fontWeight: 600,
-                      color: "#ef4444",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "6px",
-                    }}
-                  >
-                    <FiTrash2 size={13} />
-                  </button>
+                    <button
+                      onClick={() => deleteBanner(banner.id)}
+                      className="p-1.5 border border-rose-200 dark:border-rose-900/50 rounded-lg bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 text-rose-600 dark:text-rose-400 cursor-pointer transition"
+                      title="Delete Banner"
+                    >
+                      <FiTrash2 size={13} />
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}
@@ -795,10 +677,10 @@ export default function HomepageCMS() {
 
       {/* ANNOUNCEMENTS TAB */}
       {activeTab === "announcements" && (
-        <div style={{ display: "grid", gap: "16px" }}>
+        <div className="space-y-4">
           {/* Add New Button */}
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span style={{ fontSize: "13px", color: "#64748b", fontWeight: 500 }}>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-2">
+            <span className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 font-medium">
               {announcements.length} announcement bar{announcements.length !== 1 ? "s" : ""}. Only 1 can be active at a time.
             </span>
             <button
@@ -818,102 +700,128 @@ export default function HomepageCMS() {
                 });
                 setIsAddingAnnouncement(true);
               }}
-              style={{ padding: "9px 18px", background: "#4CAF37", color: "#fff", border: "none", borderRadius: "8px", fontWeight: 700, fontSize: "13px", cursor: "pointer", display: "flex", alignItems: "center", gap: "6px" }}
+              className="inline-flex items-center gap-2 px-4 py-2.5 bg-[#4CAF37] hover:bg-[#3e8e2e] text-white rounded-xl text-xs sm:text-sm font-semibold shadow-sm transition cursor-pointer self-start sm:self-auto"
             >
-              + Add Announcement
+              <FiPlus size={16} /> Add Announcement
             </button>
           </div>
 
           {announcements.length === 0 && (
-            <div style={{ textAlign: "center", padding: "40px", color: "#94a3b8", background: "#fff", borderRadius: "12px", border: "1px dashed #e2e8f0" }}>
+            <div className="text-center py-12 text-gray-400 dark:text-gray-500 bg-white dark:bg-[#111722] rounded-2xl border border-dashed border-gray-200 dark:border-white/10 text-xs sm:text-sm">
               No announcement bars yet. Click "Add Announcement" to create one.
             </div>
           )}
 
-          {announcements.map((ann) => (
-            <div
-              key={ann.id}
-              style={{
-                background: "#fff",
-                borderRadius: "12px",
-                border: `1px solid ${ann.isActive ? "#86efac" : "#e2e8f0"}`,
-                overflow: "hidden",
-                boxShadow: ann.isActive ? "0 0 0 2px rgba(34,197,94,0.1)" : "none",
-              }}
-            >
-              {/* Preview bar */}
+          <div className="grid gap-4">
+            {announcements.map((ann) => (
               <div
-                style={{
-                  background: ann.bgColor || "linear-gradient(90deg, #15803d, #22c55e)",
-                  color: ann.textColor || "#fff",
-                  padding: "10px 20px",
-                  fontSize: "13px",
-                  fontWeight: 600,
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "8px",
-                  flexWrap: "wrap",
-                }}
+                key={ann.id}
+                className={`bg-white dark:bg-[#111722] rounded-2xl border overflow-hidden shadow-xs transition ${
+                  ann.isActive
+                    ? "border-emerald-300 dark:border-emerald-700/60 ring-2 ring-emerald-500/20"
+                    : "border-gray-200/80 dark:border-white/5"
+                }`}
               >
-                {ann.badge && (
-                  <span style={{ background: "rgba(255,255,255,0.25)", borderRadius: "20px", padding: "2px 10px", fontSize: "10px", fontWeight: 700, letterSpacing: "0.5px" }}>
-                    {ann.badge}
-                  </span>
-                )}
-                {ann.icon && <span>{ann.icon}</span>}
-                <span>{ann.text || "(No text yet)"}</span>
-                {ann.ctaText && (
-                  <span style={{ marginLeft: "auto", background: "rgba(255,255,255,0.2)", borderRadius: "5px", padding: "3px 12px", fontSize: "11px", cursor: "default" }}>
-                    {ann.ctaText} →
-                  </span>
-                )}
-              </div>
-              {/* Actions row */}
-              <div style={{ padding: "12px 16px", display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
-                <div style={{ flex: 1, fontSize: "12px", color: ann.isActive ? "#16a34a" : "#94a3b8", fontWeight: 600 }}>
-                  {ann.isActive ? "● Currently Active on Store" : "○ Inactive"}
+                {/* Preview bar */}
+                <div
+                  style={{
+                    background: ann.bgColor || "linear-gradient(90deg, #15803d, #22c55e)",
+                    color: ann.textColor || "#fff",
+                  }}
+                  className="px-4 py-2.5 text-xs sm:text-sm font-semibold flex items-center gap-2 flex-wrap"
+                >
+                  {ann.badge && (
+                    <span className="bg-white/25 rounded-full px-2.5 py-0.5 text-[10px] font-bold tracking-wide">
+                      {ann.badge}
+                    </span>
+                  )}
+                  {ann.icon && <span>{ann.icon}</span>}
+                  <span>{ann.text || "(No text yet)"}</span>
+                  {ann.ctaText && (
+                    <span className="ml-auto bg-white/20 rounded-md px-2.5 py-0.5 text-[11px]">
+                      {ann.ctaText} →
+                    </span>
+                  )}
                 </div>
-                <button
-                  onClick={() => { setEditAnnouncement({ ...ann }); setIsAddingAnnouncement(false); }}
-                  style={{ padding: "6px 14px", border: "1px solid #e2e8f0", borderRadius: "7px", background: "#f8fafc", cursor: "pointer", fontSize: "12px", fontWeight: 600, color: "#334155", display: "flex", alignItems: "center", gap: "5px" }}
-                >
-                  ✏️ Edit
-                </button>
-                <button
-                  onClick={() => toggleAnnouncement(ann.id)}
-                  style={{ padding: "6px 16px", border: "none", borderRadius: "7px", cursor: "pointer", fontWeight: 600, fontSize: "12px", background: ann.isActive ? "#fef2f2" : "#ecfdf5", color: ann.isActive ? "#ef4444" : "#10b981" }}
-                >
-                  {ann.isActive ? "Deactivate" : "Activate"}
-                </button>
-                <button
-                  onClick={() => deleteAnnouncement(ann.id)}
-                  style={{ padding: "6px 10px", border: "1px solid #fee2e2", borderRadius: "7px", background: "#fef2f2", cursor: "pointer", fontSize: "12px", fontWeight: 600, color: "#ef4444" }}
-                >
-                  🗑️
-                </button>
+
+                {/* Actions row */}
+                <div className="p-3 sm:p-4 flex flex-wrap items-center justify-between gap-2.5 bg-white dark:bg-[#111722] border-t border-gray-100 dark:border-white/5">
+                  <div className={`text-xs font-semibold ${ann.isActive ? "text-emerald-600 dark:text-emerald-400" : "text-gray-400 dark:text-gray-500"}`}>
+                    {ann.isActive ? "● Currently Active on Store" : "○ Inactive"}
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => { setEditAnnouncement({ ...ann }); setIsAddingAnnouncement(false); }}
+                      className="px-3 py-1.5 border border-gray-200 dark:border-white/10 rounded-lg bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 text-gray-700 dark:text-gray-300 text-xs font-semibold flex items-center gap-1 cursor-pointer transition"
+                    >
+                      <FiEdit2 size={12} /> Edit
+                    </button>
+                    <button
+                      onClick={() => toggleAnnouncement(ann.id)}
+                      className={`px-3 py-1.5 border rounded-lg text-xs font-semibold cursor-pointer transition ${
+                        ann.isActive
+                          ? "border-rose-200 dark:border-rose-900/50 bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 hover:bg-rose-100"
+                          : "border-emerald-200 dark:border-emerald-800/60 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-100"
+                      }`}
+                    >
+                      {ann.isActive ? "Deactivate" : "Activate"}
+                    </button>
+                    <button
+                      onClick={() => deleteAnnouncement(ann.id)}
+                      className="p-1.5 border border-rose-200 dark:border-rose-900/50 rounded-lg bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 text-rose-600 dark:text-rose-400 cursor-pointer transition"
+                      title="Delete Announcement"
+                    >
+                      <FiTrash2 size={13} />
+                    </button>
+                  </div>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       )}
 
       {/* ANNOUNCEMENT EDIT / ADD MODAL */}
       {editAnnouncement && (
-        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.6)", backdropFilter: "blur(4px)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000, padding: "20px" }}>
-          <div style={{ background: "#fff", borderRadius: "16px", width: "100%", maxWidth: "560px", maxHeight: "90vh", overflowY: "auto", boxShadow: "0 25px 60px rgba(0,0,0,0.25)" }}>
-            <div style={{ padding: "20px 24px", borderBottom: "1px solid #e2e8f0", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-              <h3 style={{ margin: 0, fontSize: "16px", fontWeight: 700 }}>{isAddingAnnouncement ? "Add Announcement Bar" : "Edit Announcement Bar"}</h3>
-              <button onClick={() => { setEditAnnouncement(null); setIsAddingAnnouncement(false); }} style={{ background: "none", border: "none", cursor: "pointer", color: "#64748b", fontSize: "18px" }}>✕</button>
+        <div className="fixed inset-0 bg-black/65 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-[#111722] border border-gray-200 dark:border-white/10 rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-2xl">
+            <div className="p-4 sm:p-5 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
+              <h3 className="text-base sm:text-lg font-bold text-gray-900 dark:text-white">
+                {isAddingAnnouncement ? "Add Announcement Bar" : "Edit Announcement Bar"}
+              </h3>
+              <button
+                onClick={() => { setEditAnnouncement(null); setIsAddingAnnouncement(false); }}
+                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 p-1 cursor-pointer"
+              >
+                <FiX size={20} />
+              </button>
             </div>
-            <div style={{ padding: "24px" }}>
+            <div className="p-5 sm:p-6 space-y-4">
               {/* Live Preview */}
-              <div style={{ marginBottom: "16px" }}>
-                <label style={{ fontSize: "12px", fontWeight: 600, color: "#64748b", display: "block", marginBottom: "6px" }}>Live Preview:</label>
-                <div style={{ background: editAnnouncement.bgColor || "linear-gradient(90deg, #15803d, #22c55e)", color: editAnnouncement.textColor || "#fff", borderRadius: "8px", padding: "10px 16px", fontSize: "13px", fontWeight: 600, display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
-                  {editAnnouncement.badge && <span style={{ background: "rgba(255,255,255,0.25)", borderRadius: "20px", padding: "2px 10px", fontSize: "10px" }}>{editAnnouncement.badge}</span>}
+              <div>
+                <label className="block text-xs font-bold text-gray-600 dark:text-gray-400 mb-1.5">
+                  Live Preview:
+                </label>
+                <div
+                  style={{
+                    background: editAnnouncement.bgColor || "linear-gradient(90deg, #15803d, #22c55e)",
+                    color: editAnnouncement.textColor || "#fff",
+                  }}
+                  className="rounded-xl p-3 text-xs sm:text-sm font-semibold flex items-center gap-2 flex-wrap shadow-xs"
+                >
+                  {editAnnouncement.badge && (
+                    <span className="bg-white/25 rounded-full px-2 py-0.5 text-[10px]">
+                      {editAnnouncement.badge}
+                    </span>
+                  )}
                   {editAnnouncement.icon && <span>{editAnnouncement.icon}</span>}
                   <span>{editAnnouncement.text || "Your announcement text here..."}</span>
-                  {editAnnouncement.ctaText && <span style={{ marginLeft: "auto", background: "rgba(255,255,255,0.2)", borderRadius: "5px", padding: "3px 12px", fontSize: "11px" }}>{editAnnouncement.ctaText} →</span>}
+                  {editAnnouncement.ctaText && (
+                    <span className="ml-auto bg-white/20 rounded-md px-2 py-0.5 text-[11px]">
+                      {editAnnouncement.ctaText} →
+                    </span>
+                  )}
                 </div>
               </div>
 
@@ -923,28 +831,32 @@ export default function HomepageCMS() {
                 { label: "CTA Button Text", key: "ctaText", placeholder: "e.g. Shop Now" },
                 { label: "CTA Link", key: "link", placeholder: "e.g. /deals" },
               ].map((f) => (
-                <div key={f.key} style={{ marginBottom: "12px" }}>
-                  <label style={{ display: "block", fontSize: "12px", fontWeight: 600, color: "#374151", marginBottom: "4px" }}>{f.label}</label>
+                <div key={f.key}>
+                  <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">
+                    {f.label}
+                  </label>
                   <input
                     value={editAnnouncement[f.key] || ""}
                     onChange={(e) => setEditAnnouncement((p) => ({ ...p, [f.key]: e.target.value }))}
                     placeholder={f.placeholder}
-                    style={{ width: "100%", padding: "9px 12px", border: "1px solid #e2e8f0", borderRadius: "7px", fontSize: "13px", outline: "none", boxSizing: "border-box" }}
+                    className="w-full px-3.5 py-2 text-xs sm:text-sm rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white outline-none focus:border-emerald-500"
                   />
                 </div>
               ))}
 
               {/* Background Color */}
-              <div style={{ marginBottom: "12px" }}>
-                <label style={{ display: "block", fontSize: "12px", fontWeight: 600, color: "#374151", marginBottom: "4px" }}>Background Color / Gradient</label>
+              <div>
+                <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">
+                  Background Color / Gradient
+                </label>
                 <input
                   value={editAnnouncement.bgColor || ""}
                   onChange={(e) => setEditAnnouncement((p) => ({ ...p, bgColor: e.target.value }))}
                   placeholder="e.g. linear-gradient(90deg, #15803d, #22c55e) or #16a34a"
-                  style={{ width: "100%", padding: "9px 12px", border: "1px solid #e2e8f0", borderRadius: "7px", fontSize: "12px", outline: "none", boxSizing: "border-box", fontFamily: "monospace" }}
+                  className="w-full px-3.5 py-2 text-xs font-mono rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white outline-none focus:border-emerald-500"
                 />
                 {/* Quick color swatches */}
-                <div style={{ display: "flex", gap: "6px", marginTop: "8px", flexWrap: "wrap" }}>
+                <div className="flex gap-1.5 mt-2 flex-wrap">
                   {[
                     { label: "Green", v: "linear-gradient(90deg, #15803d, #22c55e)" },
                     { label: "Red", v: "linear-gradient(90deg, #b91c1c, #ef4444)" },
@@ -962,32 +874,57 @@ export default function HomepageCMS() {
                       type="button"
                       title={sw.label}
                       onClick={() => setEditAnnouncement((p) => ({ ...p, bgColor: sw.v }))}
-                      style={{ width: "28px", height: "20px", borderRadius: "4px", background: sw.v, border: editAnnouncement.bgColor === sw.v ? "2px solid #22c55e" : "2px solid transparent", cursor: "pointer" }}
+                      style={{ background: sw.v }}
+                      className={`w-7 h-5 rounded cursor-pointer transition ${
+                        editAnnouncement.bgColor === sw.v ? "ring-2 ring-emerald-500 scale-105" : ""
+                      }`}
                     />
                   ))}
                 </div>
               </div>
 
               {/* Text Color */}
-              <div style={{ marginBottom: "16px", display: "flex", alignItems: "center", gap: "12px" }}>
-                <div style={{ flex: 1 }}>
-                  <label style={{ display: "block", fontSize: "12px", fontWeight: 600, color: "#374151", marginBottom: "4px" }}>Text Color</label>
+              <div className="flex items-center gap-4 pt-1">
+                <div>
+                  <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">
+                    Text Color
+                  </label>
                   <input
                     type="color"
                     value={editAnnouncement.textColor || "#ffffff"}
                     onChange={(e) => setEditAnnouncement((p) => ({ ...p, textColor: e.target.value }))}
-                    style={{ width: "60px", height: "36px", borderRadius: "6px", border: "1px solid #e2e8f0", cursor: "pointer", padding: "2px" }}
+                    className="w-14 h-9 rounded-lg border border-gray-200 dark:border-white/10 cursor-pointer p-0.5 bg-transparent"
                   />
                 </div>
-                <div style={{ flex: 1, display: "flex", alignItems: "center", gap: "8px", paddingTop: "18px" }}>
-                  <input type="checkbox" id="annActive" checked={editAnnouncement.isActive} onChange={(e) => setEditAnnouncement((p) => ({ ...p, isActive: e.target.checked }))} style={{ width: "16px", height: "16px", accentColor: "#4CAF37", cursor: "pointer" }} />
-                  <label htmlFor="annActive" style={{ fontSize: "13px", fontWeight: 600, color: "#374151", cursor: "pointer" }}>Set as Active</label>
+                <div className="flex items-center gap-2 pt-4">
+                  <input
+                    type="checkbox"
+                    id="annActive"
+                    checked={editAnnouncement.isActive}
+                    onChange={(e) => setEditAnnouncement((p) => ({ ...p, isActive: e.target.checked }))}
+                    className="w-4 h-4 accent-[#4CAF37] cursor-pointer"
+                  />
+                  <label htmlFor="annActive" className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 cursor-pointer">
+                    Set as Active
+                  </label>
                 </div>
               </div>
 
-              <div style={{ display: "flex", gap: "10px", justifyContent: "flex-end" }}>
-                <button onClick={() => { setEditAnnouncement(null); setIsAddingAnnouncement(false); }} style={{ padding: "10px 20px", border: "1px solid #e2e8f0", borderRadius: "8px", background: "#fff", fontSize: "14px", fontWeight: 600, cursor: "pointer", color: "#64748b" }}>Cancel</button>
-                <button onClick={() => saveAnnouncement(editAnnouncement)} style={{ padding: "10px 24px", background: "#4CAF37", color: "#fff", border: "none", borderRadius: "8px", fontSize: "14px", fontWeight: 700, cursor: "pointer" }}>💾 Save</button>
+              <div className="flex gap-2.5 justify-end pt-3 border-t border-gray-100 dark:border-white/5">
+                <button
+                  type="button"
+                  onClick={() => { setEditAnnouncement(null); setIsAddingAnnouncement(false); }}
+                  className="px-4 py-2 border border-gray-200 dark:border-white/10 rounded-xl bg-white dark:bg-white/5 text-gray-600 dark:text-gray-300 text-xs sm:text-sm font-semibold hover:bg-gray-50 dark:hover:bg-white/10 cursor-pointer transition"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={() => saveAnnouncement(editAnnouncement)}
+                  className="px-5 py-2 bg-[#4CAF37] hover:bg-[#3e8e2e] text-white rounded-xl text-xs sm:text-sm font-bold cursor-pointer transition shadow-sm flex items-center gap-1.5"
+                >
+                  💾 Save
+                </button>
               </div>
             </div>
           </div>
@@ -1383,37 +1320,14 @@ export default function HomepageCMS() {
 
       {/* ADD / EDIT BANNER MODAL */}
       {editBanner && (
-        <div
-          style={{
-            position: "fixed",
-            inset: 0,
-            background: "rgba(0,0,0,0.65)",
-            backdropFilter: "blur(4px)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            zIndex: 1000,
-            padding: "20px",
-          }}
-        >
-          <div
-            style={{
-              background: "#fff",
-              borderRadius: "18px",
-              padding: "28px",
-              width: "100%",
-              maxWidth: "580px",
-              maxHeight: "90vh",
-              overflowY: "auto",
-              boxShadow: "0 25px 50px -12px rgba(0,0,0,0.25)",
-            }}
-          >
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+        <div className="fixed inset-0 bg-black/65 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-[#111722] border border-gray-200 dark:border-white/10 rounded-2xl p-5 sm:p-7 w-full max-w-xl max-h-[90vh] overflow-y-auto shadow-2xl">
+            <div className="flex justify-between items-center mb-5 pb-3 border-b border-gray-100 dark:border-white/5">
               <div>
-                <h2 style={{ margin: 0, fontSize: "19px", fontWeight: 800, color: "#0f172a" }}>
+                <h2 className="text-base sm:text-lg font-extrabold text-gray-900 dark:text-white">
                   {isAddingBanner ? "Add New Hero Banner" : "Edit Hero Banner"}
                 </h2>
-                <p style={{ margin: "2px 0 0", fontSize: "12.5px", color: "#64748b" }}>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
                   Customize headline, CTA, theme gradient, and upload or change the banner product image.
                 </p>
               </div>
@@ -1422,71 +1336,55 @@ export default function HomepageCMS() {
                   setEditBanner(null);
                   setIsAddingBanner(false);
                 }}
-                style={{ background: "none", border: "none", cursor: "pointer", color: "#64748b", padding: "4px" }}
+                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 p-1 cursor-pointer"
               >
-                <FiX size={22} />
+                <FiX size={20} />
               </button>
             </div>
 
             {/* LIVE PREVIEW OF THE BANNER IN MODAL */}
-            <div style={{ marginBottom: "20px" }}>
-              <label style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "#475569", marginBottom: "6px", textTransform: "uppercase", letterSpacing: "0.5px" }}>
+            <div className="mb-5">
+              <label className="block text-xs font-bold text-gray-600 dark:text-gray-400 mb-1.5 uppercase tracking-wide">
                 Live Slide Preview
               </label>
               <div
-                style={{
-                  background: getGradientCss(editBanner.bgGradient),
-                  borderRadius: "12px",
-                  padding: "18px 22px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  color: "#fff",
-                  boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-                }}
+                style={{ background: getGradientCss(editBanner.bgGradient) }}
+                className="rounded-xl p-4 sm:p-5 flex items-center justify-between text-white shadow-md relative overflow-hidden"
               >
-                <div style={{ maxWidth: "65%" }}>
-                  <div style={{ fontSize: "17px", fontWeight: 800, lineHeight: 1.2 }}>
+                <div className="max-w-[65%]">
+                  <div className="text-sm sm:text-base font-extrabold leading-snug">
                     {editBanner.title || "Headline preview..."}
                   </div>
-                  <div style={{ fontSize: "12.5px", opacity: 0.9, marginTop: "4px" }}>
+                  <div className="text-xs opacity-90 mt-1">
                     {editBanner.subtitle || "Subtitle tagline preview..."}
                   </div>
-                  <div style={{ marginTop: "10px" }}>
-                    <span style={{ fontSize: "11px", fontWeight: 700, background: "#fff", color: "#1e293b", padding: "4px 12px", borderRadius: "5px" }}>
+                  <div className="mt-2.5">
+                    <span className="text-[11px] font-bold bg-white text-gray-900 px-3 py-1 rounded-md shadow-xs inline-block">
                       {editBanner.cta || "Shop Now"} →
                     </span>
                   </div>
                 </div>
-                <div style={{ width: "90px", height: "80px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <div className="w-20 h-18 sm:w-24 sm:h-20 flex items-center justify-center p-1 bg-white/10 backdrop-blur-xs rounded-lg border border-white/20">
                   <img
                     src={resolveImageUrl(editBanner.image)}
                     alt="Preview"
-                    style={{ maxHeight: "100%", maxWidth: "100%", objectFit: "contain", filter: "drop-shadow(0 4px 6px rgba(0,0,0,0.3))" }}
+                    className="max-h-full max-w-full object-contain drop-shadow-md"
                   />
                 </div>
               </div>
             </div>
 
-            {/* BANNER IMAGE SECTION (TASK 1: ADD & CHANGE IMAGE) */}
-            <div
-              style={{
-                marginBottom: "20px",
-                padding: "16px",
-                borderRadius: "12px",
-                background: "#f8fafc",
-                border: "1.5px dashed #cbd5e1",
-              }}
-            >
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
-                <label style={{ fontSize: "13px", fontWeight: 700, color: "#1e293b", display: "flex", alignItems: "center", gap: "6px" }}>
+            {/* BANNER IMAGE SECTION */}
+            <div className="mb-5 p-4 rounded-xl bg-gray-50 dark:bg-white/5 border border-dashed border-gray-300 dark:border-white/10">
+              <div className="flex justify-between items-center mb-3">
+                <label className="text-xs sm:text-sm font-bold text-gray-800 dark:text-white flex items-center gap-1.5">
                   <FiImage className="text-[#4CAF37]" /> Banner Product Image
                 </label>
                 {editBanner.image && (
                   <button
                     type="button"
                     onClick={() => setEditBanner((prev) => ({ ...prev, image: "" }))}
-                    style={{ fontSize: "11px", color: "#ef4444", background: "none", border: "none", cursor: "pointer", fontWeight: 600 }}
+                    className="text-xs text-rose-500 font-semibold hover:underline cursor-pointer"
                   >
                     ✕ Remove Image (Use Default)
                   </button>
@@ -1494,30 +1392,16 @@ export default function HomepageCMS() {
               </div>
 
               {/* Image Preview & Buttons Row */}
-              <div style={{ display: "flex", gap: "14px", alignItems: "center", flexWrap: "wrap" }}>
-                <div
-                  style={{
-                    width: "72px",
-                    height: "72px",
-                    borderRadius: "10px",
-                    border: "1px solid #e2e8f0",
-                    background: "#fff",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    padding: "4px",
-                    overflow: "hidden",
-                    flexShrink: 0,
-                  }}
-                >
+              <div className="flex gap-3.5 items-center flex-wrap">
+                <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 flex items-center justify-center p-1.5 shrink-0 overflow-hidden">
                   <img
                     src={resolveImageUrl(editBanner.image)}
                     alt="Current"
-                    style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain" }}
+                    className="max-w-full max-h-full object-contain"
                   />
                 </div>
 
-                <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "6px" }}>
+                <div className="flex-1 flex flex-col gap-2 min-w-[200px]">
                   <input
                     type="file"
                     ref={fileInputRef}
@@ -1532,107 +1416,73 @@ export default function HomepageCMS() {
                     }}
                   />
 
-                  <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-                    {/* Upload / Change Image from computer */}
+                  <div className="flex gap-2 flex-wrap">
                     <button
                       type="button"
                       disabled={uploadingImage}
                       onClick={() => fileInputRef.current?.click()}
-                      style={{
-                        padding: "8px 14px",
-                        background: "#4CAF37",
-                        color: "#fff",
-                        border: "none",
-                        borderRadius: "7px",
-                        fontSize: "12px",
-                        fontWeight: 700,
-                        cursor: "pointer",
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "6px",
-                      }}
+                      className="px-3 py-2 bg-[#4CAF37] hover:bg-[#3e8e2e] text-white rounded-lg text-xs font-bold cursor-pointer transition flex items-center gap-1.5 shadow-xs"
                     >
                       <FiUploadCloud size={14} />
                       {uploadingImage ? "Uploading..." : editBanner.image ? "Change Image (Upload)" : "Upload Image"}
                     </button>
 
-                    {/* Pick from Store Products */}
                     <button
                       type="button"
                       onClick={() => {
                         fetchStoreProducts();
                         setProductGalleryOpen(true);
                       }}
-                      style={{
-                        padding: "8px 14px",
-                        background: "#f1f5f9",
-                        color: "#334155",
-                        border: "1px solid #cbd5e1",
-                        borderRadius: "7px",
-                        fontSize: "12px",
-                        fontWeight: 600,
-                        cursor: "pointer",
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "6px",
-                      }}
+                      className="px-3 py-2 border border-gray-200 dark:border-white/10 bg-white dark:bg-white/10 hover:bg-gray-50 dark:hover:bg-white/20 text-gray-700 dark:text-gray-200 rounded-lg text-xs font-bold cursor-pointer transition flex items-center gap-1.5"
                     >
                       <FiShoppingBag size={13} /> Pick from Store
                     </button>
                   </div>
-
-                  <p style={{ margin: 0, fontSize: "11px", color: "#64748b" }}>
+                  <p className="text-[11px] text-gray-400 dark:text-gray-500">
                     Supports PNG, JPG, WebP. Transparent PNGs look best.
                   </p>
                 </div>
               </div>
 
               {/* Direct URL input */}
-              <div style={{ marginTop: "12px" }}>
-                <span style={{ fontSize: "11px", color: "#64748b", fontWeight: 600 }}>Or enter Image URL:</span>
+              <div className="mt-3">
+                <span className="text-[11px] text-gray-500 dark:text-gray-400 font-semibold">Or enter Image URL:</span>
                 <input
                   type="text"
                   value={editBanner.image || ""}
                   onChange={(e) => setEditBanner((prev) => ({ ...prev, image: e.target.value }))}
                   placeholder="https://res.cloudinary.com/... or paste image link"
-                  style={{
-                    width: "100%",
-                    marginTop: "4px",
-                    padding: "8px 10px",
-                    border: "1px solid #e2e8f0",
-                    borderRadius: "6px",
-                    fontSize: "12px",
-                    boxSizing: "border-box",
-                    background: "#fff",
-                  }}
+                  className="w-full mt-1 px-3 py-1.5 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 text-gray-900 dark:text-white text-xs outline-none focus:border-emerald-500"
                 />
               </div>
             </div>
 
             {/* Other Banner Fields */}
-            {[
-              { label: "Banner Headline / Title", key: "title", placeholder: "e.g. October Dhamaka upto 80% discount" },
-              { label: "Subtitle / Tagline", key: "subtitle", placeholder: "e.g. Limited deals on all whey & creatine" },
-              { label: "CTA Button Text", key: "cta", placeholder: "e.g. Shop Now" },
-              { label: "CTA Link", key: "ctaLink", placeholder: "e.g. /products or /deals" },
-            ].map((field) => (
-              <div key={field.key} style={{ marginBottom: "14px" }}>
-                <label style={{ display: "block", fontSize: "13px", fontWeight: 600, color: "#374151", marginBottom: "5px" }}>
-                  {field.label}
-                </label>
-                <input
-                  value={editBanner[field.key] || ""}
-                  onChange={(e) => setEditBanner((prev) => ({ ...prev, [field.key]: e.target.value }))}
-                  placeholder={field.placeholder}
-                  style={{ width: "100%", padding: "10px 12px", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "14px", outline: "none", boxSizing: "border-box" }}
-                />
-              </div>
-            ))}
+            <div className="space-y-3.5 mb-5">
+              {[
+                { label: "Banner Headline / Title", key: "title", placeholder: "e.g. October Dhamaka upto 80% discount" },
+                { label: "Subtitle / Tagline", key: "subtitle", placeholder: "e.g. Limited deals on all whey & creatine" },
+                { label: "CTA Button Text", key: "cta", placeholder: "e.g. Shop Now" },
+                { label: "CTA Link", key: "ctaLink", placeholder: "e.g. /products or /deals" },
+              ].map((field) => (
+                <div key={field.key}>
+                  <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">
+                    {field.label}
+                  </label>
+                  <input
+                    value={editBanner[field.key] || ""}
+                    onChange={(e) => setEditBanner((prev) => ({ ...prev, [field.key]: e.target.value }))}
+                    placeholder={field.placeholder}
+                    className="w-full px-3.5 py-2 text-xs sm:text-sm rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white outline-none focus:border-emerald-500"
+                  />
+                </div>
+              ))}
+            </div>
 
             {/* Gradient Selector */}
-            <div style={{ marginBottom: "16px" }}>
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "6px" }}>
-                <label style={{ fontSize: "13px", fontWeight: 600, color: "#374151" }}>
+            <div className="mb-4">
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="text-xs font-bold text-gray-700 dark:text-gray-300">
                   Color Theme / Background Gradient
                 </label>
                 <button
@@ -1646,14 +1496,18 @@ export default function HomepageCMS() {
                       setCustomGradientInput(isCustom ? current : "linear-gradient(135deg, #4f46e5, #7e22ce)");
                     }
                   }}
-                  style={{ fontSize: "11px", color: useCustomGradient ? "#4CAF37" : "#6366f1", background: "none", border: "1px solid currentColor", borderRadius: "6px", padding: "3px 10px", cursor: "pointer", fontWeight: 600 }}
+                  className={`text-[11px] font-semibold border rounded-md px-2.5 py-1 cursor-pointer transition ${
+                    useCustomGradient
+                      ? "text-[#4CAF37] border-[#4CAF37] bg-emerald-50 dark:bg-emerald-950/40"
+                      : "text-indigo-600 dark:text-indigo-400 border-indigo-200 dark:border-indigo-800"
+                  }`}
                 >
                   {useCustomGradient ? "← Back to Presets" : "Custom CSS Gradient"}
                 </button>
               </div>
 
               {useCustomGradient ? (
-                <div>
+                <div className="space-y-2">
                   <input
                     type="text"
                     value={customGradientInput}
@@ -1662,32 +1516,19 @@ export default function HomepageCMS() {
                       setEditBanner((prev) => ({ ...prev, bgGradient: e.target.value }));
                     }}
                     placeholder="e.g. linear-gradient(135deg, #ff6b6b, #feca57) or #ff6b6b"
-                    style={{ width: "100%", padding: "10px 12px", border: "1px solid #6366f1", borderRadius: "8px", fontSize: "13px", outline: "none", boxSizing: "border-box", fontFamily: "monospace" }}
+                    className="w-full px-3.5 py-2 text-xs font-mono rounded-xl border border-emerald-500 bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white outline-none"
                   />
-                  {/* Live preview */}
                   {customGradientInput && (
-                    <div style={{
-                      marginTop: "8px",
-                      height: "40px",
-                      borderRadius: "8px",
-                      background: customGradientInput,
-                      border: "1px solid #e2e8f0",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontSize: "11px",
-                      color: "#fff",
-                      fontWeight: 600,
-                      letterSpacing: "0.5px",
-                      textShadow: "0 1px 3px rgba(0,0,0,0.4)"
-                    }}>
+                    <div
+                      style={{ background: customGradientInput }}
+                      className="h-10 rounded-xl border border-gray-200 dark:border-white/10 flex items-center justify-center text-[11px] text-white font-bold tracking-wide shadow-xs"
+                    >
                       Live Preview ✓
                     </div>
                   )}
-                  {/* Quick color palette swatches */}
-                  <div style={{ marginTop: "10px" }}>
-                    <p style={{ fontSize: "11px", color: "#64748b", marginBottom: "6px", fontWeight: 600 }}>Quick Palettes:</p>
-                    <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+                  <div className="pt-1">
+                    <p className="text-[11px] text-gray-500 dark:text-gray-400 mb-1.5 font-medium">Quick Palettes:</p>
+                    <div className="flex flex-wrap gap-1.5">
                       {[
                         { label: "Ocean", v: "linear-gradient(135deg, #0ea5e9, #0284c7)" },
                         { label: "Sunset", v: "linear-gradient(135deg, #f97316, #dc2626)" },
@@ -1708,15 +1549,10 @@ export default function HomepageCMS() {
                             setCustomGradientInput(sw.v);
                             setEditBanner((prev) => ({ ...prev, bgGradient: sw.v }));
                           }}
-                          style={{
-                            width: "36px",
-                            height: "24px",
-                            borderRadius: "5px",
-                            background: sw.v,
-                            border: customGradientInput === sw.v ? "2px solid #22c55e" : "2px solid transparent",
-                            cursor: "pointer",
-                            boxShadow: "0 1px 3px rgba(0,0,0,0.15)",
-                          }}
+                          style={{ background: sw.v }}
+                          className={`w-8 h-6 rounded-md cursor-pointer transition ${
+                            customGradientInput === sw.v ? "ring-2 ring-emerald-500 scale-105" : ""
+                          }`}
                         />
                       ))}
                     </div>
@@ -1726,10 +1562,10 @@ export default function HomepageCMS() {
                 <select
                   value={editBanner.bgGradient || "from-indigo-600 to-purple-700"}
                   onChange={(e) => setEditBanner((prev) => ({ ...prev, bgGradient: e.target.value }))}
-                  style={{ width: "100%", padding: "10px 12px", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "14px", outline: "none", boxSizing: "border-box", background: "#fff" }}
+                  className="w-full px-3.5 py-2 text-xs sm:text-sm rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white outline-none cursor-pointer"
                 >
                   {GRADIENT_OPTIONS.map((g) => (
-                    <option key={g.value} value={g.value}>
+                    <option key={g.value} value={g.value} className="bg-white dark:bg-[#111722] text-gray-900 dark:text-white">
                       {g.label}
                     </option>
                   ))}
@@ -1738,48 +1574,35 @@ export default function HomepageCMS() {
             </div>
 
             {/* Active Checkbox */}
-            <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "22px" }}>
+            <div className="flex items-center gap-2.5 mb-5">
               <input
                 type="checkbox"
                 id="bannerActive"
                 checked={editBanner.isActive}
                 onChange={(e) => setEditBanner((prev) => ({ ...prev, isActive: e.target.checked }))}
-                style={{ width: "16px", height: "16px", cursor: "pointer", accentColor: "#4CAF37" }}
+                className="w-4 h-4 accent-[#4CAF37] cursor-pointer"
               />
-              <label htmlFor="bannerActive" style={{ fontSize: "14px", fontWeight: 600, color: "#374151", cursor: "pointer" }}>
+              <label htmlFor="bannerActive" className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 cursor-pointer">
                 Active (Display on website homepage slider)
               </label>
             </div>
 
             {/* Modal Actions */}
-            <div style={{ display: "flex", gap: "10px", justifyContent: "flex-end" }}>
+            <div className="flex gap-2.5 justify-end pt-4 border-t border-gray-100 dark:border-white/5">
               <button
                 type="button"
                 onClick={() => {
                   setEditBanner(null);
                   setIsAddingBanner(false);
                 }}
-                style={{ padding: "10px 20px", border: "1px solid #e2e8f0", borderRadius: "8px", background: "#fff", fontSize: "14px", fontWeight: 600, cursor: "pointer", color: "#64748b" }}
+                className="px-4 py-2 border border-gray-200 dark:border-white/10 rounded-xl bg-white dark:bg-white/5 text-gray-600 dark:text-gray-300 text-xs sm:text-sm font-semibold hover:bg-gray-50 dark:hover:bg-white/10 cursor-pointer transition"
               >
                 Cancel
               </button>
               <button
                 type="button"
                 onClick={() => saveBanner(editBanner)}
-                style={{
-                  padding: "10px 24px",
-                  background: "#4CAF37",
-                  color: "#fff",
-                  border: "none",
-                  borderRadius: "8px",
-                  fontSize: "14px",
-                  fontWeight: 700,
-                  cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "8px",
-                  boxShadow: "0 2px 4px rgba(76, 175, 55, 0.25)",
-                }}
+                className="px-5 py-2 bg-[#4CAF37] hover:bg-[#3e8e2e] text-white rounded-xl text-xs sm:text-sm font-bold shadow-sm cursor-pointer transition flex items-center gap-1.5"
               >
                 <FiSave size={15} /> Save Banner
               </button>
@@ -1790,56 +1613,32 @@ export default function HomepageCMS() {
 
       {/* PRODUCT IMAGE GALLERY PICKER MODAL */}
       {productGalleryOpen && (
-        <div
-          style={{
-            position: "fixed",
-            inset: 0,
-            background: "rgba(0,0,0,0.7)",
-            backdropFilter: "blur(4px)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            zIndex: 1100,
-            padding: "20px",
-          }}
-        >
-          <div
-            style={{
-              background: "#fff",
-              borderRadius: "16px",
-              padding: "24px",
-              width: "100%",
-              maxWidth: "640px",
-              maxHeight: "80vh",
-              display: "flex",
-              flexDirection: "column",
-              boxShadow: "0 25px 50px -12px rgba(0,0,0,0.25)",
-            }}
-          >
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-[#111722] border border-gray-200 dark:border-white/10 rounded-2xl p-5 sm:p-6 w-full max-w-2xl max-h-[85vh] flex flex-col shadow-2xl">
+            <div className="flex justify-between items-center mb-4 pb-3 border-b border-gray-100 dark:border-white/5">
               <div>
-                <h3 style={{ margin: 0, fontSize: "17px", fontWeight: 700, color: "#0f172a" }}>
+                <h3 className="text-base sm:text-lg font-bold text-gray-900 dark:text-white">
                   Select an Image from Store Products
                 </h3>
-                <p style={{ margin: "2px 0 0", fontSize: "12px", color: "#64748b" }}>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
                   Click on any product image to set it as this banner's hero image.
                 </p>
               </div>
               <button
                 onClick={() => setProductGalleryOpen(false)}
-                style={{ background: "none", border: "none", cursor: "pointer", color: "#64748b" }}
+                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 p-1 cursor-pointer"
               >
                 <FiX size={20} />
               </button>
             </div>
 
-            <div style={{ flex: 1, overflowY: "auto", display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(130px, 1fr))", gap: "12px", padding: "4px" }}>
+            <div className="flex-1 overflow-y-auto grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 p-1">
               {loadingProducts ? (
-                <div style={{ gridColumn: "1/-1", textAlign: "center", padding: "40px", color: "#64748b" }}>
+                <div className="col-span-full text-center py-12 text-gray-400 text-xs sm:text-sm">
                   Loading product images...
                 </div>
               ) : storeProducts.length === 0 ? (
-                <div style={{ gridColumn: "1/-1", textAlign: "center", padding: "40px", color: "#64748b" }}>
+                <div className="col-span-full text-center py-12 text-gray-400 text-xs sm:text-sm">
                   No product images found. You can upload an image from your computer directly.
                 </div>
               ) : (
@@ -1855,34 +1654,16 @@ export default function HomepageCMS() {
                       }
                       setProductGalleryOpen(false);
                     }}
-                    style={{
-                      border: "1px solid #e2e8f0",
-                      borderRadius: "10px",
-                      padding: "10px",
-                      textAlign: "center",
-                      cursor: "pointer",
-                      transition: "all 0.2s",
-                      background: "#fafafa",
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.borderColor = "#4CAF37";
-                      e.currentTarget.style.transform = "translateY(-2px)";
-                      e.currentTarget.style.boxShadow = "0 4px 10px rgba(0,0,0,0.06)";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.borderColor = "#e2e8f0";
-                      e.currentTarget.style.transform = "none";
-                      e.currentTarget.style.boxShadow = "none";
-                    }}
+                    className="border border-gray-200 dark:border-white/10 hover:border-[#4CAF37] dark:hover:border-[#4CAF37] rounded-xl p-3 text-center cursor-pointer transition-all bg-gray-50/50 dark:bg-white/5 hover:bg-white dark:hover:bg-white/10 hover:-translate-y-0.5 shadow-2xs flex flex-col items-center"
                   >
-                    <div style={{ height: "80px", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "8px" }}>
+                    <div className="h-20 w-full flex items-center justify-center mb-2">
                       <img
                         src={resolveImageUrl(p.image)}
                         alt={p.name}
-                        style={{ maxHeight: "100%", maxWidth: "100%", objectFit: "contain" }}
+                        className="max-h-full max-w-full object-contain"
                       />
                     </div>
-                    <div style={{ fontSize: "11px", fontWeight: 600, color: "#1e293b", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                    <div className="text-xs font-semibold text-gray-800 dark:text-gray-200 truncate w-full">
                       {p.name}
                     </div>
                   </div>

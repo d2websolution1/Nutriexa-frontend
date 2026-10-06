@@ -3,11 +3,9 @@ import {
   FiBarChart2,
   FiTrendingUp,
   FiShoppingBag,
-  FiUsers,
   FiDollarSign,
-  FiCalendar,
-  FiDownload,
 } from "react-icons/fi";
+import { useTheme } from "../../context/ThemeContext";
 
 // ─── Mock Data ────────────────────────────────────────────────────────────────
 const REVENUE_DATA = {
@@ -55,7 +53,7 @@ const CUSTOMER_RETENTION = [
 ];
 
 // ─── SVG Area Chart ───────────────────────────────────────────────────────────
-function AreaChart({ data, dataKey = "revenue" }) {
+function AreaChart({ data, dataKey = "revenue", isDark = false }) {
   const W = 700, H = 200, PAD = { top: 20, right: 20, bottom: 40, left: 60 };
   const vals = data.map((d) => d[dataKey]);
   const minV = Math.min(...vals) * 0.9;
@@ -71,51 +69,70 @@ function AreaChart({ data, dataKey = "revenue" }) {
   const yTicks = Array.from({ length: tickCount }, (_, i) => minV + (i / (tickCount - 1)) * (maxV - minV));
 
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} style={{ width: "100%", height: "200px" }}>
-      <defs>
-        <linearGradient id="aGrad" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#6366f1" stopOpacity="0.3" />
-          <stop offset="100%" stopColor="#6366f1" stopOpacity="0.02" />
-        </linearGradient>
-      </defs>
+    <div className="w-full overflow-x-auto">
+      <div className="min-w-[520px]">
+        <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-[200px]">
+          <defs>
+            <linearGradient id="aGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#6366f1" stopOpacity="0.35" />
+              <stop offset="100%" stopColor="#6366f1" stopOpacity="0.02" />
+            </linearGradient>
+          </defs>
 
-      {/* Y Grid Lines */}
-      {yTicks.map((v, i) => (
-        <g key={i}>
-          <line x1={PAD.left} x2={W - PAD.right} y1={y(v)} y2={y(v)} stroke="#f1f5f9" strokeWidth="1" />
-          <text x={PAD.left - 8} y={y(v) + 4} textAnchor="end" fontSize="10" fill="#94a3b8">
-            {dataKey === "revenue" ? `₹${(v / 1000).toFixed(0)}K` : v.toFixed(0)}
-          </text>
-        </g>
-      ))}
+          {/* Y Grid Lines */}
+          {yTicks.map((v, i) => (
+            <g key={i}>
+              <line
+                x1={PAD.left}
+                x2={W - PAD.right}
+                y1={y(v)}
+                y2={y(v)}
+                stroke={isDark ? "rgba(255,255,255,0.07)" : "#f1f5f9"}
+                strokeWidth="1"
+              />
+              <text x={PAD.left - 8} y={y(v) + 4} textAnchor="end" fontSize="10" fill={isDark ? "#94a3b8" : "#94a3b8"}>
+                {dataKey === "revenue" ? `₹${(v / 1000).toFixed(0)}K` : v.toFixed(0)}
+              </text>
+            </g>
+          ))}
 
-      {/* Area fill */}
-      <path d={area} fill="url(#aGrad)" />
+          {/* Area fill */}
+          <path d={area} fill="url(#aGrad)" />
 
-      {/* Line */}
-      <path d={line} fill="none" stroke="#6366f1" strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
+          {/* Line */}
+          <path d={line} fill="none" stroke="#6366f1" strokeWidth="2.5" strokeLinejoin="round" strokeLinecap="round" />
 
-      {/* X Labels (show fewer for long datasets) */}
-      {data.map((d, i) => {
-        const step = Math.max(1, Math.floor(data.length / 7));
-        if (i % step !== 0) return null;
-        return (
-          <text key={i} x={x(i)} y={H - PAD.bottom + 20} textAnchor="middle" fontSize="10" fill="#94a3b8">
-            {d.label}
-          </text>
-        );
-      })}
+          {/* X Labels */}
+          {data.map((d, i) => {
+            const step = Math.max(1, Math.floor(data.length / 7));
+            if (i % step !== 0) return null;
+            return (
+              <text key={i} x={x(i)} y={H - PAD.bottom + 20} textAnchor="middle" fontSize="10" fill="#94a3b8">
+                {d.label}
+              </text>
+            );
+          })}
 
-      {/* Dots */}
-      {data.map((d, i) => (
-        <circle key={i} cx={x(i)} cy={y(d[dataKey])} r={3.5} fill="#6366f1" stroke="#fff" strokeWidth="2" />
-      ))}
-    </svg>
+          {/* Dots */}
+          {data.map((d, i) => (
+            <circle
+              key={i}
+              cx={x(i)}
+              cy={y(d[dataKey])}
+              r={3.5}
+              fill="#6366f1"
+              stroke={isDark ? "#111722" : "#ffffff"}
+              strokeWidth="2"
+            />
+          ))}
+        </svg>
+      </div>
+    </div>
   );
 }
 
 // ─── Donut Chart ──────────────────────────────────────────────────────────────
-function DonutChart({ data }) {
+function DonutChart({ data, isDark = false }) {
   const R = 60, CX = 80, CY = 80;
   let cumulative = 0;
 
@@ -130,19 +147,37 @@ function DonutChart({ data }) {
   }
 
   return (
-    <svg viewBox="0 0 160 160" style={{ width: "160px", height: "160px" }}>
+    <svg viewBox="0 0 160 160" className="w-[160px] h-[160px]">
       {data.map((d) => (
         <path key={d.name} d={slice(d.percentage)} fill={d.color} />
       ))}
-      <circle cx={CX} cy={CY} r={38} fill="#fff" />
-      <text x={CX} y={CY - 5} textAnchor="middle" fontSize="13" fontWeight="700" fill="#0f172a">Sales</text>
-      <text x={CX} y={CY + 12} textAnchor="middle" fontSize="10" fill="#64748b">by Category</text>
+      <circle cx={CX} cy={CY} r={38} fill={isDark ? "#111722" : "#ffffff"} />
+      <text
+        x={CX}
+        y={CY - 5}
+        textAnchor="middle"
+        fontSize="13"
+        fontWeight="700"
+        fill={isDark ? "#ffffff" : "#0f172a"}
+      >
+        Sales
+      </text>
+      <text
+        x={CX}
+        y={CY + 12}
+        textAnchor="middle"
+        fontSize="10"
+        fill={isDark ? "#94a3b8" : "#64748b"}
+      >
+        by Category
+      </text>
     </svg>
   );
 }
 
 // ─── Main Analytics Component ─────────────────────────────────────────────────
 export default function Analytics() {
+  const { isAdminDark } = useTheme();
   const [timeRange, setTimeRange] = useState("Last 7 Days");
   const [chartMetric, setChartMetric] = useState("revenue");
   const chartData = REVENUE_DATA[timeRange];
@@ -154,89 +189,147 @@ export default function Analytics() {
   }), [chartData]);
 
   return (
-    <div style={{ padding: "24px", minHeight: "100vh", background: "#f8fafc" }}>
+    <div className="space-y-6 pb-8">
       {/* Header */}
-      <div style={{ marginBottom: "24px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h1 style={{ fontSize: "22px", fontWeight: 700, color: "#0f172a", margin: 0 }}>Analytics</h1>
-          <p style={{ color: "#64748b", fontSize: "14px", marginTop: "4px" }}>
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white tracking-tight flex items-center gap-2">
+            <FiBarChart2 className="text-emerald-500" /> Analytics
+          </h1>
+          <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1">
             Revenue trends, sales performance, and customer insights.
           </p>
         </div>
-        <div style={{ display: "flex", gap: "8px" }}>
-          {["Last 7 Days", "Last 30 Days", "Last 3 Months"].map((r) => (
-            <button key={r} onClick={() => setTimeRange(r)}
-              style={{
-                padding: "8px 16px", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "13px",
-                fontWeight: 600, cursor: "pointer",
-                background: timeRange === r ? "#6366f1" : "#fff",
-                color: timeRange === r ? "#fff" : "#64748b",
-                transition: "all 0.15s"
-              }}>
-              {r}
-            </button>
-          ))}
+
+        {/* Time range switcher */}
+        <div className="flex flex-wrap items-center gap-2">
+          {["Last 7 Days", "Last 30 Days", "Last 3 Months"].map((r) => {
+            const active = timeRange === r;
+            return (
+              <button
+                key={r}
+                onClick={() => setTimeRange(r)}
+                className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
+                  active
+                    ? "bg-indigo-600 text-white shadow-sm"
+                    : "bg-white dark:bg-[#111722] text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5"
+                }`}
+              >
+                {r}
+              </button>
+            );
+          })}
         </div>
       </div>
 
       {/* Summary KPI Cards */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "16px", marginBottom: "24px" }}>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {[
-          { label: "Total Revenue", value: `₹${(totals.revenue / 1000).toFixed(1)}K`, icon: <FiDollarSign size={20} />, change: "+12.5%", color: "#6366f1", bg: "#eef2ff" },
-          { label: "Total Orders", value: totals.orders, icon: <FiShoppingBag size={20} />, change: "+8.3%", color: "#10b981", bg: "#ecfdf5" },
-          { label: "Avg. Order Value", value: `₹${totals.avgOrder.toLocaleString()}`, icon: <FiTrendingUp size={20} />, change: "+6.1%", color: "#f59e0b", bg: "#fffbeb" },
+          {
+            label: "Total Revenue",
+            value: `₹${(totals.revenue / 1000).toFixed(1)}K`,
+            icon: <FiDollarSign size={20} />,
+            change: "+12.5%",
+            color: "text-indigo-600 dark:text-indigo-400",
+            bg: "bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-100 dark:border-indigo-900/40",
+          },
+          {
+            label: "Total Orders",
+            value: totals.orders,
+            icon: <FiShoppingBag size={20} />,
+            change: "+8.3%",
+            color: "text-emerald-600 dark:text-emerald-400",
+            bg: "bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-100 dark:border-emerald-900/40",
+          },
+          {
+            label: "Avg. Order Value",
+            value: `₹${totals.avgOrder.toLocaleString()}`,
+            icon: <FiTrendingUp size={20} />,
+            change: "+6.1%",
+            color: "text-amber-600 dark:text-amber-400",
+            bg: "bg-amber-50 dark:bg-amber-950/40 border border-amber-100 dark:border-amber-900/40",
+          },
         ].map((c) => (
-          <div key={c.label} style={{ background: "#fff", borderRadius: "12px", padding: "20px", border: "1px solid #e2e8f0", display: "flex", gap: "16px", alignItems: "center" }}>
-            <div style={{ width: "48px", height: "48px", background: c.bg, borderRadius: "12px", display: "flex", alignItems: "center", justifyContent: "center", color: c.color, flexShrink: 0 }}>
+          <div
+            key={c.label}
+            className="bg-white dark:bg-[#111722] border border-gray-200/80 dark:border-white/5 rounded-2xl p-5 flex items-center gap-4 shadow-xs transition hover:border-gray-300 dark:hover:border-white/10"
+          >
+            <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${c.bg} ${c.color}`}>
               {c.icon}
             </div>
-            <div>
-              <div style={{ fontSize: "24px", fontWeight: 800, color: "#0f172a" }}>{c.value}</div>
-              <div style={{ fontSize: "12px", color: "#64748b" }}>{c.label}</div>
-              <div style={{ fontSize: "12px", color: "#10b981", fontWeight: 600, marginTop: "2px" }}>{c.change} vs last period</div>
+            <div className="min-w-0">
+              <div className="text-xl sm:text-2xl font-extrabold text-gray-900 dark:text-white tracking-tight">
+                {c.value}
+              </div>
+              <div className="text-xs text-gray-500 dark:text-gray-400 font-medium">{c.label}</div>
+              <div className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 mt-0.5">
+                {c.change} vs last period
+              </div>
             </div>
           </div>
         ))}
       </div>
 
       {/* Revenue Chart */}
-      <div style={{ background: "#fff", borderRadius: "12px", border: "1px solid #e2e8f0", padding: "24px", marginBottom: "20px" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-          <h3 style={{ margin: 0, fontSize: "15px", fontWeight: 700, color: "#0f172a" }}>
+      <div className="bg-white dark:bg-[#111722] border border-gray-200/80 dark:border-white/5 rounded-2xl p-4 sm:p-6 shadow-xs">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
+          <h3 className="text-sm sm:text-base font-bold text-gray-900 dark:text-white">
             {chartMetric === "revenue" ? "Revenue Trend" : "Order Volume"}
           </h3>
-          <div style={{ display: "flex", gap: "8px" }}>
-            <button onClick={() => setChartMetric("revenue")}
-              style={{ padding: "6px 14px", border: "1px solid #e2e8f0", borderRadius: "6px", fontSize: "13px", fontWeight: 500, cursor: "pointer", background: chartMetric === "revenue" ? "#6366f1" : "#fff", color: chartMetric === "revenue" ? "#fff" : "#64748b" }}>
+          <div className="flex gap-2">
+            <button
+              onClick={() => setChartMetric("revenue")}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition ${
+                chartMetric === "revenue"
+                  ? "bg-indigo-600 text-white shadow-xs"
+                  : "bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/10"
+              }`}
+            >
               Revenue
             </button>
-            <button onClick={() => setChartMetric("orders")}
-              style={{ padding: "6px 14px", border: "1px solid #e2e8f0", borderRadius: "6px", fontSize: "13px", fontWeight: 500, cursor: "pointer", background: chartMetric === "orders" ? "#6366f1" : "#fff", color: chartMetric === "orders" ? "#fff" : "#64748b" }}>
+            <button
+              onClick={() => setChartMetric("orders")}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition ${
+                chartMetric === "orders"
+                  ? "bg-indigo-600 text-white shadow-xs"
+                  : "bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/10"
+              }`}
+            >
               Orders
             </button>
           </div>
         </div>
-        <AreaChart data={chartData} dataKey={chartMetric} />
+        <AreaChart data={chartData} dataKey={chartMetric} isDark={isAdminDark} />
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 340px", gap: "20px", marginBottom: "20px" }}>
+      {/* Breakdown Row */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         {/* Top Products */}
-        <div style={{ background: "#fff", borderRadius: "12px", border: "1px solid #e2e8f0", padding: "24px" }}>
-          <h3 style={{ margin: "0 0 16px", fontSize: "15px", fontWeight: 700, color: "#0f172a" }}>Top Selling Products</h3>
-          <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+        <div className="lg:col-span-2 bg-white dark:bg-[#111722] border border-gray-200/80 dark:border-white/5 rounded-2xl p-4 sm:p-6 shadow-xs">
+          <h3 className="text-sm sm:text-base font-bold text-gray-900 dark:text-white mb-4">
+            Top Selling Products
+          </h3>
+          <div className="space-y-4">
             {TOP_PRODUCTS.map((p, i) => {
               const maxRev = TOP_PRODUCTS[0].revenue;
               return (
-                <div key={i}>
-                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "6px" }}>
-                    <div>
-                      <div style={{ fontWeight: 600, fontSize: "14px", color: "#0f172a" }}>{p.name}</div>
-                      <div style={{ fontSize: "12px", color: "#94a3b8" }}>{p.category} · {p.units} units sold</div>
+                <div key={i} className="space-y-1.5">
+                  <div className="flex justify-between items-center text-xs sm:text-sm gap-2">
+                    <div className="min-w-0">
+                      <div className="font-semibold text-gray-900 dark:text-white truncate">{p.name}</div>
+                      <div className="text-[11px] text-gray-500 dark:text-gray-400">
+                        {p.category} · {p.units} units sold
+                      </div>
                     </div>
-                    <div style={{ fontWeight: 700, color: "#0f172a", fontSize: "14px" }}>₹{(p.revenue / 1000).toFixed(1)}K</div>
+                    <div className="font-bold text-gray-900 dark:text-white shrink-0">
+                      ₹{(p.revenue / 1000).toFixed(1)}K
+                    </div>
                   </div>
-                  <div style={{ height: "6px", background: "#f1f5f9", borderRadius: "3px", overflow: "hidden" }}>
-                    <div style={{ height: "100%", width: `${(p.revenue / maxRev) * 100}%`, background: "#6366f1", borderRadius: "3px", transition: "width 0.5s ease" }} />
+                  <div className="h-1.5 bg-gray-100 dark:bg-white/10 rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-indigo-600 rounded-full transition-all duration-500"
+                      style={{ width: `${(p.revenue / maxRev) * 100}%` }}
+                    />
                   </div>
                 </div>
               );
@@ -245,21 +338,25 @@ export default function Analytics() {
         </div>
 
         {/* Category Breakdown */}
-        <div style={{ background: "#fff", borderRadius: "12px", border: "1px solid #e2e8f0", padding: "24px" }}>
-          <h3 style={{ margin: "0 0 16px", fontSize: "15px", fontWeight: 700, color: "#0f172a" }}>Sales by Category</h3>
-          <div style={{ display: "flex", justifyContent: "center", marginBottom: "16px" }}>
-            <DonutChart data={CATEGORY_BREAKDOWN} />
+        <div className="lg:col-span-1 bg-white dark:bg-[#111722] border border-gray-200/80 dark:border-white/5 rounded-2xl p-4 sm:p-6 shadow-xs flex flex-col">
+          <h3 className="text-sm sm:text-base font-bold text-gray-900 dark:text-white mb-4">
+            Sales by Category
+          </h3>
+          <div className="flex justify-center mb-5 shrink-0">
+            <DonutChart data={CATEGORY_BREAKDOWN} isDark={isAdminDark} />
           </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+          <div className="space-y-2 mt-auto">
             {CATEGORY_BREAKDOWN.map((c) => (
-              <div key={c.name} style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                  <div style={{ width: "10px", height: "10px", borderRadius: "50%", background: c.color, flexShrink: 0 }} />
-                  <span style={{ fontSize: "13px", color: "#374151" }}>{c.name}</span>
+              <div key={c.name} className="flex items-center justify-between text-xs sm:text-sm">
+                <div className="flex items-center gap-2 min-w-0">
+                  <div className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: c.color }} />
+                  <span className="text-gray-700 dark:text-gray-200 truncate">{c.name}</span>
                 </div>
-                <div style={{ display: "flex", gap: "12px" }}>
-                  <span style={{ fontSize: "13px", color: "#64748b" }}>{c.percentage}%</span>
-                  <span style={{ fontSize: "13px", fontWeight: 600, color: "#0f172a" }}>₹{(c.revenue / 100000).toFixed(1)}L</span>
+                <div className="flex items-center gap-2.5 shrink-0 ml-2">
+                  <span className="text-gray-500 dark:text-gray-400 text-xs">{c.percentage}%</span>
+                  <span className="font-semibold text-gray-900 dark:text-white">
+                    ₹{(c.revenue / 100000).toFixed(1)}L
+                  </span>
                 </div>
               </div>
             ))}
@@ -268,26 +365,36 @@ export default function Analytics() {
       </div>
 
       {/* Customer Retention */}
-      <div style={{ background: "#fff", borderRadius: "12px", border: "1px solid #e2e8f0", padding: "24px" }}>
-        <h3 style={{ margin: "0 0 16px", fontSize: "15px", fontWeight: 700, color: "#0f172a" }}>Customer Retention</h3>
-        <div style={{ display: "flex", gap: "16px", alignItems: "center" }}>
-          <div style={{ flex: 1 }}>
+      <div className="bg-white dark:bg-[#111722] border border-gray-200/80 dark:border-white/5 rounded-2xl p-4 sm:p-6 shadow-xs">
+        <h3 className="text-sm sm:text-base font-bold text-gray-900 dark:text-white mb-4">
+          Customer Retention
+        </h3>
+        <div className="flex flex-col sm:flex-row items-center gap-5">
+          <div className="flex-1 w-full space-y-3">
             {CUSTOMER_RETENTION.map((r) => (
-              <div key={r.label} style={{ marginBottom: "12px" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "6px" }}>
-                  <span style={{ fontSize: "14px", color: "#374151", fontWeight: 500 }}>{r.label} Customers</span>
-                  <span style={{ fontWeight: 700, color: "#0f172a" }}>{r.value}%</span>
+              <div key={r.label} className="space-y-1.5">
+                <div className="flex justify-between items-center text-xs sm:text-sm">
+                  <span className="text-gray-700 dark:text-gray-200 font-medium">{r.label} Customers</span>
+                  <span className="font-bold text-gray-900 dark:text-white">{r.value}%</span>
                 </div>
-                <div style={{ height: "10px", background: "#f1f5f9", borderRadius: "5px", overflow: "hidden" }}>
-                  <div style={{ height: "100%", width: `${r.value}%`, background: r.color, borderRadius: "5px", transition: "width 0.5s" }} />
+                <div className="h-2 bg-gray-100 dark:bg-white/10 rounded-full overflow-hidden">
+                  <div
+                    className="h-full rounded-full transition-all duration-500"
+                    style={{ width: `${r.value}%`, background: r.color }}
+                  />
                 </div>
               </div>
             ))}
           </div>
-          <div style={{ textAlign: "center", padding: "20px 30px", background: "#f8fafc", borderRadius: "12px" }}>
-            <div style={{ fontSize: "36px", fontWeight: 800, color: "#0f172a" }}>42%</div>
-            <div style={{ fontSize: "13px", color: "#64748b", marginTop: "4px" }}>Retention Rate</div>
-            <div style={{ fontSize: "12px", color: "#10b981", fontWeight: 600, marginTop: "4px" }}>↑ +5.2% vs last period</div>
+
+          <div className="w-full sm:w-auto text-center px-6 py-5 bg-gray-50 dark:bg-white/5 border border-gray-200/60 dark:border-white/5 rounded-2xl shrink-0">
+            <div className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white tracking-tight">
+              42%
+            </div>
+            <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1">Retention Rate</div>
+            <div className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 mt-1">
+              ↑ +5.2% vs last period
+            </div>
           </div>
         </div>
       </div>

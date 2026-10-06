@@ -101,23 +101,58 @@ html.dark .text-\[\#1a1a1a\],
 html.dark .text-black,
 html.dark .text-ink,
 html.dark .text-gray-900,
-html.dark .text-gray-800 {
+html.dark .text-gray-800,
+html.dark .text-slate-900,
+html.dark .text-slate-800,
+html.dark .text-zinc-900,
+html.dark .text-zinc-800 {
   color: #ffffff !important;
 }
 
 /* Secondary & Body Text in Dark Mode */
 html.dark .text-gray-700,
-html.dark .text-gray-600 {
+html.dark .text-gray-600,
+html.dark .text-slate-700,
+html.dark .text-slate-600,
+html.dark .text-zinc-700,
+html.dark .text-zinc-600 {
   color: #f1f5f9 !important;
 }
 
 /* Subtitle & Helper Text in Dark Mode — Visible Light Slate */
-html.dark .text-gray-500 {
+html.dark .text-gray-500,
+html.dark .text-slate-500,
+html.dark .text-zinc-500 {
   color: #cbd5e1 !important;
 }
 
-html.dark .text-gray-400 {
+html.dark .text-gray-400,
+html.dark .text-slate-400,
+html.dark .text-zinc-400 {
   color: #94a3b8 !important;
+}
+
+/* Inline Dark Text Colors in Dark Mode — High Contrast Legibility */
+html.dark [style*="color: #0f172a"],
+html.dark [style*="color:#0f172a"],
+html.dark [style*="color: rgb(15, 23, 42)"],
+html.dark [style*="color: #1e293b"],
+html.dark [style*="color:#1e293b"],
+html.dark [style*="color: rgb(30, 41, 59)"],
+html.dark [style*="color: #374151"],
+html.dark [style*="color:#374151"],
+html.dark [style*="color: rgb(55, 65, 81)"],
+html.dark [style*="color: #334155"],
+html.dark [style*="color:#334155"],
+html.dark [style*="color: rgb(51, 65, 85)"],
+html.dark [style*="color: #111827"],
+html.dark [style*="color:#111827"],
+html.dark [style*="color: #1f2937"],
+html.dark [style*="color:#1f2937"],
+html.dark [style*="color: #000"],
+html.dark [style*="color:#000"],
+html.dark [style*="color: #000000"] {
+  color: #f8fafc !important;
 }
 
 /* Labels and Form Text in Dark Mode */
@@ -171,7 +206,11 @@ html.dark [style*="background: rgb(255, 255, 255)"],
 html.dark [style*="background-color: #fff"],
 html.dark [style*="background-color:#fff"],
 html.dark [style*="background: #f8fafc"],
-html.dark [style*="background: #f1f5f9"] {
+html.dark [style*="background: rgb(248, 250, 252)"],
+html.dark [style*="background: #f1f5f9"],
+html.dark [style*="background: rgb(241, 245, 249)"],
+html.dark [style*="background: #fafafa"],
+html.dark [style*="background: #f9fafb"] {
   background-color: #111722 !important;
   border-color: #1f2a3c !important;
 }
