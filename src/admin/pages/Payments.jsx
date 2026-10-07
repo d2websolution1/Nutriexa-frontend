@@ -123,7 +123,7 @@ function formatDate(iso) {
 }
 
 export default function Payments() {
-  const [transactions, setTransactions] = useState(MOCK_TRANSACTIONS);
+  const [transactions, setTransactions] = useState([]);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
   const [methodFilter, setMethodFilter] = useState("All");
@@ -185,16 +185,8 @@ export default function Payments() {
             };
           });
 
-          // Combine with unique mock transactions
-          setTransactions((prev) => {
-            const combined = [...mappedOrders];
-            for (const m of MOCK_TRANSACTIONS) {
-              if (!combined.some((c) => c.orderId === m.orderId)) {
-                combined.push(m);
-              }
-            }
-            return combined;
-          });
+          // Set real database transactions only
+          setTransactions(mappedOrders);
         }
       }
     } catch (err) {

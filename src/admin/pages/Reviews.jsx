@@ -111,7 +111,7 @@ function formatDate(iso) {
 }
 
 export default function Reviews() {
-  const [reviews, setReviews] = useState(MOCK_REVIEWS);
+  const [reviews, setReviews] = useState([]);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
   const [ratingFilter, setRatingFilter] = useState("All");
@@ -129,7 +129,7 @@ export default function Reviews() {
       const res = await fetch(`${API_URL}/api/reviews`);
       if (res.ok) {
         const data = await res.json();
-        if (Array.isArray(data) && data.length > 0) {
+        if (Array.isArray(data)) {
           setReviews(data);
         }
       }
