@@ -569,39 +569,46 @@ export default function HomepageCMS() {
                 key={banner.id}
                 className="bg-white dark:bg-[#111722] border border-gray-200/80 dark:border-white/5 rounded-2xl overflow-hidden shadow-xs"
               >
-                {/* Banner Live Slide Preview Card */}
+                                {/* Banner Live Slide Preview Card (Full Section Banner) */}
                 <div
-                  className="relative overflow-hidden p-4 sm:p-6 min-h-[140px] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+                  className="relative overflow-hidden p-4 sm:p-6 min-h-[150px] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
                   style={{ background: getGradientCss(banner.bgGradient) }}
                 >
+                  {/* Full Section Banner Background Image */}
+                  {banner.image && (
+                    <img
+                      src={resolveImageUrl(banner.image)}
+                      alt={banner.title}
+                      className="absolute inset-0 w-full h-full object-cover object-center"
+                    />
+                  )}
+                  {/* Dark scrim overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/70 to-black/35 pointer-events-none" />
+
                   {/* Left: Text & CTA */}
-                  <div className="z-10 w-full sm:max-w-[62%] pr-14 sm:pr-0">
-                    <div className="text-white font-extrabold text-base sm:text-xl tracking-tight leading-snug">
+                  <div className="z-10 w-full sm:max-w-[68%] pr-14 sm:pr-0">
+                    <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/15 backdrop-blur-md border border-white/20 text-[10px] font-semibold text-white uppercase mb-2">
+                      ⚡ Official Promotion
+                    </div>
+                    <div className="text-white font-black text-base sm:text-xl tracking-tight leading-snug drop-shadow-md">
                       {banner.title || "Untitled Banner"}
                     </div>
-                    <div className="text-white/85 text-xs sm:text-sm mt-1 leading-relaxed">
+                    <div className="text-white/90 text-xs sm:text-sm mt-1 leading-relaxed drop-shadow-sm">
                       {banner.subtitle}
                     </div>
                     {banner.cta && (
                       <div className="mt-3">
-                        <span className="inline-block px-3.5 py-1.5 bg-white text-gray-900 rounded-lg text-xs font-bold shadow-xs">
+                        <span className="inline-block px-3.5 py-1.5 bg-[#4CAF37] text-white rounded-lg text-xs font-bold shadow-md">
                           {banner.cta} →
                         </span>
                       </div>
                     )}
                   </div>
 
-                  {/* Right: Actual Product/Banner Image */}
-                  <div className="z-10 flex sm:flex-col items-center justify-center gap-2 self-center sm:self-auto">
-                    <div className="w-24 sm:w-28 h-20 sm:h-24 rounded-xl bg-white/15 backdrop-blur-md border border-white/20 flex items-center justify-center p-2 overflow-hidden">
-                      <img
-                        src={resolveImageUrl(banner.image)}
-                        alt={banner.title}
-                        className="max-w-full max-h-full object-contain drop-shadow-md"
-                      />
-                    </div>
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-black/40 text-emerald-200">
-                      {banner.image ? "✓ Custom Image" : "• Default Mockup"}
+                  {/* Right: Badge Indicator */}
+                  <div className="z-10 flex sm:flex-col items-end justify-center gap-2 self-end sm:self-auto ml-auto">
+                    <span className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/20 text-white shadow-sm">
+                      {banner.image ? "🖼️ Full Background Banner" : "✨ Default Mockup"}
                     </span>
                   </div>
 
@@ -1344,32 +1351,44 @@ export default function HomepageCMS() {
 
             {/* LIVE PREVIEW OF THE BANNER IN MODAL */}
             <div className="mb-5">
-              <label className="block text-xs font-bold text-gray-600 dark:text-gray-400 mb-1.5 uppercase tracking-wide">
-                Live Slide Preview
-              </label>
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="block text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wide">
+                  Live Hero Section Preview
+                </label>
+                <span className="text-[11px] text-emerald-500 font-semibold">
+                  Full Section Width Banner
+                </span>
+              </div>
               <div
                 style={{ background: getGradientCss(editBanner.bgGradient) }}
-                className="rounded-xl p-4 sm:p-5 flex items-center justify-between text-white shadow-md relative overflow-hidden"
+                className="rounded-xl p-4 sm:p-6 min-h-[160px] flex items-center justify-between text-white shadow-md relative overflow-hidden"
               >
-                <div className="max-w-[65%]">
-                  <div className="text-sm sm:text-base font-extrabold leading-snug">
-                    {editBanner.title || "Headline preview..."}
-                  </div>
-                  <div className="text-xs opacity-90 mt-1">
-                    {editBanner.subtitle || "Subtitle tagline preview..."}
-                  </div>
-                  <div className="mt-2.5">
-                    <span className="text-[11px] font-bold bg-white text-gray-900 px-3 py-1 rounded-md shadow-xs inline-block">
-                      {editBanner.cta || "Shop Now"} →
-                    </span>
-                  </div>
-                </div>
-                <div className="w-20 h-18 sm:w-24 sm:h-20 flex items-center justify-center p-1 bg-white/10 backdrop-blur-xs rounded-lg border border-white/20">
+                {/* Full Banner Image as Background */}
+                {editBanner.image && (
                   <img
                     src={resolveImageUrl(editBanner.image)}
                     alt="Preview"
-                    className="max-h-full max-w-full object-contain drop-shadow-md"
+                    className="absolute inset-0 w-full h-full object-cover object-center"
                   />
+                )}
+                {/* Dark Gradient Overlay for Text Clarity */}
+                <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/75 to-black/35 pointer-events-none" />
+
+                <div className="relative z-10 max-w-[80%]">
+                  <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/15 backdrop-blur-md border border-white/20 text-[10px] font-semibold uppercase mb-2">
+                    ⚡ Official Promotion
+                  </div>
+                  <div className="text-base sm:text-lg font-black leading-snug drop-shadow-md">
+                    {editBanner.title || "Headline preview..."}
+                  </div>
+                  <div className="text-xs text-gray-200 mt-1 drop-shadow-sm">
+                    {editBanner.subtitle || "Subtitle tagline preview..."}
+                  </div>
+                  <div className="mt-3">
+                    <span className="text-xs font-bold bg-[#4CAF37] text-white px-3.5 py-1.5 rounded-lg shadow-md inline-block">
+                      {editBanner.cta || "Shop Now"} →
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1378,7 +1397,7 @@ export default function HomepageCMS() {
             <div className="mb-5 p-4 rounded-xl bg-gray-50 dark:bg-white/5 border border-dashed border-gray-300 dark:border-white/10">
               <div className="flex justify-between items-center mb-3">
                 <label className="text-xs sm:text-sm font-bold text-gray-800 dark:text-white flex items-center gap-1.5">
-                  <FiImage className="text-[#4CAF37]" /> Banner Product Image
+                  <FiImage className="text-[#4CAF37]" /> Hero Banner Background Image
                 </label>
                 {editBanner.image && (
                   <button

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+﻿import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import {
   FiCheckCircle,
@@ -6,6 +6,7 @@ import {
   FiChevronLeft,
   FiChevronRight,
   FiZap,
+  FiShield,
 } from "react-icons/fi";
 import heroProductImage from "../assets/homepage-img/hero-product.png";
 import { motion, AnimatePresence } from "framer-motion";
@@ -28,14 +29,6 @@ const GRADIENT_MAP = {
   "from-orange-500 to-rose-600": "from-amber-950/90 via-[#351010] to-rose-950/90",
   "from-blue-600 to-cyan-500": "from-blue-950/90 via-[#0b2447] to-cyan-950/90",
   "from-violet-600 to-pink-600": "from-purple-950/90 via-[#2f0c3d] to-pink-950/90",
-};
-
-const ACCENT_COLOR_MAP = {
-  "from-indigo-600 to-purple-700": { bg: "bg-indigo-500", text: "text-indigo-400", border: "border-indigo-500/30" },
-  "from-emerald-600 to-teal-700": { bg: "bg-[#4CAF37]", text: "text-[#4CAF37]", border: "border-[#4CAF37]/30" },
-  "from-orange-500 to-rose-600": { bg: "bg-orange-500", text: "text-orange-400", border: "border-orange-500/30" },
-  "from-blue-600 to-cyan-500": { bg: "bg-cyan-500", text: "text-cyan-400", border: "border-cyan-500/30" },
-  "from-violet-600 to-pink-600": { bg: "bg-pink-500", text: "text-pink-400", border: "border-pink-500/30" },
 };
 
 export default function Hero() {
@@ -92,7 +85,7 @@ export default function Hero() {
 
     timerRef.current = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % activeBanners.length);
-    }, 5500);
+    }, 6000);
 
     return () => clearInterval(timerRef.current);
   }, [activeBanners.length, isPaused, currentIndex]);
@@ -109,11 +102,6 @@ export default function Hero() {
   const bgClasses = !isCustomBg
     ? GRADIENT_MAP[currentBanner.bgGradient] || "from-slate-900 via-gray-900 to-neutral-900"
     : "";
-  const accent = ACCENT_COLOR_MAP[currentBanner.bgGradient] || {
-    bg: "bg-[#4CAF37]",
-    text: "text-[#4CAF37]",
-    border: "border-[#4CAF37]/30",
-  };
 
   const nextSlide = () => {
     setCurrentIndex((prev) => (prev + 1) % activeBanners.length);
@@ -121,6 +109,12 @@ export default function Hero() {
 
   const prevSlide = () => {
     setCurrentIndex((prev) => (prev - 1 + activeBanners.length) % activeBanners.length);
+  };
+
+  const resolveBannerImage = (img) => {
+    if (!img || !img.trim()) return heroProductImage;
+    if (img.startsWith("http") || img.startsWith("data:")) return img;
+    return `${API_URL}${img.startsWith("/") ? "" : "/"}${img}`;
   };
 
   const highlights = [
@@ -132,155 +126,166 @@ export default function Hero() {
 
   return (
     <section
-      className="relative overflow-hidden bg-[#090d16] text-white transition-all duration-700 select-none"
+      className="relative overflow-hidden bg-[#070b12] text-white select-none transition-all duration-700"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
-      {/* Background dynamic gradient mesh */}
-      <div
-        className={`absolute inset-0 opacity-95 transition-all duration-1000 ${
-          !isCustomBg ? `bg-gradient-to-br ${bgClasses}` : ""
-        }`}
-        style={isCustomBg ? { background: currentBanner.bgGradient } : undefined}
-      />
-
-      {/* Decorative ambient glowing orbs */}
-      <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-emerald-500/10 blur-[120px] pointer-events-none" />
-      <div className="absolute -bottom-32 -right-32 w-96 h-96 rounded-full bg-indigo-500/15 blur-[140px] pointer-events-none" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[500px] rounded-full bg-white/[0.02] blur-[100px] pointer-events-none" />
-
-      {/* Subtle Grid texture overlay */}
-      <div
-        className="absolute inset-0 opacity-[0.03] pointer-events-none"
-        style={{
-          backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
-          backgroundSize: "28px 28px",
-        }}
-      />
-
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 md:px-10 py-12 sm:py-16 md:py-20 min-h-[500px] md:min-h-[560px] flex items-center">
+      <div className="relative min-h-[500px] sm:min-h-[560px] md:min-h-[620px] flex items-center">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentBanner.id || currentIndex}
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -15 }}
-            transition={{ duration: 0.45, ease: "easeOut" }}
-            className="w-full grid md:grid-cols-12 gap-8 md:gap-12 items-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.55, ease: "easeInOut" }}
+            className="absolute inset-0 w-full h-full flex items-center"
           >
-            {/* Left Column: Headline, Subtitle, Highlights, CTA */}
-            <div className="md:col-span-7 text-center md:text-left z-10">
-              {/* Badge */}
+            {/* 1. Full-section Banner Image Background */}
+            <div className="absolute inset-0 w-full h-full overflow-hidden">
+              <motion.img
+                initial={{ scale: 1.04 }}
+                animate={{ scale: 1 }}
+                transition={{ duration: 5, ease: "easeOut" }}
+                src={resolveBannerImage(currentBanner.image)}
+                alt={currentBanner.title}
+                className="w-full h-full object-cover object-center"
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = heroProductImage;
+                }}
+              />
+
+              {/* 2. Deep Gradient Scrim: ensures sharp text contrast while showing the full banner */}
+              <div className="absolute inset-0 bg-gradient-to-r from-[#070b12]/95 via-[#070b12]/80 md:via-[#070b12]/55 to-black/35 md:to-black/20" />
+
+              {/* 3. Top and Bottom Vignette to seamlessly blend with header and next section */}
+              <div className="absolute inset-0 bg-gradient-to-b from-[#070b12]/70 via-transparent to-[#070b12]" />
+
+              {/* 4. Subtle Tint Matching Custom/Preset Gradient */}
+              <div
+                className={`absolute inset-0 opacity-25 mix-blend-color-dodge transition-all duration-700 pointer-events-none ${
+                  !isCustomBg ? `bg-gradient-to-br ${bgClasses}` : ""
+                }`}
+                style={isCustomBg ? { background: currentBanner.bgGradient } : undefined}
+              />
+
+              {/* 5. Micro grid texture overlay */}
+              <div
+                className="absolute inset-0 opacity-[0.035] pointer-events-none"
+                style={{
+                  backgroundImage: "radial-gradient(circle at 1px 1px, white 1px, transparent 0)",
+                  backgroundSize: "28px 28px",
+                }}
+              />
+            </div>
+
+            {/* Decorative ambient glowing orbs */}
+            <div className="absolute -top-24 -left-24 w-96 h-96 rounded-full bg-emerald-500/15 blur-[120px] pointer-events-none" />
+            <div className="absolute -bottom-24 -right-24 w-96 h-96 rounded-full bg-indigo-500/15 blur-[140px] pointer-events-none" />
+
+            {/* Foreground Content Container */}
+            <div className="relative z-10 max-w-7xl w-full mx-auto px-4 sm:px-6 md:px-10 py-12 sm:py-16 md:py-20 flex flex-col md:flex-row items-center justify-between gap-8">
+              {/* Left Column: Promotion Badge, Headline, Subtitle, Trust Highlights, CTAs */}
+              <div className="w-full max-w-2xl text-center md:text-left">
+                {/* Official Store Promotion Badge */}
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1, duration: 0.35 }}
+                  className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-xs font-semibold tracking-wide uppercase mb-4 sm:mb-5 shadow-lg shadow-black/30"
+                >
+                  <FiZap className="text-amber-400 animate-pulse" size={14} />
+                  <span className="text-white/95 font-medium tracking-wider">Official Nutriexa Store Promotion</span>
+                </motion.div>
+
+                {/* Main Headline */}
+                <motion.h1
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.15, duration: 0.45 }}
+                  className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black leading-[1.08] tracking-tight text-white drop-shadow-[0_4px_24px_rgba(0,0,0,0.9)]"
+                >
+                  {currentBanner.title}
+                </motion.h1>
+
+                {/* Subtitle */}
+                {currentBanner.subtitle && (
+                  <motion.p
+                    initial={{ opacity: 0, y: 15 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.22, duration: 0.45 }}
+                    className="mt-3 sm:mt-5 text-gray-200 text-sm sm:text-base md:text-lg max-w-xl mx-auto md:mx-0 leading-relaxed drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)]"
+                  >
+                    {currentBanner.subtitle}
+                  </motion.p>
+                )}
+
+                {/* Trust Highlights */}
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3, duration: 0.45 }}
+                  className="mt-6 sm:mt-7 grid grid-cols-2 sm:grid-cols-4 gap-2.5 max-w-lg mx-auto md:mx-0"
+                >
+                  {highlights.map((item) => (
+                    <div
+                      key={item.label}
+                      className="flex items-center justify-center md:justify-start gap-1.5 p-2 rounded-lg bg-black/50 backdrop-blur-md border border-white/15 shadow-md shadow-black/30"
+                    >
+                      <FiCheckCircle className="text-emerald-400 shrink-0" size={15} />
+                      <span className="text-[11px] font-semibold text-gray-100 truncate">
+                        {item.label}
+                      </span>
+                    </div>
+                  ))}
+                </motion.div>
+
+                {/* CTA Buttons */}
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.38, duration: 0.45 }}
+                  className="mt-7 sm:mt-8 flex flex-col sm:flex-row items-center justify-center md:justify-start gap-4"
+                >
+                  <Link
+                    to={currentBanner.ctaLink || "/products"}
+                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 bg-gradient-to-r from-[#4CAF37] to-[#3d912c] hover:from-[#57c93f] hover:to-[#46a532] text-white font-bold text-sm sm:text-base px-8 py-3.5 rounded-xl shadow-lg shadow-green-950/60 hover:shadow-green-900/80 transition-all transform hover:-translate-y-0.5 active:translate-y-0"
+                  >
+                    {currentBanner.cta || "Shop Now"}
+                    <FiArrowRight size={18} />
+                  </Link>
+
+                  <Link
+                    to="/deals"
+                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-black/40 hover:bg-black/60 border border-white/20 text-white text-sm font-semibold transition backdrop-blur-md shadow-lg shadow-black/30"
+                  >
+                    View All Offers
+                  </Link>
+                </motion.div>
+              </div>
+
+              {/* Right Side: Sleek Authenticity Seal floating in place */}
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.1, duration: 0.3 }}
-                className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-xs font-semibold tracking-wide uppercase mb-5"
+                transition={{ delay: 0.25, duration: 0.45 }}
+                className="hidden lg:flex flex-col items-end justify-center self-end mb-4 z-10 pointer-events-none"
               >
-                <FiZap className="text-amber-400 animate-pulse" size={13} />
-                <span className="text-white/90">Official Nutriexa Store Promotion</span>
-              </motion.div>
-
-              {/* Title */}
-              <motion.h1
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.15, duration: 0.4 }}
-                className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black leading-[1.08] tracking-tight drop-shadow-sm text-white"
-              >
-                {currentBanner.title}
-              </motion.h1>
-
-              {/* Subtitle */}
-              <motion.p
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.22, duration: 0.4 }}
-                className="mt-4 sm:mt-5 text-gray-300 text-sm sm:text-base md:text-lg max-w-xl mx-auto md:mx-0 leading-relaxed"
-              >
-                {currentBanner.subtitle}
-              </motion.p>
-
-              {/* Trust badges */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.3, duration: 0.4 }}
-                className="mt-6 sm:mt-7 grid grid-cols-2 sm:grid-cols-4 gap-2.5 max-w-lg mx-auto md:mx-0"
-              >
-                {highlights.map((item) => (
-                  <div
-                    key={item.label}
-                    className="flex items-center justify-center md:justify-start gap-1.5 p-2 rounded-lg bg-white/[0.06] backdrop-blur-xs border border-white/[0.08]"
-                  >
-                    <FiCheckCircle className="text-emerald-400 shrink-0" size={15} />
-                    <span className="text-[11px] font-semibold text-gray-200 truncate">
-                      {item.label}
-                    </span>
+                <div className="bg-black/60 backdrop-blur-md border border-emerald-500/30 rounded-2xl p-4 flex items-center gap-3.5 shadow-2xl shadow-black/80">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500/20 to-teal-500/10 border border-emerald-400/30 flex items-center justify-center text-emerald-400 shadow-inner">
+                    <FiShield size={24} />
                   </div>
-                ))}
-              </motion.div>
-
-              {/* CTA Button */}
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.38, duration: 0.4 }}
-                className="mt-8 flex flex-col sm:flex-row items-center justify-center md:justify-start gap-4"
-              >
-                <Link
-                  to={currentBanner.ctaLink || "/products"}
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 bg-gradient-to-r from-[#4CAF37] to-[#3d912c] hover:from-[#57c93f] hover:to-[#46a532] text-white font-bold text-sm sm:text-base px-8 py-3.5 rounded-xl shadow-lg shadow-green-900/40 hover:shadow-green-900/60 transition-all transform hover:-translate-y-0.5 active:translate-y-0"
-                >
-                  {currentBanner.cta || "Shop Now"}
-                  <FiArrowRight size={18} />
-                </Link>
-
-                <Link
-                  to="/deals"
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-white/[0.08] hover:bg-white/[0.14] border border-white/15 text-white/90 text-sm font-semibold transition backdrop-blur-md"
-                >
-                  View All Offers
-                </Link>
-              </motion.div>
-            </div>
-
-            {/* Right Column: Hero Showcase Image with Authenticity Stamp */}
-            <div className="md:col-span-5 relative flex justify-center items-center mt-6 md:mt-0">
-              {/* Product Glow */}
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-56 h-56 sm:w-72 sm:h-72 md:w-80 md:h-80 rounded-full bg-emerald-500/20 blur-3xl" />
-              </div>
-
-                {/* Product Image */}
-                <motion.div
-                  initial={{ scale: 0.88, opacity: 0, rotate: -2 }}
-                  animate={{ scale: 1, opacity: 1, rotate: 0 }}
-                  transition={{ duration: 0.6, ease: "easeOut" }}
-                  className="relative z-10 max-w-[280px] sm:max-w-[340px] md:max-w-[400px] flex items-center justify-center"
-                >
-                  <img
-                    src={
-                      currentBanner.image && currentBanner.image.trim()
-                        ? currentBanner.image.startsWith("http") || currentBanner.image.startsWith("data:")
-                          ? currentBanner.image
-                          : `${API_URL}${currentBanner.image.startsWith("/") ? "" : "/"}${currentBanner.image}`
-                        : heroProductImage
-                    }
-                    alt={currentBanner.title}
-                    className="w-full h-auto max-h-[380px] object-contain drop-shadow-[0_20px_40px_rgba(0,0,0,0.7)]"
-                    onError={(e) => {
-                      // Fallback to default product image if custom image URL fails
-                      e.target.onerror = null;
-                      e.target.src = heroProductImage;
-                    }}
-                  />
-
-                {/* Rotating Authenticity Badge */}
-                <div className="absolute -top-3 -right-2 sm:right-2 bg-black/70 backdrop-blur-md border border-emerald-400/40 text-emerald-400 rounded-full w-20 h-20 sm:w-22 sm:h-22 p-2 flex flex-col items-center justify-center text-center shadow-xl shadow-black/50 rotate-6 pointer-events-none">
-                  <span className="text-[9px] font-extrabold tracking-wider uppercase text-gray-300">100%</span>
-                  <span className="text-[10px] font-black tracking-tight text-emerald-400">ORIGINAL</span>
-                  <span className="text-[8px] font-medium text-gray-400">VERIFIED</span>
+                  <div>
+                    <div className="text-[10px] font-extrabold tracking-widest uppercase text-emerald-400">
+                      100% Genuine
+                    </div>
+                    <div className="text-xs font-bold text-white tracking-wide">
+                      Verified Authentic Supplements
+                    </div>
+                    <div className="text-[10px] text-gray-300 mt-0.5">
+                      Directly from Authorized Importers
+                    </div>
+                  </div>
                 </div>
               </motion.div>
             </div>
@@ -293,14 +298,14 @@ export default function Hero() {
             <button
               onClick={prevSlide}
               aria-label="Previous Banner"
-              className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/40 hover:bg-black/70 backdrop-blur-md border border-white/20 text-white flex items-center justify-center transition-all hover:scale-110 active:scale-95 z-20 cursor-pointer shadow-lg"
+              className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 w-10 sm:w-11 h-10 sm:h-11 rounded-full bg-black/40 hover:bg-black/75 backdrop-blur-md border border-white/20 text-white flex items-center justify-center transition-all hover:scale-110 active:scale-95 z-20 cursor-pointer shadow-xl shadow-black/40"
             >
               <FiChevronLeft size={22} />
             </button>
             <button
               onClick={nextSlide}
               aria-label="Next Banner"
-              className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/40 hover:bg-black/70 backdrop-blur-md border border-white/20 text-white flex items-center justify-center transition-all hover:scale-110 active:scale-95 z-20 cursor-pointer shadow-lg"
+              className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 w-10 sm:w-11 h-10 sm:h-11 rounded-full bg-black/40 hover:bg-black/75 backdrop-blur-md border border-white/20 text-white flex items-center justify-center transition-all hover:scale-110 active:scale-95 z-20 cursor-pointer shadow-xl shadow-black/40"
             >
               <FiChevronRight size={22} />
             </button>
@@ -314,8 +319,8 @@ export default function Hero() {
                   aria-label={`Slide ${idx + 1}`}
                   className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
                     idx === currentIndex
-                      ? "w-8 bg-[#4CAF37]"
-                      : "w-2 bg-white/30 hover:bg-white/60"
+                      ? "w-8 bg-[#4CAF37] shadow-md shadow-emerald-500/50"
+                      : "w-2 bg-white/40 hover:bg-white/70"
                   }`}
                 />
               ))}
