@@ -13,6 +13,7 @@ import {
 } from "react-icons/fi";
 import { TbTicket, TbDiscount, TbTruckDelivery } from "react-icons/tb";
 import { useCart } from "../context/CartContext";
+import { useAuth } from "../context/AuthContext";
 import { API_URL } from "../config";
 
 const AVAILABLE_OFFERS = [
@@ -60,6 +61,7 @@ const AVAILABLE_OFFERS = [
 
 export default function Cart() {
   const { cartItems, updateQuantity, removeFromCart, cartTotal } = useCart();
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   const [inputCoupon, setInputCoupon] = useState("");
@@ -524,7 +526,15 @@ export default function Cart() {
           </div>
 
           <button
-            onClick={() => navigate("/checkout")}
+            onClick={() => {
+              if (!user) {
+                sessionStorage.setItem("nutriexa_redirect_after_login", "/checkout");
+                sessionStorage.setItem("nutriexa_login_prompt", "Please sign in or create an account to complete your order.");
+                navigate("/login");
+              } else {
+                navigate("/checkout");
+              }
+            }}
             className="w-full mt-6 bg-[#4CAF37] hover:bg-[#439e31] text-white font-bold py-3.5 rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2 text-sm uppercase tracking-wide cursor-pointer"
           >
             Proceed to Checkout <FiArrowRight size={16} />

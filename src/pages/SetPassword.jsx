@@ -67,7 +67,10 @@ export default function SetPassword() {
       }
 
       loginUser(data.user, data.token);
-      navigate("/profile");
+      const redirect = sessionStorage.getItem("nutriexa_redirect_after_login") || "/profile";
+      sessionStorage.removeItem("nutriexa_redirect_after_login");
+      sessionStorage.removeItem("nutriexa_login_prompt");
+      navigate(redirect, { replace: true });
     } catch (err) {
       setError("Unable to connect to server.");
     } finally {

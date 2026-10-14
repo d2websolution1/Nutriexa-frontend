@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FiUser, FiMail, FiArrowRight, FiShield } from "react-icons/fi";
+import { FiUser, FiMail, FiArrowRight, FiShield, FiInfo } from "react-icons/fi";
 
 import { API_URL as API_BASE } from "../config";
 
@@ -12,6 +12,12 @@ export default function Signup() {
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [signupPrompt, setSignupPrompt] = useState("");
+
+  useEffect(() => {
+    const prompt = sessionStorage.getItem("nutriexa_login_prompt");
+    if (prompt) setSignupPrompt(prompt);
+  }, []);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -81,6 +87,13 @@ export default function Signup() {
             Sign up with your email to receive a 6-digit verification code.
           </p>
         </div>
+
+        {signupPrompt && (
+          <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold rounded-lg px-3.5 py-2.5 mb-4 flex items-start gap-2 shadow-xs">
+            <FiInfo size={15} className="shrink-0 mt-0.5 text-emerald-600" />
+            <span>{signupPrompt}</span>
+          </div>
+        )}
 
         {error && (
           <div className="bg-red-50 border border-red-100 text-red-600 text-xs font-medium rounded-lg px-3.5 py-2.5 mb-4">

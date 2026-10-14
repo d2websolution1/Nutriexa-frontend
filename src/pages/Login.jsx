@@ -19,12 +19,12 @@ export default function Login() {
     const prompt = sessionStorage.getItem("nutriexa_login_prompt");
     if (prompt) {
       setLoginPrompt(prompt);
-      sessionStorage.removeItem("nutriexa_login_prompt");
     }
     // If already logged in, redirect away
     if (user) {
       const redirect = sessionStorage.getItem("nutriexa_redirect_after_login") || "/profile";
       sessionStorage.removeItem("nutriexa_redirect_after_login");
+      sessionStorage.removeItem("nutriexa_login_prompt");
       navigate(redirect, { replace: true });
     }
   }, [user, navigate]);
@@ -80,6 +80,7 @@ export default function Login() {
       // Redirect back to the protected page, or profile by default
       const redirect = sessionStorage.getItem("nutriexa_redirect_after_login") || "/profile";
       sessionStorage.removeItem("nutriexa_redirect_after_login");
+      sessionStorage.removeItem("nutriexa_login_prompt");
       navigate(redirect, { replace: true });
     } catch (err) {
       setError("Unable to connect to server. Please ensure backend is running.");

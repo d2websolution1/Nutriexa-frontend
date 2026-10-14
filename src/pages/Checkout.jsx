@@ -188,7 +188,7 @@ export default function Checkout() {
   useEffect(() => {
     if (!user) {
       sessionStorage.setItem("nutriexa_redirect_after_login", "/checkout");
-      sessionStorage.setItem("nutriexa_login_prompt", "Please log in to proceed with checkout.");
+      sessionStorage.setItem("nutriexa_login_prompt", "Please sign in or create an account to complete your order.");
       navigate("/login", { replace: true });
     }
   }, [user, navigate]);
