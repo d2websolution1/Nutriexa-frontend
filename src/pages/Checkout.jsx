@@ -152,7 +152,7 @@ const INDIAN_STATES = [
 
 export default function Checkout() {
   const { cartItems, cartTotal, clearCart } = useCart();
-  const { user } = useAuth();
+  const { user, loginUser } = useAuth();
   const navigate = useNavigate();
 
   const [paymentMethod, setPaymentMethod] = useState("RAZORPAY"); // "RAZORPAY" | "COD"
@@ -184,14 +184,6 @@ export default function Checkout() {
     defaultStandardRate: 49,
   });
 
-  // Redirect unauthenticated users to login
-  useEffect(() => {
-    if (!user) {
-      sessionStorage.setItem("nutriexa_redirect_after_login", "/checkout");
-      sessionStorage.setItem("nutriexa_login_prompt", "Please sign in or create an account to complete your order.");
-      navigate("/login", { replace: true });
-    }
-  }, [user, navigate]);
 
   useEffect(() => {
     fetch(`${API_BASE}/api/shipping/settings`)
@@ -299,8 +291,16 @@ export default function Checkout() {
       setError("Please enter your full name.");
       return false;
     }
+    if (!form.phone.trim()) {
+      setError("Please enter your mobile number.");
+      return false;
+    }
     if (!/^\d{10}$/.test(form.phone.trim())) {
       setError("Please enter a valid 10-digit mobile number.");
+      return false;
+    }
+    if (!form.email.trim() || !form.email.includes("@") || !form.email.includes(".")) {
+      setError("Please enter a valid Gmail / Email address to create your account.");
       return false;
     }
     if (!form.address.trim()) {
@@ -496,12 +496,22 @@ export default function Checkout() {
         throw new Error(data.message || "Payment verification failed.");
       }
 
+      // Seamless auto-login if account created or returned
+      if (data.user && data.token && loginUser) {
+        loginUser(data.user, data.token);
+      }
+
       clearCart();
       const trackingNumber = data.order?.order_number || data.order?.id;
-      setOrderPlaced({ orderNumber: data.order?.order_number, trackingId: String(trackingNumber).replace("#", "") });
+      setOrderPlaced({
+        orderNumber: data.order?.order_number,
+        trackingId: String(trackingNumber).replace("#", ""),
+        userEmail: data.user?.email || form.email,
+        userName: data.user?.name || form.name,
+      });
       setTimeout(() => {
         navigate(`/track-order?order=${encodeURIComponent(String(trackingNumber).replace("#", ""))}`);
-      }, 3000);
+      }, 3500);
     } catch (err) {
       setError(err.message || "Failed to verify and save order.");
     } finally {
@@ -548,12 +558,22 @@ export default function Checkout() {
         throw new Error(data.message || "Failed to place order.");
       }
 
+      // Seamless auto-login if account created or returned
+      if (data.user && data.token && loginUser) {
+        loginUser(data.user, data.token);
+      }
+
       clearCart();
       const trackingNumber = data.order_number || data.id;
-      setOrderPlaced({ orderNumber: data.order_number, trackingId: String(trackingNumber).replace("#", "") });
+      setOrderPlaced({
+        orderNumber: data.order_number,
+        trackingId: String(trackingNumber).replace("#", ""),
+        userEmail: data.user?.email || form.email,
+        userName: data.user?.name || form.name,
+      });
       setTimeout(() => {
         navigate(`/track-order?order=${encodeURIComponent(String(trackingNumber).replace("#", ""))}`);
-      }, 3000);
+      }, 3500);
     } catch (err) {
       setError(err.message || "Failed to place order.");
     } finally {
@@ -574,9 +594,13 @@ export default function Checkout() {
             <FiCheckCircle size={40} color="#fff" />
           </div>
           <h1 className="text-2xl font-extrabold text-[#1a1a1a] mb-2">Order Placed! 🎉</h1>
-          <p className="text-gray-500 text-sm mb-4">
+          <p className="text-gray-500 text-sm mb-3">
             Your order <span className="font-bold text-[#4CAF37]">{orderPlaced.orderNumber}</span> has been placed successfully.
           </p>
+          <div className="my-4 py-2.5 px-4 bg-emerald-50 rounded-xl border border-emerald-100 text-xs text-emerald-800 flex items-center justify-center gap-2">
+            <FiCheckCircle className="text-emerald-600 shrink-0" size={16} />
+            <span>Account created & signed in with <strong>{orderPlaced.userEmail}</strong>!</span>
+          </div>
           <p className="text-gray-400 text-xs mb-6">Redirecting to order tracking page...</p>
           <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
             <div
@@ -685,15 +709,21 @@ export default function Checkout() {
             </div>
 
             <div className="mt-4">
-              <label className="text-xs font-semibold text-gray-700 mb-1 block">Email Address (Optional)</label>
+              <label className="text-xs font-semibold text-gray-700 mb-1 flex items-center justify-between">
+                <span>Email Address (Gmail) *</span>
+                <span className="text-[11px] text-[#4CAF37] font-semibold">✨ Auto-creates your account</span>
+              </label>
               <input
                 type="email"
                 name="email"
                 value={form.email}
                 onChange={handleChange}
-                placeholder="For order receipt & tracking updates"
+                placeholder="Enter your Gmail (e.g. rahul@gmail.com)"
                 className="w-full border border-gray-200 rounded-lg px-3.5 py-2.5 text-sm outline-none focus:border-[#4CAF37] focus:ring-1 focus:ring-[#4CAF37]"
               />
+              <p className="text-[11px] text-gray-400 mt-1">
+                Your Nutriexa account will be created automatically using this Gmail to track your order.
+              </p>
             </div>
 
             <div className="mt-4">

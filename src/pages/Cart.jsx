@@ -527,13 +527,7 @@ export default function Cart() {
 
           <button
             onClick={() => {
-              if (!user) {
-                sessionStorage.setItem("nutriexa_redirect_after_login", "/checkout");
-                sessionStorage.setItem("nutriexa_login_prompt", "Please sign in or create an account to complete your order.");
-                navigate("/login");
-              } else {
-                navigate("/checkout");
-              }
+              navigate("/checkout");
             }}
             className="w-full mt-6 bg-[#4CAF37] hover:bg-[#439e31] text-white font-bold py-3.5 rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2 text-sm uppercase tracking-wide cursor-pointer"
           >

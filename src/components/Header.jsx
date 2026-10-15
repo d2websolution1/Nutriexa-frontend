@@ -413,24 +413,28 @@ export default function Header() {
               </Link>
 
               {/* Account Dropdown with Hover & Click */}
-              <div
-                className="relative"
-                ref={desktopAccountMenuRef}
-                onMouseEnter={handleAccountMouseEnter}
-                onMouseLeave={handleAccountMouseLeave}
-              >
-                <button
-                  onClick={() => setDesktopAccountOpen((prev) => !prev)}
-                  className="flex items-center gap-1.5 hover:text-[#22c55e] transition-colors cursor-pointer focus:outline-none py-2"
+              {/* Account Dropdown with Hover & Click (shown when authenticated) */}
+              {(user || admin) && (
+                <div
+                  className="relative"
+                  ref={desktopAccountMenuRef}
+                  onMouseEnter={handleAccountMouseEnter}
+                  onMouseLeave={handleAccountMouseLeave}
                 >
-                  <FiUser size={19} className="text-gray-300" />
-                  <span className="font-medium whitespace-nowrap">Account</span>
-                  <FiChevronDown
-                    size={14}
-                    className={`text-gray-400 transition-transform ${desktopAccountOpen ? "rotate-180 text-[#22c55e]" : ""
-                      }`}
-                  />
-                </button>
+                  <button
+                    onClick={() => setDesktopAccountOpen((prev) => !prev)}
+                    className="flex items-center gap-1.5 hover:text-[#22c55e] transition-colors cursor-pointer focus:outline-none py-2"
+                  >
+                    <FiUser size={19} className="text-gray-300" />
+                    <span className="font-medium whitespace-nowrap">
+                      {user?.name ? user.name.split(" ")[0] : admin?.name || "Account"}
+                    </span>
+                    <FiChevronDown
+                      size={14}
+                      className={`text-gray-400 transition-transform ${desktopAccountOpen ? "rotate-180 text-[#22c55e]" : ""
+                        }`}
+                    />
+                  </button>
 
                 {desktopAccountOpen && (
                   <div className="absolute right-0 top-full mt-3 w-56 bg-white dark:bg-[#1a2236] text-[#1a1a1a] dark:text-gray-100 rounded-[18px] shadow-[0_18px_35px_rgba(0,0,0,0.14)] border border-gray-200 dark:border-gray-700 overflow-hidden z-50 animate-fadeIn">
@@ -513,37 +517,11 @@ export default function Header() {
                           <FiLogOut size={15} /> Logout Admin
                         </button>
                       </>
-                    ) : (
-                      <>
-                        <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700 bg-[#f9fafb] dark:bg-[#151d30]">
-                          <p className="text-xs font-bold text-[#1a1a1a] dark:text-white">Welcome to Nutriexa</p>
-                          <p className="text-[10px] text-gray-500 dark:text-gray-400">Access orders, wishlist & more</p>
-                        </div>
-                        <Link
-                          to="/login"
-                          onClick={() => setDesktopAccountOpen(false)}
-                          className="flex items-center gap-3 px-4 py-2.5 text-xs font-semibold text-[#1a1a1a] dark:text-gray-100 hover:bg-[#22c55e]/10 transition-colors"
-                        >
-                          <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#111111] dark:bg-gray-700 text-white">
-                            <FiLogIn size={12} />
-                          </span>
-                          Login / Sign In
-                        </Link>
-                        <Link
-                          to="/signup"
-                          onClick={() => setDesktopAccountOpen(false)}
-                          className="flex items-center gap-3 px-4 py-2.5 text-xs font-medium text-[#1a1a1a] dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-[#22c55e]/10 transition-colors"
-                        >
-                          <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#4CAF37] text-white">
-                            <FiUser size={12} />
-                          </span>
-                          Register New Account
-                        </Link>
-                      </>
-                    )}
-                  </div>
-                )}
-              </div>
+                      ) : null}
+                    </div>
+                  )}
+                </div>
+              )}
 
               {/* Theme Toggle (Dark / Light) */}
               <button
@@ -825,8 +803,9 @@ export default function Header() {
                   <FiSearch size={20} />
                 </button>
 
-                {/* Account Icon (Click to toggle Account Menu) */}
-                <div className="relative" ref={mobileAccountMenuRef}>
+                {/* Account Icon (Shown only when authenticated) */}
+                {(user || admin) && (
+                  <div className="relative" ref={mobileAccountMenuRef}>
                   <button
                     onClick={() => setMobileAccountOpen((prev) => !prev)}
                     className="flex items-center text-white hover:text-[#22c55e] p-1 cursor-pointer focus:outline-none"
@@ -911,19 +890,11 @@ export default function Header() {
                           <FiLogOut size={16} />
                           <span>Logout Admin</span>
                         </button>
-                      ) : (
-                        <Link
-                          to="/login"
-                          onClick={() => setMobileAccountOpen(false)}
-                          className="flex items-center gap-3 px-4 py-2 text-xs font-semibold text-[#22c55e] hover:bg-[#22c55e]/10 transition-colors"
-                        >
-                          <FiLogIn size={16} />
-                          <span>Login</span>
-                        </Link>
-                      )}
+                      ) : null}
                     </div>
                   )}
                 </div>
+                )}
 
                 {/* Cart Icon with count badge */}
                 <Link to="/cart" className="relative p-1 cursor-pointer">
@@ -978,43 +949,44 @@ export default function Header() {
           </button>
         </div>
 
-        {/* User Profile Card */}
-        <div className="p-4 border-b border-gray-800/80">
-          <Link
-            to={user ? "/profile" : "/login"}
-            onClick={() => setDrawerOpen(false)}
-            className="flex items-center justify-between p-3 rounded-2xl bg-[#12161f] border border-gray-800/80 hover:border-[#22c55e]/50 transition-colors group cursor-pointer"
-          >
-            <div className="flex items-center gap-3 min-w-0">
-              {/* Silhouette Avatar */}
-              <div className="w-11 h-11 rounded-full bg-white flex items-center justify-center text-[#0b0e14] shrink-0 font-bold">
-                {user?.name ? (
-                  <span className="text-base font-extrabold text-[#0b0e14]">
-                    {user.name.charAt(0).toUpperCase()}
-                  </span>
-                ) : (
-                  <FiUser size={22} className="text-[#0b0e14]" />
-                )}
-              </div>
+        {/* User Profile Card (shown when authenticated) */}
+        {user && (
+          <div className="p-4 border-b border-gray-800/80">
+            <Link
+              to="/profile"
+              onClick={() => setDrawerOpen(false)}
+              className="flex items-center justify-between p-3 rounded-2xl bg-[#12161f] border border-gray-800/80 hover:border-[#22c55e]/50 transition-colors group cursor-pointer"
+            >
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="w-11 h-11 rounded-full bg-white flex items-center justify-center text-[#0b0e14] shrink-0 font-bold">
+                  {user?.name ? (
+                    <span className="text-base font-extrabold text-[#0b0e14]">
+                      {user.name.charAt(0).toUpperCase()}
+                    </span>
+                  ) : (
+                    <FiUser size={22} className="text-[#0b0e14]" />
+                  )}
+                </div>
 
-              <div className="min-w-0">
-                <p className="text-sm font-bold text-white truncate">
-                  {userName}
-                </p>
-                <p className="text-[11px] text-gray-400 truncate">
-                  {userEmail}
-                </p>
-                <div className="mt-1">
-                  <span className="inline-block text-[9px] font-semibold text-[#22c55e] border border-[#22c55e] px-2 py-0.5 rounded-full">
-                    Premium Member
-                  </span>
+                <div className="min-w-0">
+                  <p className="text-sm font-bold text-white truncate">
+                    {userName}
+                  </p>
+                  <p className="text-[11px] text-gray-400 truncate">
+                    {userEmail}
+                  </p>
+                  <div className="mt-1">
+                    <span className="inline-block text-[9px] font-semibold text-[#22c55e] border border-[#22c55e] px-2 py-0.5 rounded-full">
+                      Premium Member
+                    </span>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <FiChevronRight size={18} className="text-gray-500 group-hover:text-[#22c55e] transition-colors shrink-0 ml-2" />
-          </Link>
-        </div>
+              <FiChevronRight size={18} className="text-gray-500 group-hover:text-[#22c55e] transition-colors shrink-0 ml-2" />
+            </Link>
+          </div>
+        )}
 
         {/* Scrollable Navigation List (Exact Sequence from Image 1) */}
         <div className="flex-1 overflow-y-auto px-4 py-3 space-y-1">

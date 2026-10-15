@@ -207,13 +207,8 @@ export default function FloatingActionDock() {
             <button
               type="button"
               onClick={() => {
-                if (!isUserAuthenticated) {
-                  alert("Please log in to submit feedback.");
-                  navigate("/login");
-                } else {
-                  setFeedbackOpen(true);
-                  setChatOpen(false);
-                }
+                setFeedbackOpen(true);
+                setChatOpen(false);
               }}
               className="flex items-center gap-2 bg-[#121722] hover:bg-[#1a2232] text-white border border-gray-700 hover:border-amber-400 px-3.5 py-2 rounded-full shadow-xl transition-all cursor-pointer text-xs font-semibold group hover:scale-105"
             >
