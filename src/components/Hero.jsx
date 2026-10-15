@@ -130,7 +130,7 @@ export default function Hero() {
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
-      <div className="relative min-h-[460px] sm:min-h-[520px] md:min-h-[620px] flex items-center">
+      <div className="relative min-h-[360px] sm:min-h-[520px] md:min-h-[620px] flex items-center">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentBanner.id || currentIndex}
@@ -193,7 +193,7 @@ export default function Hero() {
             <div className="absolute -bottom-24 -right-24 w-96 h-96 rounded-full bg-indigo-500/15 blur-[140px] pointer-events-none" />
 
             {/* Foreground Content Container */}
-            <div className="relative z-10 max-w-7xl w-full mx-auto px-4 sm:px-6 md:px-10 py-6 sm:py-12 md:py-20 flex flex-col md:flex-row items-center justify-between gap-6 md:gap-8">
+            <div className="relative z-10 max-w-7xl w-full mx-auto px-4 sm:px-6 md:px-10 py-2.5 sm:py-12 md:py-20 flex flex-col md:flex-row items-center justify-between gap-3 sm:gap-6 md:gap-8">
               {/* Left Column: Promotion Badge, Headline, Subtitle, Trust Highlights, CTAs */}
               <div className="w-full max-w-2xl text-center md:text-left">
                 {/* Official Store Promotion Badge */}
@@ -201,7 +201,7 @@ export default function Hero() {
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1, duration: 0.35 }}
-                  className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-3.5 py-1 sm:py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-[11px] sm:text-xs font-semibold tracking-wide uppercase mb-3 sm:mb-5 shadow-lg shadow-black/30"
+                  className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-3.5 py-1 sm:py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-[11px] sm:text-xs font-semibold tracking-wide uppercase mb-1.5 sm:mb-5 shadow-lg shadow-black/30"
                 >
                   <FiZap className="text-amber-400 animate-pulse" size={13} />
                   <span className="text-white/95 font-medium tracking-wider">Official Nutriexa Store Promotion</span>
@@ -223,7 +223,7 @@ export default function Hero() {
                     initial={{ opacity: 0, y: 15 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.22, duration: 0.45 }}
-                    className="mt-2 sm:mt-4 text-gray-200 text-xs sm:text-base md:text-lg max-w-xl mx-auto md:mx-0 leading-relaxed drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)]"
+                    className="mt-1 sm:mt-4 text-gray-200 text-xs sm:text-base md:text-lg max-w-xl mx-auto md:mx-0 leading-relaxed drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)]"
                   >
                     {currentBanner.subtitle}
                   </motion.p>
@@ -234,7 +234,7 @@ export default function Hero() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3, duration: 0.45 }}
-                  className="mt-4 sm:mt-7 grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-2.5 max-w-lg mx-auto md:mx-0"
+                  className="mt-2.5 sm:mt-7 grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-2.5 max-w-lg mx-auto md:mx-0"
                 >
                   {highlights.map((item) => (
                     <div
@@ -254,7 +254,7 @@ export default function Hero() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.38, duration: 0.45 }}
-                  className="mt-5 sm:mt-8 flex flex-row items-center justify-center md:justify-start gap-3 sm:gap-4"
+                  className="mt-3.5 sm:mt-8 flex flex-row items-center justify-center md:justify-start gap-3 sm:gap-4"
                 >
                   <Link
                     to={currentBanner.ctaLink || "/products"}
